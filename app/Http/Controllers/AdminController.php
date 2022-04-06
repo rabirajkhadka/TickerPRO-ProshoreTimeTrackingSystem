@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MemberInviteRequest;
 use App\Models\UserRole;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -69,7 +70,9 @@ class AdminController extends Controller
 
     }
 
-    public function inviteOthers(Request $request){
-//        dd($request->toArray());
+    public function inviteOthers(MemberInviteRequest $request){
+        $validated = $request->safe()->only(['roles', 'email']);
+        
+        // after validating roles and email address..call email service to send an invite
     }
 }
