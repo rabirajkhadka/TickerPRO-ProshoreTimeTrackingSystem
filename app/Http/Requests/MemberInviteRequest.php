@@ -26,7 +26,8 @@ class MemberInviteRequest extends FormRequest
         return [
             // validation for emails and roles
             'email' => 'required | email',
-            'roles' => 'required'
+            'role_id' => 'required | array',
+            'role_id.*' => 'required | integer'
         ];
     }
 
@@ -38,7 +39,7 @@ class MemberInviteRequest extends FormRequest
     public function messages()
     {
         return [
-            'roles.required' => 'A valid role is required!',
+            'role_id.required' => 'A valid role id is required!',
         ];
     }
 }

@@ -71,8 +71,10 @@ class AdminController extends Controller
     }
 
     public function inviteOthers(MemberInviteRequest $request){
-        $validated = $request->safe()->only(['roles', 'email']);
+        $validated = $request->safe()->only(['role_id', 'email']);
         
-        // after validating roles and email address..call email service to send an invite
+        // after validating roles and email address..
+        // store invite details in a table and
+        //call email service to send an invite
     }
 }
