@@ -22,7 +22,7 @@ class AdminController extends Controller
         UserService::deleteRoles($request->id);
         $user->delete();
         return response()->json([
-            'message' => 'User deleted sucessfully'
+            'message' => 'User deleted successfully'
         ], 200);
     }
 
@@ -67,5 +67,9 @@ class AdminController extends Controller
         }
         return response()->json($result, $result['status']);
 
+    }
+
+    public function inviteOthers(Request $request){
+//        dd($request->toArray());
     }
 }
