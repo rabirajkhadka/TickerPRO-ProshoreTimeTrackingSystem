@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Services\UserService;
 use Mockery\Exception;
 use Illuminate\Http\JsonResponse;
-use PhpParser\Error;
 
 class AuthController extends Controller
 {
@@ -60,7 +59,7 @@ class AuthController extends Controller
 
     public function resetPass(Request $request): JsonResponse
     {
-        $validated = $request->validate([
+        $request->validate([
             'email' => 'required | email'
         ]);
         $status = UserService::resetPassword($request);
