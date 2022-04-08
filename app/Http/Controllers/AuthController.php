@@ -57,4 +57,11 @@ class AuthController extends Controller
         ], 200);
 
     }
+
+    public function resetPass(Request $request){
+        $validated = $request->validate([
+            'email' => 'required | email'
+        ]);
+        dd($validated);
+    }
 }
