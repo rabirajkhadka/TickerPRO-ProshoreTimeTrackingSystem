@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Exception;
 
@@ -63,5 +64,12 @@ class UserService
         foreach ($roles as $role) {
             $role->delete();
         }
+    }
+
+    public static function resetPassword($request): bool
+    {
+        $status = Password::sendResetLink($request->only('email'));
+        if ($status === Password::INVALID_USER) return false;
+        return true;
     }
 }

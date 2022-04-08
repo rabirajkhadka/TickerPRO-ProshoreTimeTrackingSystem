@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserStoreRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Mockery\Exception;
+use Illuminate\Http\JsonResponse;
 use PhpParser\Error;
 
 class AuthController extends Controller
@@ -58,10 +58,19 @@ class AuthController extends Controller
 
     }
 
-    public function resetPass(Request $request){
+    public function resetPass(Request $request): JsonResponse
+    {
         $validated = $request->validate([
             'email' => 'required | email'
         ]);
-        dd($validated);
+        $status = UserService::resetPassword($request);
+        if (!$status) {
+            return response()->json([
+                'message' => 'User with given email address not found'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Reset email sent successfully'
+        ], 200);
     }
 }
