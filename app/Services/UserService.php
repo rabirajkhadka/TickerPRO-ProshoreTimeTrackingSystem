@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\InviteToken;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -9,6 +10,7 @@ use http\Exception\InvalidArgumentException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Exception;
+use Illuminate\Support\Str;
 
 class UserService
 {
@@ -63,5 +65,19 @@ class UserService
         foreach ($roles as $role) {
             $role->delete();
         }
+    }
+
+    public static function inviteMembers($email, $role_id)
+    {
+        // generate a token and save it in the database with the corresponding email and role id
+        $token = Str::random(60);
+        InviteToken::create([
+            'email' => $email,
+            'role_id' => $role_id,
+            'token' => $token
+        ]);
+        return $token;
+        
+        // send an email notifying that you are invited
     }
 }
