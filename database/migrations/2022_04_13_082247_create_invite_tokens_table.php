@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('email')->unique()->index();
             $table->string('token')->unique()->nullable();
             $table->integer('role_id')->unsigned();
+            $table->boolean('inviteAccepted')->default(false);
             $table->timestamps();
         });
     }

@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Mail\InviteCreated;
 use App\Models\InviteToken;
 use App\Models\UserRole;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Exception;
 use Illuminate\Support\Str;
@@ -67,17 +70,23 @@ class UserService
         }
     }
 
-    public static function inviteMembers($email, $role_id)
+    public static function inviteMembers($email, $role_id): bool
     {
         // generate a token and save it in the database with the corresponding email and role id
-        $token = Str::random(60);
+        $random = Str::random(60);
+        $time = Carbon::now();
+        $token = $random.$time->toDateTimeLocalString();
+        $url = url(route('register', [
+            'token' => $token,
+        ]));
+
         InviteToken::create([
             'email' => $email,
             'role_id' => $role_id,
             'token' => $token
         ]);
-        return $token;
-        
         // send an email notifying that you are invited
+        Mail::to($email)->send(new InviteCreated($url));
+        return true;
     }
 }
