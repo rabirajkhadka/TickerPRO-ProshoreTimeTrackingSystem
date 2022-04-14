@@ -14,6 +14,7 @@ class InviteToken extends Model
         'email',
         'role_id',
         'token',
+        'tokenExpires',
     ];
 
     public function setTokenAttribute($token)

@@ -83,7 +83,8 @@ class UserService
         InviteToken::create([
             'email' => $email,
             'role_id' => $role_id,
-            'token' => $token
+            'token' => $token,
+            'tokenExpires' => Carbon::now()->addDays(5),
         ]);
         // send an email notifying that you are invited
         Mail::to($email)->send(new InviteCreated($url));
