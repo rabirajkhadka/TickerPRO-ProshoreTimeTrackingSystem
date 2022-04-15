@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MemberInviteRequest;
 use App\Models\UserRole;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class AdminController extends Controller
         UserService::deleteRoles($request->id);
         $user->delete();
         return response()->json([
-            'message' => 'User deleted sucessfully'
+            'message' => 'User deleted successfully'
         ], 200);
     }
 
@@ -67,5 +68,13 @@ class AdminController extends Controller
         }
         return response()->json($result, $result['status']);
 
+    }
+
+    public function inviteOthers(MemberInviteRequest $request){
+        $validated = $request->safe()->only(['role_id', 'email']);
+        
+        // after validating roles and email address..
+        // store invite details in a table and
+        //call email service to send an invite
     }
 }
