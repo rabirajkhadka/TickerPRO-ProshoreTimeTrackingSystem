@@ -17,11 +17,18 @@ class AuthController extends Controller
      */
     public function registerUser(UserStoreRequest $request)
     {
-        $user = UserService::saveUserData($request);
-        $result = [
-            'status' => 200,
-            'user' => $user,
-        ];
+        try {
+            $user = UserService::saveUserData($request);
+            $result = [
+                'status' => 200,
+                'user' => $user,
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 403,
+                'message' => $e->getMessage()
+            ];
+        }
         return response()->json($result, $result['status']);
     }
 

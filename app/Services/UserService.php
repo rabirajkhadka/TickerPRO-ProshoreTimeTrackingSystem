@@ -24,11 +24,17 @@ class UserService
     public static function saveUserData($request)
     {
         $validated = $request->validated();
-        // add the user role
+        $role = InviteToken::where('email', $validated['email'])->first();
+        $check = Hash::check($validated['token'], $role->token);
+
+        if (!$check) {
+            throw new Exception('Please provide a valid token');
+        }
+
         $result = User::create($validated);
-        $roles = UserRole::create([
+        UserRole::create([
             'user_id' => $result['id'],
-            'role_id' => 1,
+            'role_id' => $role['role_id'],
         ]);
         return $result;
     }
@@ -76,9 +82,7 @@ class UserService
         $random = Str::random(60);
         $time = Carbon::now();
         $token = $random . $time->toDateTimeLocalString();
-        $url = url(route('register', [
-            'token' => $token,
-        ]));
+        $url = url(route('register', $token));
 
         $user = InviteToken::create([
             'name' => $name,
@@ -86,7 +90,7 @@ class UserService
             'role_id' => $role_id,
             'token' => $token,
             'tokenExpires' => Carbon::now()->addDays(5),
-            'inviteUserId' => $user_id
+            'invitedUserId' => $user_id
         ]);
         if (!$user) return false;
         // send an email notifying that you are invited

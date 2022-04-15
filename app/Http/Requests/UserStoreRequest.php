@@ -28,6 +28,7 @@ class UserStoreRequest extends FormRequest
             'email' => 'email | required',
             'password' => 'min:6|required_with:confirmPass|same:confirmPass',
             'confirmPass' => 'min:6',
+            'token' => 'required'
         ];
     }
 
