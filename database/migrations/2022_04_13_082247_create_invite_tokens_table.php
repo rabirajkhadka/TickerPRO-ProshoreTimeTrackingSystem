@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->string('token')->unique()->nullable();
             $table->integer('role_id')->unsigned();
             $table->boolean('inviteAccepted')->default(false);
+            $table->boolean('resentEmail')->default(false);
+            $table->boolean('inviteUserId');
             $table->dateTime('tokenExpires');
             $table->timestamps();
         });

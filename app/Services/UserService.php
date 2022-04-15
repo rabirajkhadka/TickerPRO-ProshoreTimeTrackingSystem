@@ -70,22 +70,24 @@ class UserService
         }
     }
 
-    public static function inviteMembers($email, $role_id): bool
+    public static function inviteMembers($email, $role_id, $user_id): bool
     {
         // generate a token and save it in the database with the corresponding email and role id
         $random = Str::random(60);
         $time = Carbon::now();
-        $token = $random.$time->toDateTimeLocalString();
+        $token = $random . $time->toDateTimeLocalString();
         $url = url(route('register', [
             'token' => $token,
         ]));
 
-        InviteToken::create([
+        $user = InviteToken::create([
             'email' => $email,
             'role_id' => $role_id,
             'token' => $token,
             'tokenExpires' => Carbon::now()->addDays(5),
+            'inviteUserId' => $user_id
         ]);
+        if (!$user) return false;
         // send an email notifying that you are invited
         Mail::to($email)->send(new InviteCreated($url));
         return true;
