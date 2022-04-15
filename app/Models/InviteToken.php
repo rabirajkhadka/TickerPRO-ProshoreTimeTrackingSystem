@@ -11,6 +11,7 @@ class InviteToken extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'email',
         'role_id',
         'token',

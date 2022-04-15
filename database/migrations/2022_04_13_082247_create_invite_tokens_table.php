@@ -14,12 +14,13 @@ return new class extends Migration {
     {
         Schema::create('invite_tokens', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('email')->unique()->index();
             $table->string('token')->unique()->nullable();
             $table->integer('role_id')->unsigned();
             $table->boolean('inviteAccepted')->default(false);
             $table->boolean('resentEmail')->default(false);
-            $table->boolean('inviteUserId');
+            $table->boolean('inviteUserId')->unsigned();
             $table->dateTime('tokenExpires');
             $table->timestamps();
         });

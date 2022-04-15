@@ -14,7 +14,7 @@ class AdminController extends Controller
     // Delete the user
     public function deleteUser(Request $request)
     {
-        $user = User::where('id',$request->id)->first();
+        $user = User::where('id', $request->id)->first();
         if (!$user) {
             return response()->json([
                 'message' => 'User does not exist with given id'
@@ -70,11 +70,19 @@ class AdminController extends Controller
 
     }
 
-    public function inviteOthers(MemberInviteRequest $request){
-        $validated = $request->safe()->only(['role_id', 'email']);
-        
-        // after validating roles and email address..
-        // store invite details in a table and
-        //call email service to send an invite
+    public function inviteOthers(MemberInviteRequest $request)
+    {
+        $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
+        $status = UserService::inviteMembers($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
+
+        if (!$status) {
+            return response()->json([
+                'message' => 'User could not be invited'
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'User invited successfully'
+        ], 200);
     }
 }
