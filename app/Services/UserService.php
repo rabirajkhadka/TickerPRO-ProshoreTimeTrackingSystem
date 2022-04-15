@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Models\UserRole;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Mockery\Exception;
 
 class UserService
@@ -66,10 +68,21 @@ class UserService
         }
     }
 
-    public static function resetPassword($request): bool
+    public static function forgotPassword($request): bool
     {
         $status = Password::sendResetLink($request->only('email'));
         if ($status === Password::INVALID_USER) return false;
+        return true;
+    }
+
+    public static function resetPassword($request): bool
+    {
+        $validated = $request->safe()->only('email', 'password', 'password_confirmation', 'token');
+        $status = Password::reset($validated, function ($user, $password) {
+            $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
+            $user->save();
+        });
+        if ($status === Password::INVALID_TOKEN) return false;
         return true;
     }
 }

@@ -57,7 +57,4 @@ class User extends Authenticatable
         if(trim($password) === '') return;
         $this->attributes['password'] =  Hash::make($password);
     }
-    public function setConfirmPassAttribute($confirmPass){
-        $this->attributes['confirmPass'] = null;
-    }
 }

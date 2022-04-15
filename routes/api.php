@@ -26,8 +26,9 @@ Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('register', 'registerUser');
     Route::post('login', 'loginUser')->name('login');
     Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
-    Route::post('forgot-password', 'resetPass');
-    Route::post('reset-success', 'willaddlater')->name('password.reset');
+    Route::post('forgot-password', 'forgotPass');
+    Route::get('reset-password/{token}')->name('password.reset');
+    Route::post('reset-password', 'resetPass');
 });
 
 Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
