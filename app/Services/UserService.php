@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Mail\InviteCreated;
 use App\Models\InviteToken;
+use App\Models\Role;
 use App\Models\UserRole;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -57,5 +58,10 @@ class UserService
             throw new Exception('User does not exist');
         }
         return $user;
+    }
+
+    public static function roles()
+    {
+        return Role::exclude('admin')->get();
     }
 }
