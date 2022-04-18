@@ -12,9 +12,6 @@ use PhpParser\Error;
 
 class AuthController extends Controller
 {
-    /*
-     * Register new users
-     */
     public function registerUser(UserStoreRequest $request)
     {
         try {
@@ -32,9 +29,6 @@ class AuthController extends Controller
         return response()->json($result, $result['status']);
     }
 
-    /*
-     * Login using given creds
-     */
     public function loginUser(UserLoginRequest $request)
     {
         try {

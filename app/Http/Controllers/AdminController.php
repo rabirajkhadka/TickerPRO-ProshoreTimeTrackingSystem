@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberInviteRequest;
 use App\Models\UserRole;
+use App\Services\AdminService;
+use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -11,7 +13,6 @@ use Mockery\Exception;
 
 class AdminController extends Controller
 {
-    // Delete the user
     public function deleteUser(Request $request)
     {
         $user = User::where('id', $request->id)->first();
@@ -20,14 +21,13 @@ class AdminController extends Controller
                 'message' => 'User does not exist with given id'
             ], 404);
         }
-        UserService::deleteRoles($request->id);
+        AdminService::deleteRoles($request->id);
         $user->delete();
         return response()->json([
             'message' => 'User deleted successfully'
         ], 200);
     }
 
-    // View all the users
     public function viewAllUsers()
     {
         $users = User::all();
@@ -39,11 +39,6 @@ class AdminController extends Controller
 
     }
 
-    /*
-     * Finds the user from the obtained request
-     * If user does not exist then return 404
-     * else update the role and return response
-     */
     public function assignRoles(Request $request)
     {
         $rules = [
@@ -73,7 +68,7 @@ class AdminController extends Controller
     public function inviteOthers(MemberInviteRequest $request)
     {
         $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
-        $status = UserService::inviteMembers($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
+        $status = InviteService::invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
 
         if (!$status) {
             return response()->json([
