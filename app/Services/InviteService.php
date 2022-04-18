@@ -16,7 +16,7 @@ class InviteService
         $random = Str::random(60);
         $time = Carbon::now();
         $token = $random . $time->toDateTimeLocalString();
-        $url = url(route('register', $token));
+        $url = env('frontend_url').'/register/'.$token.'?email='.$email;
 
         $user = InviteToken::create([
             'name' => $name,
