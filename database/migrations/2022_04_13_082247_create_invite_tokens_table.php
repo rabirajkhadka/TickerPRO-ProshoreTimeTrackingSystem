@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->integer('role_id')->unsigned();
             $table->boolean('inviteAccepted')->default(false);
             $table->boolean('resentEmail')->default(false);
-            $table->boolean('invitedUserId')->unsigned();
+            $table->integer('invitedUserId')->unsigned();
             $table->dateTime('tokenExpires');
             $table->timestamps();
         });
