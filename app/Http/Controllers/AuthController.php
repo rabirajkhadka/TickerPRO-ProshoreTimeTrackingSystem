@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PasswordResetRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserStoreRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Mockery\Exception;
-use PhpParser\Error;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
@@ -56,5 +56,34 @@ class AuthController extends Controller
             'message' => 'User logged out sucessfully'
         ], 200);
 
+    }
+
+    public function forgotPass(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required | email'
+        ]);
+        $status = UserService::forgotPassword($request);
+        if (!$status) {
+            return response()->json([
+                'message' => 'User with given email address not found'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Reset email sent successfully'
+        ], 200);
+    }
+
+    public function resetPass(PasswordResetRequest $request): JsonResponse
+    {
+        $status = UserService::resetPassword($request);
+        if (!$status) {
+            return response()->json([
+                'message' => 'Could not reset password. Please check your token or email address'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Password reset successfully'
+        ], 200);
     }
 }
