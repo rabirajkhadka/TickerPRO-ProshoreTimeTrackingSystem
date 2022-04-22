@@ -22,7 +22,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'confirmPass',
     ];
 
     /**
@@ -33,7 +32,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'confirmPass',
         'activeStatus'
     ];
 
@@ -56,8 +54,5 @@ class User extends Authenticatable
     public function setPasswordAttribute($password){
         if(trim($password) === '') return;
         $this->attributes['password'] =  Hash::make($password);
-    }
-    public function setConfirmPassAttribute($confirmPass){
-        $this->attributes['confirmPass'] = null;
     }
 }

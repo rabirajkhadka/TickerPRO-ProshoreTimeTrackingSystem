@@ -38,7 +38,6 @@ class CreateRolesSeeder extends Seeder
             'name' => 'Harry Larry',
             'email' => 'test@test.com',
             'password' => 'test123',
-            'confirmPass' => 'test123',
         ]);
         UserRole::create([
             'user_id' => 1,

@@ -29,6 +29,7 @@ php artisan serve
 - User can login and logout
 - User can view their details
 - User can update their password
+- User can generate password reset request
 
 ### Admin
 - Admin can assign multiples roles to a user 
