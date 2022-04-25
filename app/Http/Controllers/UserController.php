@@ -43,4 +43,12 @@ class UserController extends Controller
         }
         return response()->json($result, $result['status']);
     }
+
+    public function allUserRoles()
+    {
+        $allRoles = UserService::roles();
+        return response()->json([
+            'roles' => $allRoles
+        ]);
+    }
 }

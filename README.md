@@ -36,4 +36,5 @@ php artisan serve
 - Admin can view all the users
 - Admin can delete user
 - Admin routes are protected and can't be accessed by the user
+- Admin can invite others with the specified role
 

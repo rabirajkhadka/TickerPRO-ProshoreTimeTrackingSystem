@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserStoreRequest extends FormRequest
+class MemberInviteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,24 +25,23 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'email | required',
-            'password' => 'min:6| confirmed',
-            'token' => 'required'
+            'email' => 'required | email',
+            'role_id' => 'required | integer',
+            'user_id' => 'required | integer'
         ];
     }
 
-    /**
+/*
      * Custom message for validation
      *
      * @return array
-     */
-    // will use later when needed
-//    public function messages()
-//    {
-//        return [
-//            'email.required' => 'Email is required!',
-//            'name.required' => 'Name is required!',
-//            'password.required' => 'Password is required!'
-//        ];
-//    }
+     * */
+    public function messages()
+    {
+        return [
+            'name.required' => 'User name required',
+            'role_id.required' => 'A valid role id is required!',
+            'user_id.required' => 'Admin user id required'
+        ];
+    }
 }

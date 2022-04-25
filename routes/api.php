@@ -22,8 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('all-roles', [UserController::class, 'allUserRoles']);
+
 Route::controller(AuthController::class)->prefix('user')->group(function () {
-    Route::post('register', 'registerUser');
+    Route::post('register', 'registerUser')->name('register');
     Route::post('login', 'loginUser')->name('login');
     Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
     Route::post('forgot-password', 'forgotPass');
@@ -34,6 +36,7 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
     Route::get('all-users', 'viewAllUsers');
     Route::post('change-roles', 'assignRoles');
     Route::post('delete-user/{id}', 'deleteUser');
+    Route::post('invite', 'inviteOthers');
 });
 
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {

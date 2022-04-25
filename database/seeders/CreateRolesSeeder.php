@@ -19,7 +19,7 @@ class CreateRolesSeeder extends Seeder
     {
         // Create the roles
         Role::create([
-            'role' => 'user',
+            'role' => 'member',
         ]);
         Role::create([
             'role' => 'admin',
@@ -27,9 +27,15 @@ class CreateRolesSeeder extends Seeder
         Role::create([
             'role' => 'hr',
         ]);
+        Role::create([
+            'role' => 'dev',
+        ]);
+        Role::create([
+            'role' => 'management',
+        ]);
 
         User::create([
-            'name' => 'Risab Shres',
+            'name' => 'Harry Larry',
             'email' => 'test@test.com',
             'password' => 'test123',
         ]);
