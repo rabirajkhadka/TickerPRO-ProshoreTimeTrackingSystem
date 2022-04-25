@@ -12,22 +12,23 @@ use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    /*
-     * Register new users
-     */
     public function registerUser(UserStoreRequest $request)
     {
-        $user = UserService::saveUserData($request);
-        $result = [
-            'status' => 200,
-            'user' => $user,
-        ];
+        try {
+            $user = UserService::saveUserData($request);
+            $result = [
+                'status' => 200,
+                'user' => $user,
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 403,
+                'message' => $e->getMessage()
+            ];
+        }
         return response()->json($result, $result['status']);
     }
 
-    /*
-     * Login using given creds
-     */
     public function loginUser(UserLoginRequest $request)
     {
         try {

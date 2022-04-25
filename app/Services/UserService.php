@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Mail\InviteCreated;
+use App\Models\InviteToken;
+use App\Models\Role;
 use App\Models\UserRole;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Auth;
@@ -15,28 +18,25 @@ use Mockery\Exception;
 
 class UserService
 {
-    /*
-        * Validate User Data
-        * Store to the database if there is no errors
-    */
     public static function saveUserData($request)
     {
         $validated = $request->validated();
-        // add the user role
+        $invitedUser = InviteToken::where('email', $validated['email'])->first();
+        $check = Hash::check($validated['token'], $invitedUser->token);
+
+        if (!$check) {
+            throw new Exception('Please provide a valid token');
+        }
+
         $result = User::create($validated);
-        $roles = UserRole::create([
+        UserRole::create([
             'user_id' => $result['id'],
-            'role_id' => 1,
+            'role_id' => $invitedUser['role_id'],
         ]);
+        $invitedUser->delete();
         return $result;
     }
 
-    /*
-     * Validate the obatined email and password
-     * Check if the user exists or not
-     * If User exists then compare the password with stored hash
-     * Return User details if true else throw exception
-     */
     public static function getUserWithCreds($request)
     {
         $validated = $request->validated();
@@ -60,12 +60,9 @@ class UserService
         return $user;
     }
 
-    public static function deleteRoles($id)
+    public static function roles()
     {
-        $roles = UserRole::all()->where('user_id', $id);
-        foreach ($roles as $role) {
-            $role->delete();
-        }
+        return Role::exclude('admin')->get();
     }
 
     public static function forgotPassword($request): bool
