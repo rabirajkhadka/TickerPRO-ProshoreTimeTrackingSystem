@@ -1,0 +1,123 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "TickerPro",
+        "description": "Backend endpoints docs",
+        "contact": {
+            "email": "support@tickerpro.com"
+        },
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://backendbootcamp.proshore.eu/api",
+            "description": "Proshore"
+        }
+    ],
+    "paths": {
+        "/admin/delete-user/{id}": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete User",
+                "description": "A user can be deleted by passing their user id.",
+                "operationId": "deleteUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "User id of the user whom the admin wants to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid user id"
+                    }
+                }
+            }
+        },
+        "/admin/view-user/{id}": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete User",
+                "description": "A user can be deleted by passing their user id.",
+                "operationId": "viewUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "User id of the user whom the admin wants to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid user id"
+                    }
+                }
+            }
+        },
+        "/admin/assign-user/{id}": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete User",
+                "description": "A user can be deleted by passing their user id.",
+                "operationId": "assignRoles",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "User id of the user whom the admin wants to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid user id"
+                    }
+                }
+            }
+        },
+        "/admin/invite-user/{id}": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete User",
+                "description": "A user can be deleted by passing their user id.",
+                "operationId": "inviteUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "User id of the user whom the admin wants to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid user id"
+                    }
+                }
+            }
+        }
+    }
+}
