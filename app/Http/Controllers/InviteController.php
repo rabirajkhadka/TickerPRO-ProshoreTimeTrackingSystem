@@ -31,11 +31,21 @@ class InviteController extends Controller
 
         return response()->json([
             'message' => 'User re-invited successfully'
-        ], 200);
+        ]);
 
     }
 
-    public function revokeInvite()
+    public function revoke(Request $request): JsonResponse
     {
+        $status = InviteService::revokeInvite($request);
+
+        if (!$status) {
+            return response()->json([
+                'message' => 'Cannot revoke invite. User does not exist in our database'
+            ], 500);
+        }
+        return response()->json([
+            'message' => 'User invite revoked successfully'
+        ]);
     }
 }

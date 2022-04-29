@@ -44,6 +44,7 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
 Route::controller(InviteController::class)->prefix('invite')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
     Route::get('invited-users', 'listInvitedUsers');
     Route::post('resend', 'reInvite');
+    Route::get('revoke/{id}', 'revoke');
 });
 
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {

@@ -59,5 +59,14 @@ class InviteService
 
         return true;
     }
+
+    public static function revokeInvite($request): bool
+    {
+        $user = InviteToken::where('id', $request->id)->first();
+        if (!$user) return false;
+        //if users exists then delete their invite
+        $user->delete();
+        return true;
+    }
 }
 
