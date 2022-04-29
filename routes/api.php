@@ -43,6 +43,7 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
 // Invite related actions
 Route::controller(InviteController::class)->prefix('invite')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
     Route::get('invited-users', 'listInvitedUsers');
+    Route::post('resend', 'reInvite');
 });
 
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {
