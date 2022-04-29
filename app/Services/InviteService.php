@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Mail\InviteCreated;
 use App\Models\InviteToken;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -16,7 +17,7 @@ class InviteService
         $random = Str::random(60);
         $time = Carbon::now();
         $token = $random . $time->toDateTimeLocalString();
-        $url = env('frontend_url').'/register/'.$token.'?email='.$email;
+        $url = env('frontend_url') . '/register/' . $token . '?email=' . $email;
 
         $user = InviteToken::create([
             'name' => $name,
@@ -30,6 +31,11 @@ class InviteService
         // send an email notifying that you are invited
         Mail::to($email)->send(new InviteCreated($url));
         return true;
+    }
+
+    public static function invitedList(): Collection
+    {
+        return InviteToken::all();
     }
 }
 
