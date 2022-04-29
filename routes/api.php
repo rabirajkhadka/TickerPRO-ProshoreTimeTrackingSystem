@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
 use \App\Http\Controllers\AdminController;
 use \App\Http\Controllers\UserController;
+use \App\Http\Controllers\InviteController;
 use \App\Models\User;
 
 /*
@@ -37,6 +38,11 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
     Route::post('change-roles', 'assignRoles');
     Route::post('delete-user/{id}', 'deleteUser');
     Route::post('invite', 'inviteOthers');
+});
+
+// Invite related actions
+Route::controller(InviteController::class)->prefix('invite')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::get('invited-users', 'listInvitedUsers');
 });
 
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {
