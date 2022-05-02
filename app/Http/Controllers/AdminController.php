@@ -65,10 +65,10 @@ class AdminController extends Controller
 
     }
 
-    public function inviteOthers(MemberInviteRequest $request)
+    public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
     {
         $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
-        $status = InviteService::invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
+        $status = $inviteService->invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
 
         if (!$status) {
             return response()->json([

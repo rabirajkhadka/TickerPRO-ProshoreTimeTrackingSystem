@@ -3,20 +3,26 @@
 namespace App\Services;
 
 use App\Mail\InviteCreated;
+use App\Mail\ReInvite;
 use App\Models\InviteToken;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class InviteService
 {
-    public static function invite($name, $email, $role_id, $user_id): bool
+    public function generateToken(): string
     {
-        // generate a token and save it in the database with the corresponding email and role id
         $random = Str::random(60);
         $time = Carbon::now();
-        $token = $random . $time->toDateTimeLocalString();
-        $url = env('frontend_url').'/register/'.$token.'?email='.$email;
+        return $random . $time->toDateTimeLocalString();
+    }
+
+    public function invite($name, $email, $role_id, $user_id): bool
+    {
+        $token = $this->generateToken();
+        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email;
 
         $user = InviteToken::create([
             'name' => $name,
@@ -29,6 +35,37 @@ class InviteService
         if (!$user) return false;
         // send an email notifying that you are invited
         Mail::to($email)->send(new InviteCreated($url));
+        return true;
+    }
+
+    public static function invitedList(): Collection
+    {
+        return InviteToken::all();
+    }
+
+    public function resendInvite($email): bool
+    {
+        $user = InviteToken::where('email', $email)->first();
+        if (!$user) return false;
+
+        //if user exists then generate new token and email
+        $token = $this->generateToken();
+        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email;
+        $user->forceFill([
+            'token' => $token
+        ]);
+        $user->save();
+        Mail::to($email)->send(new ReInvite($url));
+
+        return true;
+    }
+
+    public static function revokeInvite($request): bool
+    {
+        $user = InviteToken::where('id', $request->id)->first();
+        if (!$user) return false;
+        //if users exists then delete their invite
+        $user->delete();
         return true;
     }
 }

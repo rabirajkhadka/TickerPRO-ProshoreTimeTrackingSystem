@@ -19,6 +19,13 @@ class InviteToken extends Model
         'invitedUserId',
     ];
 
+    protected $hidden = [
+        'token',
+        'invitedUserId',
+        'tokenExpires',
+        'created_at'
+    ];
+
     public function setTokenAttribute($token)
     {
         $this->attributes['token'] = Hash::make($token);
