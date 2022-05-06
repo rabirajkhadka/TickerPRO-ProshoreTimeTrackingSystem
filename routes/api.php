@@ -44,6 +44,10 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
     Route::patch('update', 'updateMe');
 });
 
+Route::controller(UserController::class)->prefix('user')->group(function () {
+    Route::post('update-status/{id}', 'updateUserStatus');
+});
+
 
 
 
