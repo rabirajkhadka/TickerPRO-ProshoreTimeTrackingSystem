@@ -37,6 +37,7 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
     Route::post('change-roles', 'assignRoles');
     Route::post('delete-user/{id}', 'deleteUser');
     Route::post('invite', 'inviteOthers');
+    Route::post('update-status/{id}', 'updateUserStatus');
 });
 
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {
@@ -44,9 +45,6 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
     Route::patch('update', 'updateMe');
 });
 
-Route::controller(UserController::class)->prefix('user')->group(function () {
-    Route::post('update-status/{id}', 'updateUserStatus');
-});
 
 
 
