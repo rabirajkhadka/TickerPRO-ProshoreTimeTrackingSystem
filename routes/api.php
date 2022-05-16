@@ -38,6 +38,7 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
     Route::post('change-roles', 'assignRoles');
     Route::post('delete-user/{id}', 'deleteUser');
     Route::post('invite', 'inviteOthers');
+    Route::post('update-status/{id}', 'updateUserStatus');
 });
 
 // Invite related actions
@@ -51,6 +52,7 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
     Route::get('me', 'viewMe');
     Route::patch('update', 'updateMe');
 });
+
 
 
 
