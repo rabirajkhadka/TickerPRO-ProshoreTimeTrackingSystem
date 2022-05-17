@@ -10,6 +10,7 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
+        'project_name',
         'client_name',
         'client_contact_number',
         'client_email',

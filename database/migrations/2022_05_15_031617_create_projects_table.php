@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id()->autoIncrement();
+            $table->string('project_name');
             $table->string('client_name');
             $table->string('client_contact_number');
             $table->string('client_email');
