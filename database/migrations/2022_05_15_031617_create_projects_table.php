@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('client_name');
             $table->string('client_contact_number');
             $table->string('client_email');
+            $table->boolean('billable')->default(false);
             $table->string('project_color_code');
             $table->timestamps();
         });
