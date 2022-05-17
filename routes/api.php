@@ -2,10 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\AuthController;
-use \App\Http\Controllers\AdminController;
-use \App\Http\Controllers\UserController;
-use \App\Models\User;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TimeLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +42,11 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::get('me', 'viewMe');
     Route::patch('update', 'updateMe');
+});
+
+//Time Logging Routes
+Route::controller(TimeLogController::class)->prefix('log')->middleware(['auth:sanctum', 'user.status'])->group(function () {
+    Route::post('add-entry', 'addActivity');
 });
 
 
