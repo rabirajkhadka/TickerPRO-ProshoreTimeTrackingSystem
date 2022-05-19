@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
+use App\Http\Controllers\InviteController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +39,14 @@ Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sa
     Route::post('change-roles', 'assignRoles');
     Route::post('delete-user/{id}', 'deleteUser');
     Route::post('invite', 'inviteOthers');
+    Route::post('update-status/{id}', 'updateUserStatus');
+});
+
+// Invite related actions
+Route::controller(InviteController::class)->prefix('invite')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::get('invited-users', 'listInvitedUsers');
+    Route::post('resend', 'reInvite');
+    Route::get('revoke/{id}', 'revoke');
 });
 
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {

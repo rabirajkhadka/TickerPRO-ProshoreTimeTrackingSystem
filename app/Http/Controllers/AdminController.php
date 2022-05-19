@@ -67,10 +67,10 @@ class AdminController extends Controller
 
     }
 
-    public function inviteOthers(MemberInviteRequest $request)
+    public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
     {
         $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
-        $status = InviteService::invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
+        $status = $inviteService->invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
 
         if (!$status) {
             return response()->json([
@@ -84,7 +84,7 @@ class AdminController extends Controller
     }
 
     public function addProject(Request $request)
-    {  
+    {
         try {
             $project = new Project;
             $project->project_name = request('project_name');
@@ -136,6 +136,30 @@ class AdminController extends Controller
                 'status' => 200,
                 'message' => 'Product Updated Successfully',
                 'project' => $project,
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+
+    public function updateUserStatus(Request $request)
+    {
+        $user = User::where('id', $request->id)->first();
+        try {
+            if (!$user->activeStatus) {
+                $user->activeStatus = true;
+            } else {
+                $user->activeStatus = false;
+            }
+            $user->save();
+            $result = [
+                'status' => 200,
+                'message' => 'User status updated',
+                'user' => $user,
             ];
         } catch (Exception $e) {
             $result = [
