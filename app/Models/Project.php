@@ -15,6 +15,7 @@ class Project extends Model
         'client_contact_number',
         'client_email',
         'billable',
+        'status',
         'project_color_code',
     ];
 }
