@@ -9,6 +9,8 @@ use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Project;
+use App\Models\UserProject;
 use Mockery\Exception;
 
 class AdminController extends Controller
@@ -79,5 +81,68 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'User invited successfully'
         ], 200);
+    }
+
+    public function addProject(Request $request)
+    {  
+        try {
+            $project = new Project;
+            $project->project_name = request('project_name');
+            $project->client_name = request('client_name');
+            $project->client_contact_number = request('client_contact_number');
+            $project->client_email = request('client_email');
+            $project->billable = request('billable');
+            $project->status = request('status');
+            $project->project_color_code = request('project_color_code');
+
+            $project->save();
+
+            $id = auth()->user()->id;
+            $userproject = new UserProject;
+            $userproject->user_id = $id;
+            $userproject->project_id = $project->id;
+
+            $userproject->save();
+
+            $result = [
+                'status' => 200,
+                'message' => 'Product Added Successfully',
+                'project' => $project,
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+
+    public function updateProject(Request $request)
+    {
+        $project = Project::where('id', $request->id)->first();
+        try {
+            $project->project_name = request('project_name');
+            $project->client_name = request('client_name');
+            $project->client_contact_number = request('client_contact_number');
+            $project->client_email = request('client_email');
+            $project->billable = request('billable');
+            $project->status = request('status');
+            $project->project_color_code = request('project_color_code');
+
+            $project->save();
+
+            $result = [
+                'status' => 200,
+                'message' => 'Product Updated Successfully',
+                'project' => $project,
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
     }
 }

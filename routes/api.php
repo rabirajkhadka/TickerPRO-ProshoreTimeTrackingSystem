@@ -44,7 +44,7 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
     Route::patch('update', 'updateMe');
 });
 
-
-
-
-
+Route::controller(AdminController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::post('add-project', 'addProject');
+    Route::post('update-project/{id}', 'updateProject');
+});
