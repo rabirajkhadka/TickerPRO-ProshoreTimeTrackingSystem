@@ -45,12 +45,12 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
     Route::patch('update', 'updateMe');
 });
 
-// <<<<<<< HEAD
+
 Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
     Route::post('add-project', 'addActivity');
     Route::post('update-project/{id}', 'updateActivity');
 });
-// =======
+
 //Time Logging Routes
 Route::controller(TimeLogController::class)->prefix('log')->middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::post('add-entry', 'addActivity');
@@ -60,4 +60,4 @@ Route::controller(TimeLogController::class)->prefix('log')->middleware(['auth:sa
 
 
 
-// >>>>>>> 16ea0f574534d4d854d3eb605f6d4d045f81962e
+
