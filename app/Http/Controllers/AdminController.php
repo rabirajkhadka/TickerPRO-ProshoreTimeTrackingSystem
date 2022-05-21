@@ -9,8 +9,6 @@ use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Project;
-use App\Models\UserProject;
 use Mockery\Exception;
 
 class AdminController extends Controller
@@ -67,10 +65,10 @@ class AdminController extends Controller
 
     }
 
-    public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
+    public function inviteOthers(MemberInviteRequest $request)
     {
         $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
-        $status = $inviteService->invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
+        $status = InviteService::invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
 
         if (!$status) {
             return response()->json([
@@ -83,90 +81,4 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function addProject(Request $request)
-    {
-        try {
-            $project = new Project;
-            $project->project_name = request('project_name');
-            $project->client_name = request('client_name');
-            $project->client_contact_number = request('client_contact_number');
-            $project->client_email = request('client_email');
-            $project->billable = request('billable');
-            $project->status = request('status');
-            $project->project_color_code = request('project_color_code');
-
-            $project->save();
-
-            $id = auth()->user()->id;
-            $userproject = new UserProject;
-            $userproject->user_id = $id;
-            $userproject->project_id = $project->id;
-
-            $userproject->save();
-
-            $result = [
-                'status' => 200,
-                'message' => 'Product Added Successfully',
-                'project' => $project,
-            ];
-        } catch (Exception $e) {
-            $result = [
-                'status' => 500,
-                'error' => $e->getMessage()
-            ];
-        }
-        return response()->json($result, $result['status']);
-    }
-
-    public function updateProject(Request $request)
-    {
-        $project = Project::where('id', $request->id)->first();
-        try {
-            $project->project_name = request('project_name');
-            $project->client_name = request('client_name');
-            $project->client_contact_number = request('client_contact_number');
-            $project->client_email = request('client_email');
-            $project->billable = request('billable');
-            $project->status = request('status');
-            $project->project_color_code = request('project_color_code');
-
-            $project->save();
-
-            $result = [
-                'status' => 200,
-                'message' => 'Product Updated Successfully',
-                'project' => $project,
-            ];
-        } catch (Exception $e) {
-            $result = [
-                'status' => 500,
-                'error' => $e->getMessage()
-            ];
-        }
-        return response()->json($result, $result['status']);
-    }
-
-    public function updateUserStatus(Request $request)
-    {
-        $user = User::where('id', $request->id)->first();
-        try {
-            if (!$user->activeStatus) {
-                $user->activeStatus = true;
-            } else {
-                $user->activeStatus = false;
-            }
-            $user->save();
-            $result = [
-                'status' => 200,
-                'message' => 'User status updated',
-                'user' => $user,
-            ];
-        } catch (Exception $e) {
-            $result = [
-                'status' => 500,
-                'error' => $e->getMessage()
-            ];
-        }
-        return response()->json($result, $result['status']);
-    }
 }

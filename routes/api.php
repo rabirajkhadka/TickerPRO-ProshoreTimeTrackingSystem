@@ -7,7 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
-
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,9 +54,9 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
     Route::patch('update', 'updateMe');
 });
 
-Route::controller(AdminController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
-    Route::post('add-project', 'addProject');
-    Route::post('update-project/{id}', 'updateProject');
+Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::post('add-project', 'addActivity');
+    Route::post('update-project/{id}', 'updateActivity');
 });
 
 //Time Logging Routes
