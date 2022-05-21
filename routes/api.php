@@ -37,6 +37,7 @@ Route::controller(AuthController::class)->prefix('user')->group(function () {
 Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
     Route::get('all-users', 'viewAllUsers');
     Route::post('change-roles', 'assignRoles');
+    Route::post('view-user-roles/{id}', 'viewUserRole');
     Route::post('delete-user/{id}', 'deleteUser');
     Route::post('invite', 'inviteOthers');
     Route::post('update-status/{id}', 'updateUserStatus');

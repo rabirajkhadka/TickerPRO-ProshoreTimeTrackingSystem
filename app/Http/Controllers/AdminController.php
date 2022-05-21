@@ -39,6 +39,17 @@ class AdminController extends Controller
 
     }
 
+    public function viewUserRole(Request $request)
+    {
+        $role = User::find($request->id)->roles;
+
+        return response()->json([
+            'total' => count($role),
+            'users' => $role
+        ], 200);
+
+    }
+
     public function assignRoles(Request $request)
     {
         $rules = [
