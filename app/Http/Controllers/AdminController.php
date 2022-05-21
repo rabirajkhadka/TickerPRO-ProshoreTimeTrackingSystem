@@ -92,4 +92,27 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function updateUserStatus(Request $request)
+    {
+        $user = User::where('id', $request->id)->first();
+        try {
+            if (!$user->activeStatus) {
+                $user->activeStatus = true;
+            } else {
+                $user->activeStatus = false;
+            }
+            $user->save();
+            $result = [
+                'status' => 200,
+                'message' => 'User status updated'
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+
 }
