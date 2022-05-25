@@ -11,9 +11,7 @@ class Project extends Model
 
     protected $fillable = [
         'project_name',
-        'client_name',
-        'client_contact_number',
-        'client_email',
+        'client_id',
         'billable',
         'status',
         'project_color_code',
