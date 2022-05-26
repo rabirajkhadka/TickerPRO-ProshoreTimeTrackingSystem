@@ -28,4 +28,18 @@ class TimeLogService
         return User::find($id)->viewLogs->toArray();
     }
 
+    public static function editTimeLog($request) : bool
+    {
+        $validated = $request->validated();
+        // after validation find the time log
+        $log = TimeLog::where('id', $request->id)->first();
+        if (!$log) return false;
+
+        // if time log exists then update the details
+        $log->forceFill($validated);
+        $log->save();
+
+        return true;
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddTimeLogRequest;
+use App\Http\Requests\EditTimeLogRequest;
 use App\Services\TimeLogService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
@@ -24,7 +25,7 @@ class TimeLogController extends Controller
         ]);
     }
 
-    public function viewLogs(Request $request)
+    public function viewLogs(Request $request): JsonResponse
     {
         //validate if user id passed is actually do exist
         $status = UserService::checkUserIdExists($request->id);
@@ -46,5 +47,19 @@ class TimeLogController extends Controller
             'total' => count($logs),
             'logs' => $logs
         ]);
+    }
+
+    public function editActivity(EditTimeLogRequest $request): JsonResponse
+    {
+        $status = TimeLogService::editTimeLog($request);
+        if (!$status) {
+            return response()->json([
+                'message' => 'Time log with this id does not exist'
+            ], 400);
+        }
+        return response()->json([
+            'message' => 'Time log edited successfully'
+        ]);
+
     }
 }
