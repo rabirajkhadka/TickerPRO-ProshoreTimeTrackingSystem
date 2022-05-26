@@ -38,4 +38,63 @@ class ProjectController extends Controller
             'message' => 'Project updated successfully'
         ]);
     }
+
+    public function updateProjectStatus(Request $request)
+    {
+        $project = Project::where('id', $request->id)->first();
+        try {
+            if(!$project->status) {
+                $project->status = true;
+            } else {
+                $project->status = false;
+            }
+            $project->save();
+            $result = [
+                'status' => 200,
+                'message' => 'Project status updated',
+                'project' => $project,
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+
+    public function updateBillableStatus(Request $request)
+    {
+        $project = Project::where('id', $request->id)->first();
+        try {
+            if(!$project->billable) {
+                $project->billable = true;
+            } else {
+                $project->billable = false;
+            }
+            $project->save();
+            $result = [
+                'status' => 200,
+                'message' => 'Project billable status updated',
+                'project' => $project,
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+
+    public function viewAllProjects()
+    {
+        $projects = Project::all();
+
+        return response()->json([
+            'total' => count($projects),
+            'users' => $projects
+        ], 200);
+
+    }
 }

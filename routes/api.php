@@ -58,6 +58,12 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
 Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
     Route::post('add-project', 'addActivity');
     Route::post('update-project/{id}', 'updateActivity');
+    Route::post('update-status/{id}', 'updateProjectStatus');
+    Route::post('update-billable-status/{id}', 'updateBillableStatus');
+});
+
+Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status'])->group(function () {
+    Route::get('view-project', 'viewAllProjects');
 });
 
 //Time Logging Routes
