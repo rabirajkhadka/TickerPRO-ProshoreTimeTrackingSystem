@@ -63,4 +63,5 @@ Route::controller(ProjectController::class)->prefix('project')->middleware(['aut
 //Time Logging Routes
 Route::controller(TimeLogController::class)->prefix('log')->middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::post('add-entry', 'addActivity');
+    Route::get('view-logs/{id}', 'viewLogs');
 });

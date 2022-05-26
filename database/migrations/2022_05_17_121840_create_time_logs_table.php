@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->integer('project_id')->unsigned();
             $table->boolean('billable')->default(1);
             $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->dateTime('end_time')->nullable();
             $table->timestamps();
         });
     }

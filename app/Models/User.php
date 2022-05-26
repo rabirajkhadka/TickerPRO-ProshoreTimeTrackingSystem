@@ -57,6 +57,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'user_projects');
     }
 
+    public function viewLogs() {
+        return $this->hasMany(TimeLog::class);
+    }
+
     public function setPasswordAttribute($password){
         if(trim($password) === '') return;
         $this->attributes['password'] =  Hash::make($password);
