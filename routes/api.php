@@ -71,4 +71,6 @@ Route::controller(TimeLogController::class)->prefix('log')->middleware(['auth:sa
     Route::post('add-entry', 'addActivity');
     Route::get('view-logs/{id}', 'viewLogs');
     Route::post('edit-entry/{id}', 'editActivity');
+    Route::get('remove/{id}', 'removeActivity');
 });
+

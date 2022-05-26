@@ -28,7 +28,7 @@ class TimeLogService
         return User::find($id)->viewLogs->toArray();
     }
 
-    public static function editTimeLog($request) : bool
+    public static function editTimeLog($request): bool
     {
         $validated = $request->validated();
         // after validation find the time log
@@ -39,6 +39,15 @@ class TimeLogService
         $log->forceFill($validated);
         $log->save();
 
+        return true;
+    }
+
+    public static function removeLog($request): bool
+    {
+        $log = TimeLog::where('id', $request->id)->first();
+        if (!$log) return false;
+        //if log exists then delete
+        $log->delete();
         return true;
     }
 

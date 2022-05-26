@@ -62,4 +62,17 @@ class TimeLogController extends Controller
         ]);
 
     }
+
+    public function removeActivity(Request $request): JsonResponse
+    {
+        $status = TimeLogService::removeLog($request);
+        if (!$status) {
+            return response()->json([
+                'message' => 'Time log with this id does not exist'
+            ], 400);
+        }
+        return response()->json([
+            'message' => 'Time log deleted successfully'
+        ]);
+    }
 }
