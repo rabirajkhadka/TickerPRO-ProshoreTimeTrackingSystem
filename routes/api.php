@@ -59,6 +59,9 @@ Route::controller(ProjectController::class)->prefix('project')->middleware(['aut
     Route::post('add-project', 'addActivity');
     Route::post('update-project/{id}', 'updateActivity');
     Route::post('update-status/{id}', 'updateProjectStatus');
+});
+
+Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin', 'project.status'])->group(function () {
     Route::post('update-billable-status/{id}', 'updateBillableStatus');
 });
 
