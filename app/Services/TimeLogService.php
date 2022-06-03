@@ -7,10 +7,10 @@ use App\Models\User;
 
 class TimeLogService
 {
-    public static function addTimeLog($request): bool
+    public static function addTimeLog($request): object
     {
         $validated = $request->validated();
-        $log = TimeLog::create(
+        return TimeLog::create(
             [
                 'activity_name' => $validated['activity_name'],
                 'user_id' => $validated['user_id'],
@@ -19,8 +19,6 @@ class TimeLogService
                 'start_time' => $validated['start_time'],
             ]
         );
-        if (!is_object($log)) return false;
-        return true;
     }
 
     public static function viewTimeLogs($id)
