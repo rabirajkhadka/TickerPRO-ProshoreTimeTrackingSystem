@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,5 +76,10 @@ Route::controller(TimeLogController::class)->prefix('log')->middleware(['auth:sa
     Route::get('view-logs/{id}', 'viewLogs');
     Route::post('edit-entry/{id}', 'editActivity');
     Route::get('remove/{id}', 'removeActivity');
+});
+
+Route::controller(ClientController::class)->prefix('client')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::post('add-client', 'addActivity');
+    Route::get('view-client', 'viewAllClients');
 });
 
