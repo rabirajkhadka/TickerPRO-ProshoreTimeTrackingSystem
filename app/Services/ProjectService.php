@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Project;
 use App\Models\UserProject;
 
@@ -44,6 +43,15 @@ class ProjectService
         $project->save();
 
         if (!is_object($project)) return false;
+        return true;
+    }
+
+    public static function checkProjectIdExists($id)
+    {
+        $user = Project::where('id', $id)->first();
+
+        if (!$user) return false;
+
         return true;
     }
 }

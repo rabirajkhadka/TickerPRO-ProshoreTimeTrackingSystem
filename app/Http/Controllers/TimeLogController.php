@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddTimeLogRequest;
 use App\Http\Requests\EditTimeLogRequest;
+use App\Services\ProjectService;
 use App\Services\TimeLogService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +15,11 @@ class TimeLogController extends Controller
 {
     public function addActivity(AddTimeLogRequest $request): JsonResponse
     {
+        if (!ProjectService::checkProjectIdExists($request['project_id']) || !UserService::checkUserIdExists($request['user_id'])) {
+            return response()->json([
+                'message' => 'Project Id or User Id does not exist'
+            ], 400);
+        }
         $log = TimeLogService::addTimeLog($request);
         if (!is_object($log)) {
             return response()->json([
@@ -52,6 +58,11 @@ class TimeLogController extends Controller
 
     public function editActivity(EditTimeLogRequest $request): JsonResponse
     {
+        if (!ProjectService::checkProjectIdExists($request['project_id']) || !UserService::checkUserIdExists($request['user_id'])) {
+            return response()->json([
+                'message' => 'Project Id or User Id does not exist'
+            ], 400);
+        }
         $status = TimeLogService::editTimeLog($request);
         if (!$status) {
             return response()->json([
