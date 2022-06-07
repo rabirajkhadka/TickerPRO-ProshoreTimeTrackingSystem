@@ -39,6 +39,17 @@ class AdminController extends Controller
 
     }
 
+    public function viewUserRole(Request $request)
+    {
+        $role = User::find($request->id)->roles;
+
+        return response()->json([
+            'total' => count($role),
+            'users' => $role
+        ], 200);
+
+    }
+
     public function assignRoles(Request $request)
     {
         $rules = [
@@ -85,7 +96,7 @@ class AdminController extends Controller
     {
         $user = User::where('id', $request->id)->first();
         try {
-            if(!$user->activeStatus) {
+            if (!$user->activeStatus) {
                 $user->activeStatus = true;
             } else {
                 $user->activeStatus = false;
@@ -93,8 +104,7 @@ class AdminController extends Controller
             $user->save();
             $result = [
                 'status' => 200,
-                'message' => 'User status updated',
-                'user' => $user,
+                'message' => 'User status updated'
             ];
         } catch (Exception $e) {
             $result = [
@@ -104,4 +114,5 @@ class AdminController extends Controller
         }
         return response()->json($result, $result['status']);
     }
+
 }
