@@ -17,7 +17,7 @@ return [
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
-        'http://localhost:3000',
+        'https://frontendbootcamp.proshore.eu','http://localhost:3000',
         Sanctum::currentApplicationUrlWithPort()
     ))),
 
