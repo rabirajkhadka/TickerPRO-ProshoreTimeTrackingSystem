@@ -111,7 +111,7 @@
                             </svg>
 
                             <a href="https://github.com/sponsors/taylorotwell" class="ml-1 underline">
-                                Sponser trackre
+                                Sponser tracker
                             </a>
                         </div>
                     </div>
