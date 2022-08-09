@@ -2,10 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\AuthController;
-use \App\Http\Controllers\AdminController;
-use \App\Http\Controllers\UserController;
-use \App\Models\User;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TimeLogController;
+use App\Http\Controllers\InviteController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,8 +38,17 @@ Route::controller(AuthController::class)->prefix('user')->group(function () {
 Route::controller(AdminController::class)->prefix('admin')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
     Route::get('all-users', 'viewAllUsers');
     Route::post('change-roles', 'assignRoles');
+    Route::post('view-user-roles/{id}', 'viewUserRole');
     Route::post('delete-user/{id}', 'deleteUser');
     Route::post('invite', 'inviteOthers');
+    Route::post('update-status/{id}', 'updateUserStatus');
+});
+
+// Invite related actions
+Route::controller(InviteController::class)->prefix('invite')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::get('invited-users', 'listInvitedUsers');
+    Route::post('resend', 'reInvite');
+    Route::get('revoke/{id}', 'revoke');
 });
 
 Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanctum', 'user.status'])->group(function () {
@@ -44,7 +56,30 @@ Route::controller(UserController::class)->prefix('user')->middleware(['auth:sanc
     Route::patch('update', 'updateMe');
 });
 
+Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::post('add-project', 'addActivity');
+    Route::post('update-project/{id}', 'updateActivity');
+    Route::post('update-status/{id}', 'updateProjectStatus');
+});
 
+Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status', 'isAdmin', 'project.status'])->group(function () {
+    Route::post('update-billable-status/{id}', 'updateBillableStatus');
+});
 
+Route::controller(ProjectController::class)->prefix('project')->middleware(['auth:sanctum', 'user.status'])->group(function () {
+    Route::get('view-project', 'viewAllProjects');
+});
 
+//Time Logging Routes
+Route::controller(TimeLogController::class)->prefix('log')->middleware(['auth:sanctum', 'user.status'])->group(function () {
+    Route::post('add-entry', 'addActivity');
+    Route::get('view-logs/{id}', 'viewLogs');
+    Route::post('edit-entry/{id}', 'editActivity');
+    Route::get('remove/{id}', 'removeActivity');
+});
+
+Route::controller(ClientController::class)->prefix('client')->middleware(['auth:sanctum', 'user.status', 'isAdmin'])->group(function () {
+    Route::post('add-client', 'addActivity');
+    Route::get('view-client', 'viewAllClients');
+});
 

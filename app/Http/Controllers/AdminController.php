@@ -39,6 +39,17 @@ class AdminController extends Controller
 
     }
 
+    public function viewUserRole(Request $request)
+    {
+        $role = User::find($request->id)->roles;
+
+        return response()->json([
+            'total' => count($role),
+            'users' => $role
+        ], 200);
+
+    }
+
     public function assignRoles(Request $request)
     {
         $rules = [
@@ -65,10 +76,10 @@ class AdminController extends Controller
 
     }
 
-    public function inviteOthers(MemberInviteRequest $request)
+    public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
     {
         $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
-        $status = InviteService::invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
+        $status = $inviteService->invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
 
         if (!$status) {
             return response()->json([
@@ -80,4 +91,28 @@ class AdminController extends Controller
             'message' => 'User invited successfully'
         ], 200);
     }
+
+    public function updateUserStatus(Request $request)
+    {
+        $user = User::where('id', $request->id)->first();
+        try {
+            if (!$user->activeStatus) {
+                $user->activeStatus = true;
+            } else {
+                $user->activeStatus = false;
+            }
+            $user->save();
+            $result = [
+                'status' => 200,
+                'message' => 'User status updated'
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+
 }

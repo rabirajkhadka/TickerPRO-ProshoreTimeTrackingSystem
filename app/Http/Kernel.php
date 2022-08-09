@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         'user.status' => \App\Http\Middleware\CheckUserActiveStatus::class,
+        'project.status' => \App\Http\Middleware\CheckProjectStatus::class,
     ];
 }

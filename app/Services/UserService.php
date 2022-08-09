@@ -82,4 +82,13 @@ class UserService
         if ($status === Password::INVALID_TOKEN) return false;
         return true;
     }
+
+    public static function checkUserIdExists($id)
+    {
+        $user = User::where('id', $id)->first();
+
+        if (!$user) return false;
+
+        return true;
+    }
 }

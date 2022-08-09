@@ -7,19 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class InviteCreated extends Mailable
+class ReInvite extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
+     *
      * @return void
      */
     public function __construct($url)
     {
-        //
         $this->url = $url;
-
     }
 
     /**
@@ -29,7 +28,7 @@ class InviteCreated extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.InviteCreated')->with([
+        return $this->markdown('emails.ReInvite')->with([
             'url' => $this->url,
         ]);
     }
