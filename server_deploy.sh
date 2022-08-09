@@ -3,7 +3,7 @@ set -e
  
 echo "Deploying application ..."
   # Update codebase
-    git pull origin dev
+    git pull origin main
  
     # Install dependencies based on lock file
     composer install --no-interaction --prefer-dist --optimize-autoloader
