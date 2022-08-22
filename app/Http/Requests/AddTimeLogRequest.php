@@ -29,6 +29,7 @@ class AddTimeLogRequest extends FormRequest
             'project_id' => 'required | integer',
             'billable' => 'required | boolean',
             'start_time' => 'required | date_format:Y-m-d H:i:s',
+            'end_time' => 'required | date_format:Y-m-d H:i:s',
         ];
     }
 

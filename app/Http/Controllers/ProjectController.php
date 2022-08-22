@@ -14,7 +14,7 @@ use Illuminate\Http\JsonResponse;
 class ProjectController extends Controller
 {
     public function addActivity(ProjectRequest $request): JsonResponse
-    {  
+    {    
         $result = ProjectService::addProject($request);
         if (!$result) {
             return response()->json([

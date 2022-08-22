@@ -4,21 +4,15 @@ namespace App\Services;
 
 use App\Models\TimeLog;
 use App\Models\User;
+use App\Http\Requests\AddTimeLogRequest;
+use App\Http\Requests\EditTimeLogRequest;
 
 class TimeLogService
 {
-    public static function addTimeLog($request): object
+    public static function addTimeLog(AddTimeLogRequest $request): object
     {
         $validated = $request->validated();
-        return TimeLog::create(
-            [
-                'activity_name' => $validated['activity_name'],
-                'user_id' => $validated['user_id'],
-                'project_id' => $validated['project_id'],
-                'billable' => $validated['billable'],
-                'start_time' => $validated['start_time'],
-            ]
-        );
+        return TimeLog::create($validated);
     }
 
     public static function viewTimeLogs($id)
@@ -26,15 +20,15 @@ class TimeLogService
         return User::find($id)->viewLogs->toArray();
     }
 
-    public static function editTimeLog($request): bool
+    public static function editTimeLog(EditTimeLogRequest $request): bool
     {
-        $validated = $request->validated();
+        // $validated = $request->validated();
         // after validation find the time log
         $log = TimeLog::where('id', $request->id)->first();
         if (!$log) return false;
 
         // if time log exists then update the details
-        $log->forceFill($validated);
+        $log->forceFill($request->all());
         $log->save();
 
         return true;
