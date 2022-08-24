@@ -26,10 +26,10 @@ class AddTimeLogRequest extends FormRequest
         return [
             'activity_name' => 'required',
             'user_id' => 'required | integer',
-            'project_id' => 'required | integer',
+            'project_id' => 'required | integer|exists:projects,id',
             'billable' => 'required | boolean',
             'start_time' => 'required | date_format:Y-m-d H:i:s',
-            'end_time' => 'required | date_format:Y-m-d H:i:s',
+            'end_time' => 'required | date_format:Y-m-d H:i:s|after:start_time',
         ];
     }
 

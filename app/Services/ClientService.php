@@ -10,8 +10,7 @@ class ClientService
 {
     public static function addProject(ClientRequest $request): bool
     {
-        $validated = $request->validated();
-        $log = Client::create($validated);
+        $log = Client::create($request->validated());
 
         if (!is_object($log)) return false;
         return true;

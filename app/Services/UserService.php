@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Mockery\Exception;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\PasswordResetRequest;
 
 
 class UserService
@@ -75,9 +76,9 @@ class UserService
         return true;
     }
 
-    public static function resetPassword(PasswordresetRequest $request): bool
+    public static function resetPassword(PasswordResetRequest $request): bool
     {
-        $validated = $request->safe()->validated();
+        $validated = $request->safe()->all();
         $status = Password::reset($validated, function ($user, $password) {
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();

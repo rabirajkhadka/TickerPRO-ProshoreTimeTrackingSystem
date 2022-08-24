@@ -11,8 +11,7 @@ class ProjectService
 {
     public static function addProject(ProjectRequest $request): bool
     {
-        $validated = $request->validated();
-        $log = Project::create($validated);
+        $log = Project::create($request->validated());
 
         $id = auth()->user()->id;
         $userproject = new UserProject;
