@@ -14,7 +14,7 @@ use Illuminate\Http\JsonResponse;
 class ProjectController extends Controller
 {
     public function addActivity(ProjectRequest $request): JsonResponse
-    {  
+    {    
         $result = ProjectService::addProject($request);
         if (!$result) {
             return response()->json([
@@ -39,7 +39,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateProjectStatus(Request $request)
+    public function updateProjectStatus(ProjectRequest $request)
     {
         $project = Project::where('id', $request->id)->first();
         try {
