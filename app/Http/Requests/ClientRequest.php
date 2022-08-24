@@ -26,7 +26,7 @@ class ClientRequest extends FormRequest
         return [
             'client_name' => 'required',
             'client_number' => 'required',
-            'client_email' => 'required',
+            'client_email' => 'required | email|unique:clients,client_email',
             'status' => 'required | boolean',
         ];
     }

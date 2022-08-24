@@ -30,7 +30,7 @@ class AdminController extends Controller
 
     public function viewAllUsers()
     {
-        $users = User::all();
+        $users = User::paginate(50);
 
         return response()->json([
             'total' => count($users),
