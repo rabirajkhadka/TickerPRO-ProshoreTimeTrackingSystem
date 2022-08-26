@@ -9,8 +9,7 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-    ];
+    protected $fillable = ['role'];
 
     protected $hidden = [
         'created_at',
@@ -20,5 +19,13 @@ class Role extends Model
     public function scopeExclude($query, $role)
     {
         return $query->where('role', '!=', $role);
+    }
+
+    public function users() {
+        return $this->belongsToMany(User::class, 'user_roles', 'role_id', 'user_id');
+    }
+
+    public function inviteTokens() {
+        return $this->hasMany(InviteToken::class);
     }
 }

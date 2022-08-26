@@ -16,4 +16,16 @@ class Project extends Model
         'status',
         'project_color_code',
     ];
+
+    public function client() {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function timeLogs() {
+        return $this->hasMany(TimeLog::class);
+    }
+
+    public function users() {
+        return $this->belongsToMany(User::class, 'user_projects', 'project_id', 'user_id');
+    }
 }

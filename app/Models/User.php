@@ -47,17 +47,17 @@ class User extends Authenticatable
      * Get the role that belongs to the user
      */
     public function roles(){
-        return $this->belongsToMany(Role::class, 'user_roles');
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
 
     /*
      * Get the project that belongs to the user
      */
     public function projects(){
-        return $this->belongsToMany(Role::class, 'user_projects');
+        return $this->belongsToMany(Project::class, 'user_projects', 'user_id', 'project_id');
     }
 
-    public function viewLogs() {
+    public function timeLogs() {
         return $this->hasMany(TimeLog::class);
     }
 

@@ -28,6 +28,10 @@ class InviteToken extends Model
 
     public function setTokenAttribute($token)
     {
-        $this->attributes['token'] = Hash::make($token);
+        return $this->attributes['token'] = Hash::make($token);
+    }
+
+    public function role() {
+        return $this->belongsTo(Role::class);
     }
 }

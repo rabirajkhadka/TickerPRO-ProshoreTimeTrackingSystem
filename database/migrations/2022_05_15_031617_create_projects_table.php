@@ -16,7 +16,12 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->string('project_name');
-            $table->integer('client_id');
+            $table->unsignedBigInteger('client_id');
+            $table->foreign('client_id')
+                ->references('id')
+                ->on('clients')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->boolean('billable');
             $table->boolean('status')->default(true);
             $table->string('project_color_code');
