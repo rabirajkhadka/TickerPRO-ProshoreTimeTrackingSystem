@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class InviteToken extends Model
 {
@@ -31,7 +32,8 @@ class InviteToken extends Model
         return $this->attributes['token'] = Hash::make($token);
     }
 
-    public function role() {
+    public function role(): BelongsTo
+    {
         return $this->belongsTo(Role::class);
     }
 }
