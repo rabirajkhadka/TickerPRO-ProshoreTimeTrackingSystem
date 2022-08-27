@@ -17,12 +17,10 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique()->index();
             $table->string('token')->unique()->nullable();
-            $table->unsignedBigInteger('role_id');
-            $table->foreign('role_id')
-                ->references('id')
-                ->on('roles')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->foreignId('role_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->boolean('inviteAccepted')->default(false);
             $table->boolean('resentEmail')->default(false);
             $table->integer('invitedUserId')->unsigned();

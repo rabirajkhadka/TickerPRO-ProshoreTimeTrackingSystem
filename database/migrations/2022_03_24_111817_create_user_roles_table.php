@@ -15,17 +15,15 @@ return new class extends Migration
     {
         Schema::create('user_roles', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->unsignedBigInteger('role_id')->default(1);
-            $table->foreign('role_id')
-                ->references('id')
-                ->on('roles')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->foreignId('role_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

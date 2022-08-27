@@ -15,19 +15,14 @@ return new class extends Migration {
         Schema::create('time_logs', function (Blueprint $table) {
             $table->id();
             $table->string('activity_name');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-            $table->unsignedBigInteger('project_id');
-            $table->foreign('project_id')
-                ->references('id')
-                ->on('projects')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreignId('project_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->boolean('billable')->default(1);
             $table->dateTime('start_time');
             $table->dateTime('end_time')->nullable();
