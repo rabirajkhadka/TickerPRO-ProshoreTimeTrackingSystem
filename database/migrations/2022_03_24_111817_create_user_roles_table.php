@@ -14,16 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('user_roles', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreignId('user_id')
+            $table->id();
+            $table->foreignId('user_id')->nullable()
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->unsignedBigInteger('role_id')->default(1);
-            $table->foreignId('role_id')
+            $table->foreignId('role_id')->default(1)
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->timestamps();
         });
     }
 
