@@ -22,12 +22,12 @@ class Project extends Model
 
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
     public function timeLogs(): HasMany
     {
-        return $this->hasMany(TimeLog::class);
+        return $this->hasMany(TimeLog::class, 'project_id',);
     }
 
     public function users(): BelongsToMany 

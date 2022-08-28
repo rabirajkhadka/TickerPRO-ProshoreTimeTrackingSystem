@@ -30,6 +30,6 @@ class Role extends Model
 
     public function inviteTokens(): HasMany 
     {
-        return $this->hasMany(InviteToken::class);
+        return $this->hasMany(InviteToken::class, 'role_id');
     }
 }
