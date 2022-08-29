@@ -16,7 +16,10 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->string('project_name');
-            $table->integer('client_id');
+            $table->foreignId('client_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->boolean('billable');
             $table->boolean('status')->default(true);
             $table->string('project_color_code');
