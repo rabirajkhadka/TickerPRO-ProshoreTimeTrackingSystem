@@ -23,7 +23,7 @@ class TimeLogService
 
     public static function viewTimeLogs($id)
     {
-        return User::find($id)->viewLogs->toArray();
+        return User::find($id)->timeLogs->toArray();
     }
 
     public static function editTimeLog($request): bool
