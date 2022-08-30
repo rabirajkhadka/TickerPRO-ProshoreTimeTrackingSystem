@@ -10,7 +10,6 @@ use Mockery\Exception;
 use App\Services\ProjectService;
 use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\Support\Jsonable;
 
 class ProjectController extends Controller
 {
@@ -88,14 +87,13 @@ class ProjectController extends Controller
         return response()->json($result, $result['status']);
     }
 
-    public function viewAllProjects(Request $request)
+    public function viewAllProjects()
     {
-        $size = $request->size;
-        $projects = Project::paginate($size??50);
+        $projects = Project::all();
         
         return response()->json([
             'total' => count($projects),
-            'users' => $projects,
+            'projects' => $projects
             
         ], 200);
         
