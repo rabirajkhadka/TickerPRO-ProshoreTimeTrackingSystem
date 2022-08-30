@@ -25,7 +25,7 @@ class MemberInviteRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required | email|unique:users',
+            'email' => 'required | email|unique:invite_tokens',
             'role_id' => 'required | integer',
             'user_id' => 'required | integer'
         ];

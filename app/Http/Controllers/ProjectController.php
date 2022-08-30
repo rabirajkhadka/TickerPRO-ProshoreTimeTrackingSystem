@@ -39,7 +39,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateProjectStatus(ProjectRequest $request)
+    public function updateProjectStatus(Request $request)
     {
         $project = Project::where('id', $request->id)->first();
         try {
