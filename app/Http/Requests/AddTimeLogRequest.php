@@ -29,7 +29,6 @@ class AddTimeLogRequest extends FormRequest
             'project_id' => 'required | integer|exists:projects,id',
             'billable' => 'required | boolean',
             'start_time' => 'required | date_format:Y-m-d H:i:s',
-            'end_time' => 'required | date_format:Y-m-d H:i:s|after:start_time',
         ];
     }
 
@@ -45,7 +44,6 @@ class AddTimeLogRequest extends FormRequest
             'project_id.required' => 'Please enter a valid project id',
             'billable.required' => 'Please enter if the activity is billable or not',
             'start_time.required' => 'Please enter starting time of the activity',
-            'end_time.required' => 'Please enter ending time of the activity',
         ];
     }
 }

@@ -39,7 +39,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateProjectStatus(ProjectRequest $request)
+    public function updateProjectStatus(Request $request)
     {
         $project = Project::where('id', $request->id)->first();
         try {
@@ -90,11 +90,12 @@ class ProjectController extends Controller
     public function viewAllProjects()
     {
         $projects = Project::all();
-
+        
         return response()->json([
             'total' => count($projects),
-            'users' => $projects
+            'projects' => $projects
+            
         ], 200);
-
+        
     }
 }
