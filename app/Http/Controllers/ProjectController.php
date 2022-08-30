@@ -10,6 +10,7 @@ use Mockery\Exception;
 use App\Services\ProjectService;
 use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Support\Jsonable;
 
 class ProjectController extends Controller
 {
@@ -39,7 +40,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateProjectStatus(ProjectRequest $request)
+    public function updateProjectStatus(Request $request)
     {
         $project = Project::where('id', $request->id)->first();
         try {
@@ -87,14 +88,16 @@ class ProjectController extends Controller
         return response()->json($result, $result['status']);
     }
 
-    public function viewAllProjects()
+    public function viewAllProjects(Request $request)
     {
-        $projects = Project::all();
-
+        $size = $request->size;
+        $projects = Project::paginate($size??50);
+        
         return response()->json([
             'total' => count($projects),
-            'users' => $projects
+            'users' => $projects,
+            
         ], 200);
-
+        
     }
 }
