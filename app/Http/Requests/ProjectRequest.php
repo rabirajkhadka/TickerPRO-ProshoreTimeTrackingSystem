@@ -25,7 +25,7 @@ class ProjectRequest extends FormRequest
     {
         return [
             'project_name' => 'required',
-            'client_id' => 'required | integer',
+            'client_id' => 'required | integer|exists:clients,id',
             'billable' => 'required | boolean',
             'status' => 'required | boolean',
             'project_color_code' => 'required',

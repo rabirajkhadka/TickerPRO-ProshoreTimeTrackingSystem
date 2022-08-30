@@ -25,8 +25,8 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'email | required',
-            'password' => 'min:6| confirmed',
+            'email' => 'required | email',
+            'password' => ['required','min:6','regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/','confirmed'],
             'token' => 'required'
         ];
     }

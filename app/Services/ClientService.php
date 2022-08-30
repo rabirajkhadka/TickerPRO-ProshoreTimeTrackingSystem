@@ -4,20 +4,13 @@ namespace App\Services;
 
 use App\Models\Project;
 use App\Models\Client;
+use App\Http\Requests\ClientRequest;
 
 class ClientService
 {
-    public static function addProject($request): bool
+    public static function addProject(ClientRequest $request): bool
     {
-        $validated = $request->validated();
-        $log = Client::create(
-            [
-                'client_name' => $validated['client_name'],
-                'client_number' => $validated['client_number'],
-                'client_email' => $validated['client_email'],
-                'status' => $validated['status'],
-            ]
-        );
+        $log = Client::create($request->validated());
 
         if (!is_object($log)) return false;
         return true;
