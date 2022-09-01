@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -46,19 +48,21 @@ class User extends Authenticatable
     /*
      * Get the role that belongs to the user
      */
-    public function roles(){
-        return $this->belongsToMany(Role::class, 'user_roles');
+    public function roles(): BelongsToMany {
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
 
     /*
      * Get the project that belongs to the user
      */
-    public function projects(){
-        return $this->belongsToMany(Role::class, 'user_projects');
+    public function projects(): BelongsToMany 
+    {
+        return $this->belongsToMany(Project::class, 'user_projects', 'user_id', 'project_id');
     }
 
-    public function viewLogs() {
-        return $this->hasMany(TimeLog::class);
+    public function timeLogs(): HasMany 
+    {
+        return $this->hasMany(TimeLog::class, 'user_id');
     }
 
     public function setPasswordAttribute($password){

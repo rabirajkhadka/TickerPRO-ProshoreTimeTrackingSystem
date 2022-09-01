@@ -22,7 +22,7 @@ class InviteService
     public function invite($name, $email, $role_id, $user_id): bool
     {
         $token = $this->generateToken();
-        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email;
+        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email . '&name=' . urlencode($name);
 
         $user = InviteToken::create([
             'name' => $name,
@@ -50,7 +50,7 @@ class InviteService
 
         //if user exists then generate new token and email
         $token = $this->generateToken();
-        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email;
+        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email . '&name=' . urlencode($user->name);
         $user->forceFill([
             'token' => $token
         ]);
@@ -64,9 +64,9 @@ class InviteService
     {
         $user = InviteToken::where('id', $request->id)->first();
         if (!$user) return false;
+
         //if users exists then delete their invite
         $user->delete();
         return true;
     }
 }
-
