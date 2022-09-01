@@ -9,7 +9,7 @@ use App\Services\TimeLogService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
+use App\Http\Resources\TimeLogResource;
 
 class TimeLogController extends Controller
 {
@@ -28,7 +28,7 @@ class TimeLogController extends Controller
         }
         return response()->json([
             'message' => 'Time log created successfully',
-            'log' => $log
+            'log' => TimeLogResource::collection($log)
         ]);
     }
 
@@ -52,7 +52,7 @@ class TimeLogController extends Controller
         return response()->json([
             'message' => 'Logs found',
             'total' => count($logs),
-            'logs' => $logs
+            'logs' => TimeLogResource::collection($logs)
         ]);
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
 use App\Models\User;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -49,7 +50,8 @@ class UserController extends Controller
     {
         $allRoles = UserService::roles();
         return response()->json([
-            'roles' => $allRoles
+            'UserRoles' => UserResource::collection($allRoles)
         ]);
+
     }
 }

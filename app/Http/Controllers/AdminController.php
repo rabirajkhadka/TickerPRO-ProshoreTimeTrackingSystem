@@ -10,6 +10,8 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Mockery\Exception;
+use App\Http\Resources\AdminResource;
+use App\Http\Resources\RoleResource;
 
 class AdminController extends Controller
 {
@@ -34,18 +36,18 @@ class AdminController extends Controller
 
         return response()->json([
             'total' => count($users),
-            'users' => $users
+            'users' => AdminResource::collection($users)
         ], 200);
-
+        
     }
 
     public function viewUserRole(Request $request)
     {
         $role = User::find($request->id)->roles;
-
+        
         return response()->json([
             'total' => count($role),
-            'users' => $role
+            'roles' => RoleResource::collection($role)
         ], 200);
 
     }

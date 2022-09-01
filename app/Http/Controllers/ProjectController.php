@@ -10,6 +10,8 @@ use Mockery\Exception;
 use App\Services\ProjectService;
 use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\ProjectResource;
+
 
 class ProjectController extends Controller
 {
@@ -93,8 +95,9 @@ class ProjectController extends Controller
 
         return response()->json([
             'total' => count($projects),
-            'users' => $projects
+            'users' => ProjectResource::collection($projects)
         ], 200);
+
 
     }
 }

@@ -6,16 +6,21 @@ use App\Http\Requests\CheckOnlyEmailRequest;
 use App\Services\InviteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Http\Resources\InviteResource;
 
 class InviteController extends Controller
 {
     public function listInvitedUsers(): JsonResponse
     {
         $users = InviteService::invitedList();
+        // return response()->json([
+        //     'total' => count($users),
+        //     'invitedUsers' => $users,
+
         return response()->json([
             'total' => count($users),
-            'invitedUsers' => $users
-        ]);
+            'invitedUsers' => InviteResource::collection($users),
+        ],200);
     }
 
     public function reInvite(CheckOnlyEmailRequest $request, InviteService $inviteService): JsonResponse
