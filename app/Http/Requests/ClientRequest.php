@@ -30,19 +30,4 @@ class ClientRequest extends FormRequest
             'status' => 'required | boolean',
         ];
     }
-
-    /*
-     * Custom message for validation
-     *
-     * @return array
-     * */
-    public function messages()
-    {
-        return [
-            'client_name.required' => 'Client name is required',
-            'client_number.required' => 'Client number is required',
-            'client_email.required' => 'Client email is required',
-            'status.required' => 'Please enter if the status is active or not',
-        ];
-    }
 }

@@ -33,19 +33,4 @@ class EditTimeLogRequest extends FormRequest
             'end_time' => 'required | date_format:Y-m-d H:i:s|after:start_time',
         ];
     }
-
-    /*
-     * Custom message for validation
-     *
-     * @return array
-     * */
-    public function messages()
-    {
-        return [
-            'project_id.required' => 'Please enter a valid project id',
-            'user_id.required' => 'Please enter a valid user id',
-            'start_time' => 'Please enter starting time of the activity',
-            'end_time' => 'Please enter ending time of the activity',
-        ];
-    }
 }
