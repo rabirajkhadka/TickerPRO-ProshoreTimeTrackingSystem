@@ -42,7 +42,9 @@ class TimeLogController extends Controller
             ], 400);
         }
         // if user exists then view their logs
-        $logs = TimeLogService::viewTimeLogs($request->id);
+
+        $size = $request->size;
+        $logs = TimeLogService::viewTimeLogs(size:(int)$size,id:(int)$request->id);
         if (empty($logs)) {
             return response()->json([
                 'message' => 'No logs found',
