@@ -30,19 +30,4 @@ class UserStoreRequest extends FormRequest
             'token' => 'required'
         ];
     }
-
-    /**
-     * Custom message for validation
-     *
-     * @return array
-     */
-    // will use later when needed
-//    public function messages()
-//    {
-//        return [
-//            'email.required' => 'Email is required!',
-//            'name.required' => 'Name is required!',
-//            'password.required' => 'Password is required!'
-//        ];
-//    }
 }

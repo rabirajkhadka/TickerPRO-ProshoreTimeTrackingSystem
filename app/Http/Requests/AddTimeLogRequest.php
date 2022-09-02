@@ -31,19 +31,4 @@ class AddTimeLogRequest extends FormRequest
             'start_time' => 'required | date_format:Y-m-d H:i:s',
         ];
     }
-
-    /*
-     * Custom message for validation
-     *
-     * @return array
-     * */
-    public function messages()
-    {
-        return [
-            'activity_name.required' => 'Activity name required',
-            'project_id.required' => 'Please enter a valid project id',
-            'billable.required' => 'Please enter if the activity is billable or not',
-            'start_time.required' => 'Please enter starting time of the activity',
-        ];
-    }
 }
