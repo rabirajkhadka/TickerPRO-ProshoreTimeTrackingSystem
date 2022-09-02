@@ -13,10 +13,7 @@ class InviteController extends Controller
     public function listInvitedUsers(): JsonResponse
     {
         $users = InviteService::invitedList();
-        // return response()->json([
-        //     'total' => count($users),
-        //     'invitedUsers' => $users,
-
+        
         return response()->json([
             'total' => count($users),
             'invitedUsers' => InviteResource::collection($users),
