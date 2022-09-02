@@ -17,7 +17,7 @@ class TimeLogService
 
     public static function viewTimeLogs(int $id, int $size)
     {
-        return User::find($id)->viewLogs()->paginate($size??50);
+        return User::find($id)->timeLogs()->paginate($size);
     }
 
     public static function editTimeLog(EditTimeLogRequest $request): bool

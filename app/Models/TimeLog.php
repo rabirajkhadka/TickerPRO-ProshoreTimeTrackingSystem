@@ -18,6 +18,7 @@ class TimeLog extends Model
         'start_time',
         'end_time',
     ];
+    protected $perPage = 50;
 
     public function user(): BelongsTo
     {

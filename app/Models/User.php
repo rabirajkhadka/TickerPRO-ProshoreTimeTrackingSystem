@@ -63,6 +63,7 @@ class User extends Authenticatable
     public function timeLogs(): HasMany 
     {
         return $this->hasMany(TimeLog::class, 'user_id');
+        
     }
 
     public function setPasswordAttribute($password){
