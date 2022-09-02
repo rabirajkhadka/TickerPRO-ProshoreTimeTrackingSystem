@@ -9,6 +9,7 @@ use Mockery\Exception;
 use App\Services\ClientService;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\ClientResource;
 
 class ClientController extends Controller
 {
@@ -31,8 +32,8 @@ class ClientController extends Controller
 
         return response()->json([
             'total' => count($projects),
-            'users' => $projects
+            'clients' => ClientResource::collection($projects)
         ], 200);
-
+    
     }
 }
