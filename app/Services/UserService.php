@@ -15,10 +15,14 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\PasswordResetRequest;
+
 
 class UserService
 {
-    public static function saveUserData($request)
+    public static function saveUserData(UserStorerequest $request)
     {
         $validated = $request->validated();
         $invitedUser = InviteToken::where('email', $validated['email'])->first();
@@ -37,7 +41,7 @@ class UserService
         return $result;
     }
 
-    public static function getUserWithCreds($request)
+    public static function getUserWithCreds(UserLoginRequest $request)
     {
         $validated = $request->validated();
         $user = User::where('email', $validated['email'])->first();
@@ -72,9 +76,9 @@ class UserService
         return true;
     }
 
-    public static function resetPassword($request): bool
+    public static function resetPassword(PasswordResetRequest $request): bool
     {
-        $validated = $request->safe()->only('email', 'password', 'password_confirmation', 'token');
+        $validated = $request->safe()->all();
         $status = Password::reset($validated, function ($user, $password) {
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();

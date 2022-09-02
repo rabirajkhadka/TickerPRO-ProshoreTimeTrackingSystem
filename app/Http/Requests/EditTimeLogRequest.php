@@ -23,28 +23,14 @@ class EditTimeLogRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'user_id' => 'required | integer',
-            'project_id' => 'required | integer',
-            'billable' => 'boolean',
-            'start_time' => 'date_format:Y-m-d H:i:s',
-            'end_time' => 'date_format:Y-m-d H:i:s',
-            'activity_name' => 'string'
-        ];
-    }
 
-    /*
-     * Custom message for validation
-     *
-     * @return array
-     * */
-    public function messages()
-    {
         return [
-            'project_id.required' => 'Please enter a valid project id',
-            'user_id.required' => 'Please enter a valid user id',
-            'start_time' => 'Please enter starting time of the activity',
-            'end_time' => 'Please enter ending time of the activity',
+            'activity_name' => 'required',
+            'user_id' => 'required | integer|exists:users,id',
+            'project_id' => 'required | integer|exists:projects,id',
+            'billable' => 'required | boolean',
+            'start_time' => 'required | date_format:Y-m-d H:i:s',
+            'end_time' => 'required | date_format:Y-m-d H:i:s|after:start_time',
         ];
     }
 }

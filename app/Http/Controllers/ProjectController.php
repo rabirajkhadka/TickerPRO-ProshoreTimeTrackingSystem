@@ -16,7 +16,7 @@ use App\Http\Resources\ProjectResource;
 class ProjectController extends Controller
 {
     public function addActivity(ProjectRequest $request): JsonResponse
-    {  
+    {    
         $result = ProjectService::addProject($request);
         if (!$result) {
             return response()->json([
@@ -92,10 +92,10 @@ class ProjectController extends Controller
     public function viewAllProjects()
     {
         $projects = Project::all();
-
+        
         return response()->json([
             'total' => count($projects),
-            'users' => ProjectResource::collection($projects)
+            'projects' => ProjectResource::collection($projects)
         ], 200);
 
 
