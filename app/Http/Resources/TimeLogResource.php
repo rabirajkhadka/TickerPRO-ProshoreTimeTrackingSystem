@@ -15,6 +15,7 @@ class TimeLogResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id'=>$this->id,
             'activity_name'=>$this->activity_name,
             'user_id'=>$this->user_id,
             'project_id'=>$this->project_id,
