@@ -11,7 +11,6 @@ class TimeLog extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
         'activity_name',
         'user_id',
         'project_id',
