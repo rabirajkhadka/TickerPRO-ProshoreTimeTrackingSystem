@@ -15,6 +15,11 @@ class TimeLogService
         return TimeLog::create($validated);
     }
 
+    public static function viewTotalTimeLogs($id)
+    {
+        return User::find($id)->timeLogs()->count();
+    }
+
     public static function viewTimeLogs(int $id, int $size)
     {
         return User::find($id)->timeLogs()->paginate($size);
