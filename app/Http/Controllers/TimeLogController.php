@@ -45,7 +45,7 @@ class TimeLogController extends Controller
 
         $size = $request->size;
         $totals = TimeLogService::viewTotalTimeLogs($request->id);
-        $logs = TimeLogService::viewTimeLogs(size:(int)$size,id:(int)$request->id);
+        $logs = TimeLogService::viewPaginateTimeLogs(size:(int)$size,id:(int)$request->id);
         if (empty($logs)) {
             return response()->json([
                 'message' => 'No logs found',
