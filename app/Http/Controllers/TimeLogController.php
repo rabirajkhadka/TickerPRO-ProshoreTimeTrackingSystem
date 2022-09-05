@@ -28,7 +28,7 @@ class TimeLogController extends Controller
         }
         return response()->json([
             'message' => 'Time log created successfully',
-            'log' => TimeLogResource::collection($log)
+            'log' => TimeLogResource::make($log)
         ]);
     }
 
@@ -44,7 +44,8 @@ class TimeLogController extends Controller
         // if user exists then view their logs
 
         $size = $request->size;
-        $logs = TimeLogService::viewTimeLogs(size:(int)$size,id:(int)$request->id);
+        $totals = TimeLogService::viewTotalTimeLogs($request->id);
+        $logs = TimeLogService::viewPaginateTimeLogs(size:(int)$size,id:(int)$request->id);
         if (empty($logs)) {
             return response()->json([
                 'message' => 'No logs found',
@@ -53,7 +54,7 @@ class TimeLogController extends Controller
 
         return response()->json([
             'message' => 'Logs found',
-            'total' => count($logs),
+            'total' => $totals,
             'logs' => TimeLogResource::collection($logs)
         ]);
     }
