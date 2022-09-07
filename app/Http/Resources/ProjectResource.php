@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ClientResource;
 
 class ProjectResource extends JsonResource
 {
@@ -17,7 +18,7 @@ class ProjectResource extends JsonResource
         return [
             'project_id'=>$this->id,
             'project_name'=>$this->project_name,
-            'client_id'=>$this->client_id,
+            'client'=>new ClientResource($this->client),
             'billable'=>$this->billable,
             'status'=>$this->status,
             'project_color_code'=>$this->project_color_code,

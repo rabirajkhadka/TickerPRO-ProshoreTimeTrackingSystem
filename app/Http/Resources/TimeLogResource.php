@@ -19,7 +19,7 @@ class TimeLogResource extends JsonResource
         return [
             'id'=>$this->id,
             'activity_name'=>$this->activity_name,
-            'project_name'=>new ProjectResource($this->project),
+            'project'=>new ProjectResource($this->project),
             'billable'=>$this->billable,
             'start_time'=>$this->start_time,
             'end_time'=>$this->end_time
