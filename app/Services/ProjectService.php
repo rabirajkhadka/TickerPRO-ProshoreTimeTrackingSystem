@@ -31,7 +31,6 @@ class ProjectService
         $project->client_id = request('client_id');
         $project->billable = request('billable');
         $project->status = request('status');
-        $project->project_color_code = request('project_color_code');
 
         $project->save();
 
