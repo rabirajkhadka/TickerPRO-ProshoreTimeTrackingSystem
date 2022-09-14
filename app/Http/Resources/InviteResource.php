@@ -22,7 +22,7 @@ class InviteResource extends JsonResource
             'role_id'=> $this->role_id,
             'token'=> $this->token,
             'tokenExpires'=> $this->tokenExpires,
-            'invitedUserId'=> $this->invitedUserId,
+            'invitedUserId'=> $this->id,
         ];
     }
 }
