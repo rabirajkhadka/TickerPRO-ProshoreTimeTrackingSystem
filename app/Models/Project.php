@@ -17,7 +17,6 @@ class Project extends Model
         'client_id',
         'billable',
         'status',
-        'project_color_code',
     ];
 
     public function client(): BelongsTo

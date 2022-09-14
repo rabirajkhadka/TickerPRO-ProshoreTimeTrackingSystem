@@ -21,7 +21,6 @@ class ProjectResource extends JsonResource
             'client'=>new ClientResource($this->client),
             'billable'=>$this->billable,
             'status'=>$this->status,
-            'project_color_code'=>$this->project_color_code,
         ];
     }
 }
