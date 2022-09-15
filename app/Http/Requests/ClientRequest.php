@@ -24,9 +24,9 @@ class ClientRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_name' => 'required',
-            'client_number' => 'required',
-            'client_email' => 'required | email|unique:clients',
+            'client_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+            'client_number' => 'required|integer|max:255',
+            'client_email' => 'required | email |max:255|unique:clients',
             'status' => 'required | boolean',
         ];
     }
