@@ -19,10 +19,10 @@ class InviteResource extends JsonResource
         return [
             'name'=> $this->name,
             'email'=> $this->email,
-            'role_id'=> $this->role_id,
+            'role'=> new RoleResource($this->role),
             'token'=> $this->token,
             'tokenExpires'=> $this->tokenExpires,
-            'invitedUserId'=> $this->invitedUserId,
+            'id'=> $this->id,
         ];
     }
 }
