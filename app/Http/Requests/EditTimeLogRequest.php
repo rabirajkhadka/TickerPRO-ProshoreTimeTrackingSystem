@@ -25,7 +25,7 @@ class EditTimeLogRequest extends FormRequest
     {
 
         return [
-            'activity_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+            'activity_name' => 'required|max:255',
             'user_id' => 'required | integer|exists:users,id',
             'project_id' => 'required | integer|exists:projects,id',
             'billable' => 'required | boolean',
