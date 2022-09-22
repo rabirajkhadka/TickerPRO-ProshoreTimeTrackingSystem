@@ -8,9 +8,9 @@ use App\Http\Requests\ClientRequest;
 
 class ClientService
 {
-    public static function addProject(ClientRequest $request): bool
+    public static function addProject(array $validatedAddClient): bool
     {
-        $log = Client::create($request->validated());
+        $log = Client::create($validatedAddClient);
 
         if (!is_object($log)) return false;
         return true;

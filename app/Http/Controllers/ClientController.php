@@ -15,7 +15,8 @@ class ClientController extends Controller
 {
     public function addActivity(ClientRequest $request): JsonResponse
     {  
-        $result = ClientService::addProject($request);
+        $validatedAddClient = $request->validated();
+        $result = ClientService::addProject($validatedAddClient);
         if (!$result) {
             return response()->json([
                 'message' => 'Could not add client'

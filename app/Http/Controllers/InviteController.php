@@ -39,7 +39,8 @@ class InviteController extends Controller
 
     public function revoke(Request $request): JsonResponse
     {
-        $status = InviteService::revokeInvite($request);
+        $id = $request->id;
+        $status = InviteService::revokeInvite($id);
 
         if (!$status) {
             return response()->json([

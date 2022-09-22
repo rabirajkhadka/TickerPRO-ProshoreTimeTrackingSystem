@@ -4,14 +4,12 @@ namespace App\Services;
 
 use App\Models\Project;
 use App\Models\UserProject;
-use App\Http\Requests\ProjectRequest;
-
 
 class ProjectService
 {
-    public static function addProject(ProjectRequest $request): bool
+    public static function addProject(array $validatedAddProject): bool
     {
-        $log = Project::create($request->validated());
+        $log = Project::create($validatedAddProject);
 
         $id = auth()->user()->id;
         $userproject = new UserProject;
@@ -23,15 +21,10 @@ class ProjectService
         return true;
     }
 
-    public static function updateProject(ProjectRequest $request): bool
+    public static function updateProject($validatedEditProject, $id): bool
     {
-        $project = Project::where('id', $request->id)->first();
-
-        $project->project_name = request('project_name');
-        $project->client_id = request('client_id');
-        $project->billable = request('billable');
-        $project->status = request('status');
-
+        $project = Project::where('id', $id)->first();
+        $project->forceFill($validatedEditProject);
         $project->save();
 
         if (!is_object($project)) return false;
