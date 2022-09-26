@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Project;
 use App\Models\Client;
-use App\Http\Requests\ClientRequest;
 
 class ClientService
 {

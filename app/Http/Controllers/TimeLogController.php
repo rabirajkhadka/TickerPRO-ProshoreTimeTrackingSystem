@@ -60,14 +60,13 @@ class TimeLogController extends Controller
         ]);
     }
 
-    public function editActivity(EditTimeLogRequest $request): JsonResponse
+    public function editActivity(EditTimeLogRequest $request,$id): JsonResponse
     {
         if (!ProjectService::checkProjectIdExists($request['project_id']) || !UserService::checkUserIdExists($request['user_id'])) {
             return response()->json([
                 'message' => 'Project Id or User Id does not exist'
             ], 400);
         }
-        $id = $request->id;
         $validatedEditLog = $request->validated();
         $status = TimeLogService::editTimeLog($validatedEditLog, $id);
         if (!$status) {
@@ -81,9 +80,8 @@ class TimeLogController extends Controller
 
     }
 
-    public function removeActivity(Request $request): JsonResponse
+    public function removeActivity($id): JsonResponse
     {
-        $id = $request->id;
         $status = TimeLogService::removeLog($id);
         if (!$status) {
             return response()->json([

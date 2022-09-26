@@ -18,8 +18,8 @@ class ProjectController extends Controller
     public function addActivity(ProjectRequest $request): JsonResponse
     {    
         $validatedAddProject = $request->validated();
-        $result = ProjectService::addProject($validatedAddProject);
-        if (!$result) {
+        $addProjectData = ProjectService::addProject($validatedAddProject);
+        if (!$addProjectData) {
             return response()->json([
                 'message' => 'Could not create a project'
             ], 400);
@@ -29,12 +29,11 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateActivity(ProjectRequest $request): JsonResponse
+    public function updateActivity(ProjectRequest $request,$id): JsonResponse
     {
-        $id = $request->id;
         $validatedEditProject = $request->validated();
-        $result = ProjectService::updateProject($validatedEditProject, $id);
-        if (!$result) {
+        $updateProjectData = ProjectService::updateProject($validatedEditProject, $id);
+        if (!$updateProjectData) {
             return response()->json([
                 'message' => 'Could not update the project'
             ], 400);
