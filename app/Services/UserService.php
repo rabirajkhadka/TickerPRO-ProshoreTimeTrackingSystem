@@ -15,24 +15,20 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
-use App\Http\Requests\UserStoreRequest;
-use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\PasswordResetRequest;
 
 
 class UserService
 {
-    public static function saveUserData(UserStorerequest $request)
+    public static function saveUserData(array $validatedUserRegister)
     {
-        $validated = $request->validated();
-        $invitedUser = InviteToken::where('email', $validated['email'])->first();
-        $check = Hash::check($validated['token'], $invitedUser->token);
+        $invitedUser = InviteToken::where('email', $validatedUserRegister['email'])->first();
+        $check = Hash::check($validatedUserRegister['token'], $invitedUser->token);
 
         if (!$check) {
             throw new Exception('Please provide a valid token');
         }
 
-        $result = User::create($validated);
+        $result = User::create($validatedUserRegister);
         UserRole::create([
             'user_id' => $result['id'],
             'role_id' => $invitedUser['role_id'],
@@ -41,11 +37,11 @@ class UserService
         return $result;
     }
 
-    public static function getUserWithCreds(UserLoginRequest $request)
+    public static function getUserWithCreds(array $validatedUserCreds)
     {
-        $validated = $request->validated();
-        $user = User::where('email', $validated['email'])->first();
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        
+        $user = User::where('email', $validatedUserCreds['email'])->first();
+        if (!$user || !Hash::check($validatedUserCreds['password'], $user->password)) {
             throw new Exception('Email address or password is invalid');
         }
         return $user;
@@ -69,17 +65,16 @@ class UserService
         return Role::exclude('admin')->get();
     }
 
-    public static function forgotPassword($request): bool
+    public static function forgotPassword($validatedForgetPass): bool
     {
-        $status = Password::sendResetLink($request->only('email'));
+        $status = Password::sendResetLink($validatedForgetPass);
         if ($status === Password::INVALID_USER) return false;
         return true;
     }
 
-    public static function resetPassword(PasswordResetRequest $request): bool
+    public static function resetPassword(array $validatedResetPass): bool
     {
-        $validated = $request->safe()->all();
-        $status = Password::reset($validated, function ($user, $password) {
+        $status = Password::reset($validatedResetPass, function ($user, $password) {
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();
         });
