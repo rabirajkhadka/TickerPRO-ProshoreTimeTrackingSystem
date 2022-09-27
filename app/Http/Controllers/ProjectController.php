@@ -91,7 +91,7 @@ class ProjectController extends Controller
 
     public function viewAllProjects()
     {
-        $projects = Project::all();
+        $projects = Project::paginate();
         
         return response()->json([
             'total' => count($projects),
