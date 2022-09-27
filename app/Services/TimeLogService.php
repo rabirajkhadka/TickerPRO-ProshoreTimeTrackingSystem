@@ -31,7 +31,7 @@ class TimeLogService
         if (!$log) return false;
 
         // if time log exists then update the details
-        $log->forceFill($validatedEditLog);
+        $log->update($validatedEditLog);
         
         $log->save();
 

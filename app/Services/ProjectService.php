@@ -24,7 +24,7 @@ class ProjectService
     public static function updateProject($validatedEditProject, $id): bool
     {
         $project = Project::where('id', $id)->first();
-        $project->forceFill($validatedEditProject);
+        $project->update($validatedEditProject);
         $project->save();
 
         if (!is_object($project)) return false;
