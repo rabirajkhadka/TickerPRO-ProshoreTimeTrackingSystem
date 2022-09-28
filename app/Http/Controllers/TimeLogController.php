@@ -20,7 +20,8 @@ class TimeLogController extends Controller
                 'message' => 'Project Id or User Id does not exist'
             ], 400);
         }
-        $log = TimeLogService::addTimeLog($request);
+        $validatedAddLog = $request->validated();
+        $log = TimeLogService::addTimeLog($validatedAddLog);
         if (!is_object($log)) {
             return response()->json([
                 'message' => 'Could not create a time log'
@@ -59,14 +60,15 @@ class TimeLogController extends Controller
         ]);
     }
 
-    public function editActivity(EditTimeLogRequest $request): JsonResponse
+    public function editActivity(EditTimeLogRequest $request,$id): JsonResponse
     {
         if (!ProjectService::checkProjectIdExists($request['project_id']) || !UserService::checkUserIdExists($request['user_id'])) {
             return response()->json([
                 'message' => 'Project Id or User Id does not exist'
             ], 400);
         }
-        $status = TimeLogService::editTimeLog($request);
+        $validatedEditLog = $request->validated();
+        $status = TimeLogService::editTimeLog($validatedEditLog, $id);
         if (!$status) {
             return response()->json([
                 'message' => 'Time log with this id does not exist'
@@ -78,9 +80,9 @@ class TimeLogController extends Controller
 
     }
 
-    public function removeActivity(Request $request): JsonResponse
+    public function removeActivity($id): JsonResponse
     {
-        $status = TimeLogService::removeLog($request);
+        $status = TimeLogService::removeLog($id);
         if (!$status) {
             return response()->json([
                 'message' => 'Time log with this id does not exist'
