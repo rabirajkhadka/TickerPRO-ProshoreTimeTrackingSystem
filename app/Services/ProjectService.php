@@ -22,14 +22,12 @@ class ProjectService
         return true;
     }
 
-    public static function updateProject($validatedEditProject, $id): bool
+    public static function updateProject($validatedEditProject, $id)
     {
-        $project = Project::where('id', $id)->first();
+        $project = Project::where('id', $id)->firstOrFail();
         $project->update($validatedEditProject);
-        $project->save();
 
-        if (!is_object($project)) return false;
-        return true;
+        return $project;
     }
 
     public static function checkProjectIdExists($id)
@@ -47,6 +45,5 @@ class ProjectService
         throw new Exception("Project With this Id doesnt exist",);
        } 
        $project->delete();
-    
     }
 }
