@@ -93,10 +93,11 @@ class ProjectController extends Controller
 
     public function viewAllProjects()
     {
-        $projects = Project::all();
+        $projects = Project::paginate();
+        $count=Project::count();
         
         return response()->json([
-            'total' => count($projects),
+            'total' => $count,
             'projects' => ProjectResource::collection($projects)
         ], 200);
 
