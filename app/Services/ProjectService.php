@@ -39,4 +39,11 @@ class ProjectService
 
         return true;
     }
+    public function removeProject($id): bool
+    {
+       $project = Project::where('id' , $id)->first();
+       if(!$project) return false;
+       $project->delete();
+       return true;
+    }
 }

@@ -12,9 +12,13 @@ use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\ProjectResource;
 
-
 class ProjectController extends Controller
 {
+   
+    public function __construct(protected ProjectService $projectService)
+    {
+
+    }
     public function addActivity(ProjectRequest $request): JsonResponse
     {    
         $validatedAddProject = $request->validated();
@@ -29,7 +33,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateActivity(ProjectRequest $request,$id): JsonResponse
+    public function updateActivity(ProjectRequest $request,$id)
     {
         $validatedEditProject = $request->validated();
         $updateProjectData = ProjectService::updateProject($validatedEditProject, $id);
@@ -99,7 +103,22 @@ class ProjectController extends Controller
             'total' => count($projects),
             'projects' => ProjectResource::collection($projects)
         ], 200);
+    }
 
+    public function deleteProject($id): JsonResponse
+    {
+        $deleteProject = $this->projectService->removeProject($id);
+        if(!$deleteProject){
+            return response()->json([
+                'message' => 'Project with this Id doesnt exists'
+            ], 400);
+        }
+        return response()->json([
+            'message' => 'Project deleted successfully'
+        ]);
+        }
 
     }
-}
+
+
+
