@@ -11,6 +11,8 @@ use App\Services\ProjectService;
 use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\ProjectResource;
+use Illuminate\Http\Response;
+use Mockery\Expectation;
 
 class ProjectController extends Controller
 {
@@ -105,20 +107,19 @@ class ProjectController extends Controller
         ], 200);
     }
 
-    public function deleteProject($id): JsonResponse
+    public function deleteProject(int $id): JsonResponse
     {
-        $deleteProject = $this->projectService->removeProject($id);
-        if(!$deleteProject){
+        try {
+            $this->projectService->removeProject($id);
             return response()->json([
-                'message' => 'Project with this Id doesnt exists'
-            ], 400);
+            ],Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ],Response::HTTP_BAD_REQUEST);
         }
-        return response()->json([
-            'message' => 'Project deleted successfully'
-        ]);
-        }
-
     }
+}
 
 
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Project;
 use App\Models\UserProject;
+use \Exception;
 
 class ProjectService
 {
@@ -39,11 +40,13 @@ class ProjectService
 
         return true;
     }
-    public function removeProject($id): bool
+    public function removeProject(int $id): void
     {
        $project = Project::where('id' , $id)->first();
-       if(!$project) return false;
+       if(!$project){
+        throw new Exception("Project With this Id doesnt exist",);
+       } 
        $project->delete();
-       return true;
+    
     }
 }
