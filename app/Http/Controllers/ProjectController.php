@@ -3,18 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Project;
-use App\Models\UserProject;
-use Mockery\Exception;
+use \Exception;
 use App\Services\ProjectService;
 use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\ProjectResource;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
+   
+    public function __construct(protected ProjectService $projectService)
+    {
+
+    }
     public function addActivity(ProjectRequest $request): JsonResponse
     {    
         $validatedAddProject = $request->validated();
@@ -29,18 +33,26 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateActivity(ProjectRequest $request,$id): JsonResponse
+    public function updateActivity(ProjectRequest $request,$id)
     {
         $validatedEditProject = $request->validated();
-        $updateProjectData = ProjectService::updateProject($validatedEditProject, $id);
-        if (!$updateProjectData) {
+        try {
+            $updateProjectData = ProjectService::updateProject($validatedEditProject, $id);
             return response()->json([
-                'message' => 'Could not update the project'
-            ], 400);
+                "message"=>"Project Updated Successfully",
+                "project"=> $updateProjectData
+            ],Response::HTTP_OK);   
         }
-        return response()->json([
-            'message' => 'Project updated successfully'
-        ]);
+        catch(ModelNotFoundException $e){
+            return response()->json([
+                'message' => "Project with this Id doesnt Exists",
+            ], Response::HTTP_BAD_REQUEST);
+        } 
+        catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     public function updateProjectStatus(Request $request)
@@ -100,7 +112,18 @@ class ProjectController extends Controller
             'total' => $count,
             'projects' => ProjectResource::collection($projects)
         ], 200);
+    }
 
-
+    public function deleteProject(int $id): JsonResponse
+    {
+        try {
+            $this->projectService->removeProject($id);
+            return response()->json([
+            ],Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ],Response::HTTP_BAD_REQUEST);
+        }
     }
 }
