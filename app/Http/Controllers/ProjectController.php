@@ -102,6 +102,7 @@ class ProjectController extends Controller
 
     public function viewAllProjects(Request $request)
     {
+<<<<<<< HEAD
         $projects = Project::all();
         if ($request['search']) {
         $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->get();
@@ -109,8 +110,13 @@ class ProjectController extends Controller
 
 
 
+=======
+        $projects = Project::paginate();
+        $count=Project::count();
+        
+>>>>>>> ecdb359fc795e6ed6f78aaa28008cf578334b198
         return response()->json([
-            'total' => count($projects),
+            'total' => $count,
             'projects' => ProjectResource::collection($projects)
         ], 200);
     }

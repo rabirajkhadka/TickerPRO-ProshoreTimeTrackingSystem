@@ -19,6 +19,8 @@ class Project extends Model
         'status',
     ];
 
+    protected $perPage = 50;
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_id');
