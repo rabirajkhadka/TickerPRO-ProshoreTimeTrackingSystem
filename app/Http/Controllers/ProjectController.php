@@ -102,23 +102,15 @@ class ProjectController extends Controller
 
     public function viewAllProjects(Request $request)
     {
-<<<<<<< HEAD
-        $projects = Project::all();
+        $projects = Project::latest()->paginate();
         if ($request['search']) {
-        $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->get();
+            $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->get();
         }
+        return ProjectResource::collection($projects);
 
-
-
-=======
-        $projects = Project::paginate();
-        $count=Project::count();
-        
->>>>>>> ecdb359fc795e6ed6f78aaa28008cf578334b198
-        return response()->json([
-            'total' => $count,
-            'projects' => ProjectResource::collection($projects)
-        ], 200);
+        // return response()->json([
+        //   'projects' => new ProjectCollection($projects)
+        // ], 200);
     }
 
     public function deleteProject(int $id): JsonResponse
