@@ -108,9 +108,6 @@ class ProjectController extends Controller
         }
         return ProjectResource::collection($projects);
 
-        // return response()->json([
-        //   'projects' => new ProjectCollection($projects)
-        // ], 200);
     }
 
     public function deleteProject(int $id): JsonResponse
