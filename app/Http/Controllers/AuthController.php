@@ -15,7 +15,8 @@ class AuthController extends Controller
     public function registerUser(UserStoreRequest $request)
     {
         try {
-            $user = UserService::saveUserData($request);
+            $validatedUserRegister = $request->validated();
+            $user = UserService::saveUserData($validatedUserRegister);
             $result = [
                 'status' => 200,
                 'user' => $user,
@@ -32,7 +33,8 @@ class AuthController extends Controller
     public function loginUser(UserLoginRequest $request)
     {
         try {
-            $user = UserService::getUserWithCreds($request);
+            $validatedUserCreds = $request->validated();
+            $user = UserService::getUserWithCreds($validatedUserCreds);
             $token = $user->createToken('auth_token');
             $result = [
                 'status' => 200,
@@ -64,7 +66,8 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required | email'
         ]);
-        $status = UserService::forgotPassword($request);
+        $validatedForgetPass = $request->only('email');
+        $status = UserService::forgotPassword($validatedForgetPass);
         if (!$status) {
             return response()->json([
                 'message' => 'User with given email address not found'
@@ -77,7 +80,8 @@ class AuthController extends Controller
 
     public function resetPass(PasswordResetRequest $request): JsonResponse
     {
-        $status = UserService::resetPassword($request);
+        $validatedResetPass = $request->safe()->all();
+        $status = UserService::resetPassword($validatedResetPass);
         if (!$status) {
             return response()->json([
                 'message' => 'Could not reset password. Please check your token or email address'

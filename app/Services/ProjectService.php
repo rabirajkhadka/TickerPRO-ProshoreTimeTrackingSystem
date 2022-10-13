@@ -4,14 +4,13 @@ namespace App\Services;
 
 use App\Models\Project;
 use App\Models\UserProject;
-use App\Http\Requests\ProjectRequest;
-
+use \Exception;
 
 class ProjectService
 {
-    public static function addProject(ProjectRequest $request): bool
+    public static function addProject(array $validatedAddProject): bool
     {
-        $log = Project::create($request->validated());
+        $log = Project::create($validatedAddProject);
 
         $id = auth()->user()->id;
         $userproject = new UserProject;
@@ -23,19 +22,12 @@ class ProjectService
         return true;
     }
 
-    public static function updateProject(ProjectRequest $request): bool
+    public static function updateProject($validatedEditProject, $id)
     {
-        $project = Project::where('id', $request->id)->first();
+        $project = Project::where('id', $id)->firstOrFail();
+        $project->update($validatedEditProject);
 
-        $project->project_name = request('project_name');
-        $project->client_id = request('client_id');
-        $project->billable = request('billable');
-        $project->status = request('status');
-
-        $project->save();
-
-        if (!is_object($project)) return false;
-        return true;
+        return $project;
     }
 
     public static function checkProjectIdExists($id)
@@ -45,5 +37,13 @@ class ProjectService
         if (!$user) return false;
 
         return true;
+    }
+    public function removeProject(int $id): void
+    {
+       $project = Project::where('id' , $id)->first();
+       if(!$project){
+        throw new Exception("Project With this Id doesnt exist",);
+       } 
+       $project->delete();
     }
 }
