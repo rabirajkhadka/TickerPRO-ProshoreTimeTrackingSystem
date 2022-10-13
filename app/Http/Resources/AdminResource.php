@@ -16,6 +16,7 @@ class AdminResource extends JsonResource
     {
       return [
         'id'=>$this->id,
+        'role'=> RoleResource::collection($this->roles),
         'name'=>$this->name,
         'email'=>$this->email,
         'active_status'=>$this->activeStatus,
