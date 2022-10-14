@@ -104,7 +104,7 @@ class ProjectController extends Controller
     {
         $projects = Project::latest()->paginate();
         if ($request['search']) {
-            $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->get();
+            $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->paginate();
         }
         return ProjectResource::collection($projects);
 

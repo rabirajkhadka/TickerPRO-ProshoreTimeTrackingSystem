@@ -24,7 +24,7 @@ class ProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'project_name' => 'required |max:255||unique:projects',
+            'project_name' => 'required |max:255|unique:projects',
             'client_id' => 'required | integer|exists:clients,id',
             'billable' => 'required | boolean',
             'status' => 'required | boolean',
