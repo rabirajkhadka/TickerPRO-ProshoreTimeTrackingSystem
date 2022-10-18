@@ -67,7 +67,6 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
             Route::post('/', 'addActivity');
             Route::patch('{id}', 'updateActivity');
             Route::patch('project-status/{id}', 'updateProjectStatus');
-            Route::delete('{id}', 'deleteProject');
             
         });
         Route::controller(ClientController::class)->prefix('client')->group(function () {

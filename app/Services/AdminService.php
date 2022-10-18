@@ -2,15 +2,20 @@
 
 namespace App\Services;
 
-use App\Models\UserRole;
+use App\Models\User;
+use Illuminate\Http\Response;
 
 class AdminService
 {
-    public static function deleteRoles($id)
+    public static function deleteUser($id)
     {
-        $roles = UserRole::all()->where('user_id', $id);
-        foreach ($roles as $role) {
-            $role->delete();
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+          return false;
         }
+
+        return true;
+        
     }
 }
