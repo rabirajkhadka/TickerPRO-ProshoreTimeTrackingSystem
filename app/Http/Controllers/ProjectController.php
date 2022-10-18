@@ -14,13 +14,12 @@ use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
-   
+
     public function __construct(protected ProjectService $projectService)
     {
-
     }
     public function addActivity(ProjectRequest $request): JsonResponse
-    {    
+    {
         $validatedAddProject = $request->validated();
         $addProjectData = ProjectService::addProject($validatedAddProject);
         if (!$addProjectData) {
@@ -33,22 +32,20 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateActivity(ProjectRequest $request,$id)
+    public function updateActivity(ProjectRequest $request, $id)
     {
         $validatedEditProject = $request->validated();
         try {
             $updateProjectData = ProjectService::updateProject($validatedEditProject, $id);
             return response()->json([
-                "message"=>"Project Updated Successfully",
-                "project"=> $updateProjectData
-            ],Response::HTTP_OK);   
-        }
-        catch(ModelNotFoundException $e){
+                "message" => "Project Updated Successfully",
+                "project" => $updateProjectData
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'message' => "Project with this Id doesnt Exists",
             ], Response::HTTP_BAD_REQUEST);
-        } 
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
@@ -59,7 +56,7 @@ class ProjectController extends Controller
     {
         $project = Project::where('id', $request->id)->first();
         try {
-            if(!$project->status) {
+            if (!$project->status) {
                 $project->status = true;
             } else {
                 $project->status = false;
@@ -83,7 +80,7 @@ class ProjectController extends Controller
     {
         $project = Project::where('id', $request->id)->first();
         try {
-            if(!$project->billable) {
+            if (!$project->billable) {
                 $project->billable = true;
             } else {
                 $project->billable = false;
@@ -103,27 +100,25 @@ class ProjectController extends Controller
         return response()->json($result, $result['status']);
     }
 
-    public function viewAllProjects()
+    public function viewAllProjects(Request $request)
     {
-        $projects = Project::paginate();
-        $count=Project::count();
-        
-        return response()->json([
-            'total' => $count,
-            'projects' => ProjectResource::collection($projects)
-        ], 200);
+        $projects = Project::latest()->paginate();
+        if ($request['search']) {
+            $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->paginate();
+        }
+        return ProjectResource::collection($projects);
+
     }
 
     public function deleteProject(int $id): JsonResponse
     {
         try {
             $this->projectService->removeProject($id);
-            return response()->json([
-            ],Response::HTTP_NO_CONTENT);
+            return response()->json([], Response::HTTP_NO_CONTENT);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-            ],Response::HTTP_BAD_REQUEST);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }
