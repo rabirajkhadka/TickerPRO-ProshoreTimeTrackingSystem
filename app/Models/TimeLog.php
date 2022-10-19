@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+Use Carbon\Carbon;
 
 class TimeLog extends Model
 {
@@ -15,10 +16,22 @@ class TimeLog extends Model
         'user_id',
         'project_id',
         'billable',
-        'start_time',
-        'end_time',
+        'start_date',
+        'end_date',
+        'started_time',
+        'ended_time'
     ];
     protected $perPage = 50;
+
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = Carbon::createFromFormat('Y-m-d', $value);
+    }
+
+    public function setEndDateAttribute($value)
+    {
+        $this->attributes['end_date'] = Carbon::createFromFormat('Y-m-d', $value);
+    }
 
     public function user(): BelongsTo
     {
