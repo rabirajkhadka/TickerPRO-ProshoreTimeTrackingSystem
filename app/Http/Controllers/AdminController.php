@@ -29,7 +29,7 @@ class AdminController extends Controller
         }
 
         $roles = $user->roles()->pluck('role');
-        
+
         if ($roles->contains('admin')) {
 
             return response()->json([
@@ -37,11 +37,12 @@ class AdminController extends Controller
             ], 403);
         }
 
-        $user->delete();
-        
-        return response()->json([
-            'message' => 'User deleted Successfully'
-        ], 200);
+        if ($user->delete()) {
+
+            return response()->json([
+                'message' => 'User deleted Successfully'
+            ], 200);
+        }
 
         return response()->json([
             'message' => 'Oops Something Went Wrong'
