@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use \Exception;
 use App\Services\ProjectService;
-use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\{ProjectRequest, EditProjectRequest};
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\ProjectResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -32,7 +32,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function updateActivity(ProjectRequest $request, $id)
+    public function updateActivity(EditProjectRequest $request, $id)
     {
         $validatedEditProject = $request->validated();
         try {
