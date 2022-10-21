@@ -29,8 +29,10 @@ class EditTimeLogRequest extends FormRequest
             'user_id' => 'required | integer|exists:users,id',
             'project_id' => 'required | integer|exists:projects,id',
             'billable' => 'required | boolean',
-            'start_time' => 'required | date_format:Y-m-d H:i:s',
-            'end_time' => 'required | date_format:Y-m-d H:i:s|after:start_time',
+            'start_date' => 'required | date_format:Y-m-d',
+            'end_date' => 'required | date_format:Y-m-d',
+            'started_time' => 'required | date_format:H:i:s',
+            'ended_time' => 'required | date_format:H:i:s|after:started_time',
         ];
     }
 }

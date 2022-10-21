@@ -21,8 +21,10 @@ class TimeLogResource extends JsonResource
             'activity_name'=>$this->activity_name,
             'project'=>new ProjectResource($this->project),
             'billable'=>$this->billable,
-            'start_time'=>$this->start_time,
-            'end_time'=>$this->end_time
+            'start_date'=>$this->start_date,
+            'end_date'=>$this->end_date,
+            'started_time'=>$this->started_time,
+            'ended_time'=>$this->ended_time,
         ];
     }
 }

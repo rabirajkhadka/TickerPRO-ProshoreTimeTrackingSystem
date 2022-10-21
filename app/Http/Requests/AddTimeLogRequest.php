@@ -28,7 +28,8 @@ class AddTimeLogRequest extends FormRequest
             'user_id' => 'required | integer|exists:users,id',
             'project_id' => 'required | integer|exists:projects,id',
             'billable' => 'required | boolean',
-            'start_time' => 'required | date_format:Y-m-d H:i:s',
+            'start_date' => 'required | date_format:Y-m-d',
+            'started_time'=>'required | date_format:H:i:s'
         ];
     }
 }
