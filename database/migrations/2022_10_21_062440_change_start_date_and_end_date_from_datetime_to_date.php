@@ -14,8 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('time_logs', function (Blueprint $table) {
-            $table->time('started_time');
-            $table->time('ended_time')->nullable();
+            $table->date('start_date')->change();
+            $table->date('end_date')->change()
+            ->nullable();
         });
     }
 
@@ -27,8 +28,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('time_logs', function (Blueprint $table) {
-            $table->dropColumn('started_time')->nullable( );
-            $table->dropColumn('ended_time')->nullable();
+            //
         });
     }
 };
