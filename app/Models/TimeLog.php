@@ -23,14 +23,14 @@ class TimeLog extends Model
     ];
     protected $perPage = 50;
 
-    public function setStartDateAttribute($value)
+    public function setStartTimeAttribute($value)
     {
-        $this->attributes['start_date'] = Carbon::createFromFormat('Y-m-d', $value);
+        $this->attributes['start_time'] = Carbon::createFromFormat('Y-m-d', $value);
     }
 
-    public function setEndDateAttribute($value)
+    public function setEndTimeAttribute($value)
     {
-        $this->attributes['end_date'] = Carbon::createFromFormat('Y-m-d', $value);
+        $this->attributes['end_time'] = Carbon::createFromFormat('Y-m-d', $value);
     }
 
     public function user(): BelongsTo
