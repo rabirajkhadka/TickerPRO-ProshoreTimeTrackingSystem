@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 
 class AdminService
 {
-    public static function deleteUser($id)
+    public static function checkUserIdExists($id)
     {
         $user = User::where('id', $id)->first();
 

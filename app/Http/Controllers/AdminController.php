@@ -20,7 +20,7 @@ class AdminController extends Controller
     {
         $user = User::where('id', $id)->first();
 
-        $deleteStatus = AdminService::deleteUser($id);
+        $deleteStatus = AdminService::checkUserIdExists($id);
 
         if (!$deleteStatus) {
             return response()->json([

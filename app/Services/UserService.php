@@ -82,12 +82,4 @@ class UserService
         return true;
     }
 
-    public static function checkUserIdExists($id)
-    {
-        $user = User::where('id', $id)->first();
-
-        if (!$user) return false;
-
-        return true;
-    }
 }
