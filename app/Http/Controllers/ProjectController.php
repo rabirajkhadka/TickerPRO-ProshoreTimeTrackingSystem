@@ -102,7 +102,7 @@ class ProjectController extends Controller
 
     public function viewAllProjects(Request $request)
     {
-        $projects = Project::latest()->paginate();
+        $projects = Project::orderBy('updated_at', 'desc')->paginate();
         if ($request['search']) {
             $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->paginate();
         }

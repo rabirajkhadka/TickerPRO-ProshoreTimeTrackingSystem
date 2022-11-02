@@ -7,15 +7,17 @@ use App\Services\InviteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Resources\InviteResource;
+use App\Models\InviteToken;
 
 class InviteController extends Controller
 {
     public function listInvitedUsers(): JsonResponse
     {
+        $totaluser = InviteToken::count();
         $users = InviteService::invitedList();
         
         return response()->json([
-            'total' => count($users),
+            'total' => $totaluser,
             'invitedUsers' => InviteResource::collection($users),
         ],200);
     }
