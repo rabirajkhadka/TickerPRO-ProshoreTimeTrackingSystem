@@ -40,7 +40,7 @@ class InviteService
 
     public static function invitedList(): Collection
     {
-        return InviteToken::all();
+        return InviteToken::latest()->get();
     }
 
     public function resendInvite($email): bool
