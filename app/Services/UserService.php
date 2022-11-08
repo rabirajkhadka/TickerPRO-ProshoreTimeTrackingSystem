@@ -39,7 +39,7 @@ class UserService
 
     public static function getUserWithCreds(array $validatedUserCreds)
     {
-        
+
         $user = User::where('email', $validatedUserCreds['email'])->first();
         if (!$user || !Hash::check($validatedUserCreds['password'], $user->password)) {
             throw new Exception('Email address or password is invalid');
@@ -82,4 +82,14 @@ class UserService
         return true;
     }
 
+    public static function checkUserIdExists($id)
+    {
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return false;
+        }
+
+        return true;
+    }
 }
