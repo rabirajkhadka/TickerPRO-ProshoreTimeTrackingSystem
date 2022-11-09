@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberInviteRequest;
 use App\Models\UserRole;
-use App\Services\AdminService;
 use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -12,22 +11,41 @@ use App\Models\User;
 use Mockery\Exception;
 use App\Http\Resources\AdminResource;
 use App\Http\Resources\RoleResource;
+use Illuminate\Http\Response;
 
 class AdminController extends Controller
 {
-    public function deleteUser(Request $request)
+    public function deleteUser($id)
     {
-        $user = User::where('id', $request->id)->first();
-        if (!$user) {
+        $user = User::where('id', $id)->first();
+
+        $deleteStatus = UserService::checkUserIdExists($id);
+
+        if (!$deleteStatus) {
             return response()->json([
                 'message' => 'User does not exist with given id'
-            ], 404);
+            ], Response::HTTP_NOT_FOUND);
         }
-        AdminService::deleteRoles($request->id);
-        $user->delete();
+
+        $roles = $user->roles()->pluck('role');
+
+        if ($roles->contains('admin')) {
+
+            return response()->json([
+                'message' => 'Admin User cannot be deleted'
+            ], 403);
+        }
+
+        if ($user->delete()) {
+
+            return response()->json([
+                'message' => 'User deleted Successfully'
+            ], 200);
+        }
+
         return response()->json([
-            'message' => 'User deleted successfully'
-        ], 200);
+            'message' => 'Oops Something Went Wrong'
+        ], 403);
     }
 
     public function viewAllUsers()
@@ -38,18 +56,16 @@ class AdminController extends Controller
             'total' => count($users),
             'users' => AdminResource::collection($users)
         ], 200);
-        
     }
 
     public function viewUserRole(Request $request)
     {
         $role = User::find($request->id)->roles;
-        
+
         return response()->json([
             'total' => count($role),
             'roles' => RoleResource::collection($role)
         ], 200);
-
     }
 
     public function assignRoles(Request $request)
@@ -75,7 +91,6 @@ class AdminController extends Controller
             ];
         }
         return response()->json($result, $result['status']);
-
     }
 
     public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
@@ -116,5 +131,4 @@ class AdminController extends Controller
         }
         return response()->json($result, $result['status']);
     }
-
 }
