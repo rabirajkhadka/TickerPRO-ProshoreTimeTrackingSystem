@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberInviteRequest;
 use App\Models\UserRole;
-use App\Services\AdminService;
 use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -20,7 +19,7 @@ class AdminController extends Controller
     {
         $user = User::where('id', $id)->first();
 
-        $deleteStatus = AdminService::checkUserIdExists($id);
+        $deleteStatus = UserService::checkUserIdExists($id);
 
         if (!$deleteStatus) {
             return response()->json([
