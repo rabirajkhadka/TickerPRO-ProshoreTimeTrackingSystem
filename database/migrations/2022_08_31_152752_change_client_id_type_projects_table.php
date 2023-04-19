@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -19,7 +18,6 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
-
     }
 
     /**
@@ -29,7 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-
         Schema::table('projects', function (Blueprint $table) {
             $table->dropForeign(['client_id']);
         });
@@ -37,6 +34,5 @@ return new class extends Migration
         Schema::table('projects', function (Blueprint $table) {
             $table->integer('client_id')->change();
         });
-
     }
 };

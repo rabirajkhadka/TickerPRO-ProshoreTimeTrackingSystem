@@ -31,6 +31,3 @@ class EditProjectRequest extends FormRequest
         ];
     }
 }
-
-
-

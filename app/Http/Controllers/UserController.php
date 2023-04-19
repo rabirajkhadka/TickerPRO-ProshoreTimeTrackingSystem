@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
-use App\Models\User;
-use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
     public function viewMe()
     {
         $user = Auth::guard('sanctum')->user();
+
         return response()->json([
-            'user_details' => $user
+            'user_details' => $user,
         ]);
     }
 
@@ -36,22 +36,22 @@ class UserController extends Controller
                 'message' => 'User password updated',
                 'user' => $user,
             ];
-
         } catch (Exception $e) {
             $result = [
                 'status' => 500,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
+
         return response()->json($result, $result['status']);
     }
 
     public function allUserRoles()
     {
         $allRoles = UserService::roles();
-        return response()->json([
-            'UserRoles' => UserResource::collection($allRoles)
-        ]);
 
+        return response()->json([
+            'UserRoles' => UserResource::collection($allRoles),
+        ]);
     }
 }

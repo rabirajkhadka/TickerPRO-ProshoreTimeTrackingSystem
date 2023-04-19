@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'api/user/login' //need to delete this later after the project is completed
+        'api/user/login', //need to delete this later after the project is completed
     ];
 }

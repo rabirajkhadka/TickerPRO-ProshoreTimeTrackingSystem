@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Project;
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\Project;
 
 class CheckProjectStatus
 {
@@ -18,16 +18,17 @@ class CheckProjectStatus
     public function handle(Request $request, Closure $next)
     {
         $project = Project::where('id', $request->id)->first();
-        if(empty($project)){
+        if (empty($project)) {
             return response()->json([
-                'message' => 'Project does not exits'
-            ],403);
+                'message' => 'Project does not exits',
+            ], 403);
         }
-        if(!$project->status) {
+        if (! $project->status) {
             return response()->json([
-                'message' => 'The project is disabled'
-            ],403);
+                'message' => 'The project is disabled',
+            ], 403);
         }
+
         return $next($request);
     }
 }

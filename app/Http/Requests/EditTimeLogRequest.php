@@ -23,7 +23,6 @@ class EditTimeLogRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             'activity_name' => 'required|max:255',
             'user_id' => 'required | integer|exists:users,id',

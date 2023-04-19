@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberInviteRequest;
+use App\Http\Resources\AdminResource;
+use App\Http\Resources\RoleResource;
+use App\Models\User;
 use App\Models\UserRole;
 use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Mockery\Exception;
-use App\Http\Resources\AdminResource;
-use App\Http\Resources\RoleResource;
 use Illuminate\Http\Response;
+use Mockery\Exception;
 
 class AdminController extends Controller
 {
@@ -21,30 +21,28 @@ class AdminController extends Controller
 
         $deleteStatus = UserService::checkUserIdExists($id);
 
-        if (!$deleteStatus) {
+        if (! $deleteStatus) {
             return response()->json([
-                'message' => 'User does not exist with given id'
+                'message' => 'User does not exist with given id',
             ], Response::HTTP_NOT_FOUND);
         }
 
         $roles = $user->roles()->pluck('role');
 
         if ($roles->contains('admin')) {
-
             return response()->json([
-                'message' => 'Admin User cannot be deleted'
+                'message' => 'Admin User cannot be deleted',
             ], 403);
         }
 
         if ($user->delete()) {
-
             return response()->json([
-                'message' => 'User deleted Successfully'
+                'message' => 'User deleted Successfully',
             ], 200);
         }
 
         return response()->json([
-            'message' => 'Oops Something Went Wrong'
+            'message' => 'Oops Something Went Wrong',
         ], 403);
     }
 
@@ -54,7 +52,7 @@ class AdminController extends Controller
 
         return response()->json([
             'total' => count($users),
-            'users' => AdminResource::collection($users)
+            'users' => AdminResource::collection($users),
         ], 200);
     }
 
@@ -64,7 +62,7 @@ class AdminController extends Controller
 
         return response()->json([
             'total' => count($role),
-            'roles' => RoleResource::collection($role)
+            'roles' => RoleResource::collection($role),
         ], 200);
     }
 
@@ -77,7 +75,7 @@ class AdminController extends Controller
             $user = UserService::getUser($request->toArray(), $rules);
             $role = UserRole::create([
                 'user_id' => $user['id'],
-                'role_id' => $request->role_id
+                'role_id' => $request->role_id,
             ]);
             $result = [
                 'status' => 200,
@@ -87,9 +85,10 @@ class AdminController extends Controller
         } catch (Exception $e) {
             $result = [
                 'status' => 404,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
+
         return response()->json($result, $result['status']);
     }
 
@@ -98,14 +97,14 @@ class AdminController extends Controller
         $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
         $status = $inviteService->invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
 
-        if (!$status) {
+        if (! $status) {
             return response()->json([
-                'message' => 'User could not be invited'
+                'message' => 'User could not be invited',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'User invited successfully'
+            'message' => 'User invited successfully',
         ], 200);
     }
 
@@ -113,7 +112,7 @@ class AdminController extends Controller
     {
         $user = User::where('id', $request->id)->first();
         try {
-            if (!$user->activeStatus) {
+            if (! $user->activeStatus) {
                 $user->activeStatus = true;
             } else {
                 $user->activeStatus = false;
@@ -121,14 +120,15 @@ class AdminController extends Controller
             $user->save();
             $result = [
                 'status' => 200,
-                'message' => 'User status updated'
+                'message' => 'User status updated',
             ];
         } catch (Exception $e) {
             $result = [
                 'status' => 500,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
+
         return response()->json($result, $result['status']);
     }
 }

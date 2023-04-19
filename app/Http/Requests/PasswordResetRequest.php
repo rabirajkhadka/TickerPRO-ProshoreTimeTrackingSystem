@@ -26,7 +26,7 @@ class PasswordResetRequest extends FormRequest
         return [
             'email' => 'required | email |max:255',
             'token' => 'required',
-            'password' => ['required','min:6','regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/','confirmed'],
+            'password' => ['required', 'min:6', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/', 'confirmed'],
         ];
     }
 }

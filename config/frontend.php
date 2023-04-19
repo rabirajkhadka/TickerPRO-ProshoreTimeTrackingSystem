@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'url' => env('APP_FRONTEND_URL')
+    'url' => env('APP_FRONTEND_URL'),
 ];

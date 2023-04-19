@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Hash;
 
 class InviteToken extends Model
 {
@@ -24,7 +24,7 @@ class InviteToken extends Model
         'token',
         'invitedUserId',
         'tokenExpires',
-        'created_at'
+        'created_at',
     ];
 
     public function setTokenAttribute($token)

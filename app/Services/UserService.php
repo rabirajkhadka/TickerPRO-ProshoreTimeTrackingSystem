@@ -2,20 +2,14 @@
 
 namespace App\Services;
 
-use App\Mail\InviteCreated;
 use App\Models\InviteToken;
 use App\Models\Role;
-use App\Models\UserRole;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use http\Exception\InvalidArgumentException;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
-
 
 class UserService
 {
@@ -24,7 +18,7 @@ class UserService
         $invitedUser = InviteToken::where('email', $validatedUserRegister['email'])->first();
         $check = Hash::check($validatedUserRegister['token'], $invitedUser->token);
 
-        if (!$check) {
+        if (! $check) {
             throw new Exception('Please provide a valid token');
         }
 
@@ -34,16 +28,17 @@ class UserService
             'role_id' => $invitedUser['role_id'],
         ]);
         $invitedUser->delete();
+
         return $result;
     }
 
     public static function getUserWithCreds(array $validatedUserCreds)
     {
-
         $user = User::where('email', $validatedUserCreds['email'])->first();
-        if (!$user || !Hash::check($validatedUserCreds['password'], $user->password)) {
+        if (! $user || ! Hash::check($validatedUserCreds['password'], $user->password)) {
             throw new Exception('Email address or password is invalid');
         }
+
         return $user;
     }
 
@@ -54,9 +49,10 @@ class UserService
             throw new Exception($validateReq->errors());
         }
         $user = User::where('email', $cred['email'])->first();
-        if (!$user) {
+        if (! $user) {
             throw new Exception('User does not exist');
         }
+
         return $user;
     }
 
@@ -68,7 +64,10 @@ class UserService
     public static function forgotPassword($validatedForgetPass): bool
     {
         $status = Password::sendResetLink($validatedForgetPass);
-        if ($status === Password::INVALID_USER) return false;
+        if ($status === Password::INVALID_USER) {
+            return false;
+        }
+
         return true;
     }
 
@@ -78,7 +77,10 @@ class UserService
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();
         });
-        if ($status === Password::INVALID_TOKEN) return false;
+        if ($status === Password::INVALID_TOKEN) {
+            return false;
+        }
+
         return true;
     }
 
@@ -86,7 +88,7 @@ class UserService
     {
         $user = User::where('id', $id)->first();
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 

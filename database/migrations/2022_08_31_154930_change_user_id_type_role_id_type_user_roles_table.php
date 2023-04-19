@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,7 +12,6 @@ return new class extends Migration
      */
     public function up()
     {
-
         Schema::table('user_roles', function (Blueprint $table) {
             $table->foreignId('user_id')->nullable()->change()
                 ->constrained()
@@ -24,7 +22,6 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
-
     }
 
     /**
@@ -34,7 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-
         Schema::table('user_roles', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->dropForeign(['role_id']);
@@ -44,7 +40,5 @@ return new class extends Migration
             $table->integer('user_id')->unsigned()->nullable()->change();
             $table->integer('role_id')->unsigned()->default(1)->change();
         });
-
-
     }
 };

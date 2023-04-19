@@ -16,19 +16,20 @@ class RestrictToAdmin
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::guard('sanctum')->user()->toArray();
-        if(empty($user)){
+        if (empty($user)) {
             return response()->json([
-                'message' => 'Please login to proceed'
-            ],403);
+                'message' => 'Please login to proceed',
+            ], 403);
         }
         $roles = User::find($user['id'])->roles;
         foreach ($roles as $role) {
-            if ($role['role'] === 'admin'){
+            if ($role['role'] === 'admin') {
                 return $next($request);
             }
         }
+
         return response()->json([
-            'message' => 'You are not authorized to access this route'
-        ],403);
+            'message' => 'You are not authorized to access this route',
+        ], 403);
     }
 }

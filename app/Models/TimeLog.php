@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-Use Carbon\Carbon;
 
 class TimeLog extends Model
 {
@@ -19,8 +19,9 @@ class TimeLog extends Model
         'start_date',
         'end_date',
         'started_time',
-        'ended_time'
+        'ended_time',
     ];
+
     protected $perPage = 50;
 
     public function setStartTimeAttribute($value)
@@ -40,6 +41,6 @@ class TimeLog extends Model
 
     public function project(): BelongsTo
     {
-        return $this->belongsTo(Project::class, 'project_id',);
+        return $this->belongsTo(Project::class, 'project_id', );
     }
 }

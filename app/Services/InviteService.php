@@ -16,13 +16,14 @@ class InviteService
     {
         $random = Str::random(60);
         $time = Carbon::now();
-        return $random . $time->toDateTimeLocalString();
+
+        return $random.$time->toDateTimeLocalString();
     }
 
     public function invite($name, $email, $role_id, $user_id): bool
     {
         $token = $this->generateToken();
-        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email . '&name=' . urlencode($name);
+        $url = config('frontend.url').'/register/'.$token.'?email='.$email.'&name='.urlencode($name);
 
         $user = InviteToken::create([
             'name' => $name,
@@ -30,11 +31,14 @@ class InviteService
             'role_id' => $role_id,
             'token' => $token,
             'tokenExpires' => Carbon::now()->addDays(5),
-            'invitedUserId' => $user_id
+            'invitedUserId' => $user_id,
         ]);
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
         // send an email notifying that you are invited
         Mail::to($email)->send(new InviteCreated($url));
+
         return true;
     }
 
@@ -46,13 +50,15 @@ class InviteService
     public function resendInvite($email): bool
     {
         $user = InviteToken::where('email', $email)->first();
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
 
         //if user exists then generate new token and email
         $token = $this->generateToken();
-        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email . '&name=' . urlencode($user->name);
+        $url = config('frontend.url').'/register/'.$token.'?email='.$email.'&name='.urlencode($user->name);
         $user->forceFill([
-            'token' => $token
+            'token' => $token,
         ]);
         $user->save();
         Mail::to($email)->send(new ReInvite($url));
@@ -63,10 +69,13 @@ class InviteService
     public static function revokeInvite($id): bool
     {
         $user = InviteToken::where('id', $id)->first();
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
 
         //if users exists then delete their invite
         $user->delete();
+
         return true;
     }
 }

@@ -21,6 +21,5 @@ class ClientResource extends JsonResource
             'client_number'=>$this->client_number,
             'status'=>$this->status,
         ];
-
     }
 }

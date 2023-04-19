@@ -14,12 +14,12 @@ class AdminResource extends JsonResource
      */
     public function toArray($request)
     {
-      return [
-        'id'=>$this->id,
-        'role'=> RoleResource::collection($this->roles),
-        'name'=>$this->name,
-        'email'=>$this->email,
-        'active_status'=>$this->activeStatus,
-      ];
+        return [
+            'id'=>$this->id,
+            'role'=> RoleResource::collection($this->roles),
+            'name'=>$this->name,
+            'email'=>$this->email,
+            'active_status'=>$this->activeStatus,
+        ];
     }
-}  
+}
