@@ -19,20 +19,20 @@ class TimeLogService
 
     public static function viewPaginateTimeLogs(int $id, int $size)
     {
-       return User::find($id)->timeLogs()->paginate($size);
-
-        
+        return User::find($id)->timeLogs()->paginate($size);
     }
 
     public static function editTimeLog(array $validatedEditLog, $id): bool
     {
-       // after validation find the time log
-       $log = TimeLog::where('id', $id)->first();
-        if (!$log) return false;
+        // after validation find the time log
+        $log = TimeLog::where('id', $id)->first();
+        if (! $log) {
+            return false;
+        }
 
         // if time log exists then update the details
         $log->update($validatedEditLog);
-        
+
         $log->save();
 
         return true;
@@ -41,10 +41,12 @@ class TimeLogService
     public static function removeLog($id): bool
     {
         $log = TimeLog::where('id', $id)->first();
-        if (!$log) return false;
+        if (! $log) {
+            return false;
+        }
         //if log exists then delete
         $log->delete();
+
         return true;
     }
-
 }

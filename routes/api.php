@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\TimeLogController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\ClientController;
+use App\Http\Controllers\TimeLogController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +35,7 @@ Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('reset-password', 'resetPass');
 });
 
-Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
+Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::controller(UserController::class)->prefix('user')->group(function () {
         Route::get('me', 'viewMe');
         Route::patch('edit', 'updateMe');
@@ -49,7 +49,7 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
         Route::patch('{id}', 'editActivity');
         Route::delete('{id}', 'removeActivity');
     });
-    Route::middleware(['isAdmin'])->group(function (){
+    Route::middleware(['isAdmin'])->group(function () {
         Route::controller(AdminController::class)->prefix('admin')->group(function () {
             Route::get('users', 'viewAllUsers');
             Route::post('change-roles', 'assignRoles');
@@ -68,16 +68,15 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
             Route::patch('{id}', 'updateActivity');
             Route::patch('project-status/{id}', 'updateProjectStatus');
             Route::delete('{id}', 'deleteProject');
-            
         });
         Route::controller(ClientController::class)->prefix('client')->group(function () {
             Route::post('/', 'addActivity');
             Route::get('/', 'viewAllClients');
         });
-    Route::middleware(['project.status'])->group(function () {
-            Route::controller(ProjectController::class)->prefix('project')->group(function (){
-            Route::patch('billable-status/{id}', 'updateBillableStatus');
+        Route::middleware(['project.status'])->group(function () {
+            Route::controller(ProjectController::class)->prefix('project')->group(function () {
+                Route::patch('billable-status/{id}', 'updateBillableStatus');
+            });
         });
-    });
     });
 });

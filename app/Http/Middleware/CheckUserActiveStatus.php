@@ -18,9 +18,10 @@ class CheckUserActiveStatus
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::guard('sanctum')->user();
-        if(!$user->activeStatus) {
+        if (! $user->activeStatus) {
             return abort(403);
         }
+
         return $next($request);
     }
 }
