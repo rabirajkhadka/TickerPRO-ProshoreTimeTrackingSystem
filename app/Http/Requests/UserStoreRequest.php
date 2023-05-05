@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class UserStoreRequest extends FormRequest
 {
@@ -26,7 +27,15 @@ class UserStoreRequest extends FormRequest
         return [
             'name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
             'email' => 'required | email|max:255 |unique:users',
-            'password' => ['required', 'min:6', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/', 'confirmed'],
+            'password' => [
+                'required',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
+                'confirmed'
+            ],
             'token' => 'required'
         ];
     }
