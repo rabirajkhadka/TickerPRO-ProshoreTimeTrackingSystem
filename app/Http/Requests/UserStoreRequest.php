@@ -29,7 +29,7 @@ class UserStoreRequest extends FormRequest
             'email' => 'required | email|max:255 |unique:users',
             'password' => [
                 'required',
-                Password::min(8)
+                Password::min(6)
                     ->mixedCase()
                     ->numbers()
                     ->symbols()
