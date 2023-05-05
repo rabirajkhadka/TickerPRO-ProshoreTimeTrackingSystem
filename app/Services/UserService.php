@@ -54,6 +54,11 @@ class UserService
             throw new Exception($validateReq->errors());
         }
         $user = User::where('email', $cred['email'])->first();
+        $existingRoles = UserRole::where('user_id', $user->id)->pluck('role_id');
+
+        if ($existingRoles->contains($cred['role_id'])) {
+            throw new Exception('User is already assigned this role');
+        }
         if (!$user) {
             throw new Exception('User does not exist');
         }

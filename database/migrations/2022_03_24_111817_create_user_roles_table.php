@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('role_id')->unsigned()->default(1);
             $table->timestamps();
+            $table->unique(['user_id', 'role_id']);
         });
     }
 

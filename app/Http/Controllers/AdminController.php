@@ -72,6 +72,7 @@ class AdminController extends Controller
     {
         $rules = [
             'email' => 'required | email',
+            'role_id' => 'required'
         ];
         try {
             $user = UserService::getUser($request->toArray(), $rules);
