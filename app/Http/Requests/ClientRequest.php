@@ -25,7 +25,7 @@ class ClientRequest extends FormRequest
     {
         return [
             'client_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
-            'client_number' => 'required|integer|max:255',
+            'client_number' => 'required|integer|regex:/^\d{10}$/',
             'client_email' => 'required | email |max:255|unique:clients',
             'status' => 'required | boolean',
         ];

@@ -29,8 +29,7 @@ class ClientController extends Controller
 
     public function viewAllClients()
     {
-        $projects = Client::all();
-
+        $projects = Client::with('projects')->get();
         return response()->json([
             'total' => count($projects),
             'clients' => ClientResource::collection($projects)
