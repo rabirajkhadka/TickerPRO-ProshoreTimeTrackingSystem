@@ -2,17 +2,13 @@
 
 namespace App\Services;
 
-use App\Mail\InviteCreated;
+
 use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use http\Exception\InvalidArgumentException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 
@@ -47,12 +43,8 @@ class UserService
         return $user;
     }
 
-    public static function getUser($cred, $rules)
+    public static function getUser($cred)
     {
-        $validateReq = validator($cred, $rules);
-        if ($validateReq->fails()) {
-            throw new Exception($validateReq->errors());
-        }
         $user = User::where('email', $cred['email'])->first();
         $existingRoles = UserRole::where('user_id', $user->id)->pluck('role_id');
 

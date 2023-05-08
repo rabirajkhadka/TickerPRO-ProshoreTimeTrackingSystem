@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AssignRoleRequest;
 use App\Http\Requests\MemberInviteRequest;
 use App\Models\UserRole;
 use App\Services\InviteService;
@@ -15,6 +16,13 @@ use Illuminate\Http\Response;
 
 class AdminController extends Controller
 {
+    private $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function deleteUser($id)
     {
         $user = User::where('id', $id)->first();
@@ -68,14 +76,11 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function assignRoles(Request $request)
+    public function assignRoles(AssignRoleRequest $request)
     {
-        $rules = [
-            'email' => 'required | email',
-            'role_id' => 'required'
-        ];
         try {
-            $user = UserService::getUser($request->toArray(), $rules);
+            $validated = $request->validated();
+            $user = $this->userService->getUser($validated);
             $role = UserRole::create([
                 'user_id' => $user['id'],
                 'role_id' => $request->role_id
