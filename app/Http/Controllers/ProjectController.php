@@ -18,6 +18,7 @@ class ProjectController extends Controller
     public function __construct(protected ProjectService $projectService)
     {
     }
+    
     public function addActivity(ProjectRequest $request): JsonResponse
     {
         $validatedAddProject = $request->validated();
