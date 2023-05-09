@@ -43,14 +43,23 @@ class UserService
         return $user;
     }
 
-    public static function getUser($cred)
+    public function assignUserRole($cred)
     {
         $user = User::where('email', $cred['email'])->first();
-        $existingRoles = UserRole::where('user_id', $user->id)->pluck('role_id');
+        $role = UserRole::create([
+            'user_id' => $user['id'],
+            'role_id' => $cred['role_id']
+        ]);
+        return $role;
+    }
 
-        if ($existingRoles->contains($cred['role_id'])) {
-            throw new Exception('User is already assigned this role');
+    public static function getUser($cred, $rules)
+    {
+        $validateReq = validator($cred, $rules);
+        if ($validateReq->fails()) {
+            throw new Exception($validateReq->errors());
         }
+        $user = User::where('email', $cred['email'])->first();
         if (!$user) {
             throw new Exception('User does not exist');
         }

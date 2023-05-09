@@ -16,7 +16,7 @@ use Illuminate\Http\Response;
 
 class AdminController extends Controller
 {
-    private $userService;
+    private UserService $userService;
 
     public function __construct(UserService $userService)
     {
@@ -80,11 +80,7 @@ class AdminController extends Controller
     {
         try {
             $validated = $request->validated();
-            $user = $this->userService->getUser($validated);
-            $role = UserRole::create([
-                'user_id' => $user['id'],
-                'role_id' => $request->role_id
-            ]);
+            $role = $this->userService->assignUserRole($validated);
             $result = [
                 'status' => 200,
                 'message' => 'User role updated',
