@@ -48,26 +48,32 @@ class User extends Authenticatable
     /*
      * Get the role that belongs to the user
      */
-    public function roles(): BelongsToMany {
+    public function roles(): BelongsToMany
+    {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
 
     /*
      * Get the project that belongs to the user
      */
-    public function projects(): BelongsToMany 
+    public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'user_projects', 'user_id', 'project_id');
     }
 
-    public function timeLogs(): HasMany 
+    public function timeLogs(): HasMany
     {
         return $this->hasMany(TimeLog::class, 'user_id');
-        
     }
 
-    public function setPasswordAttribute($password){
-        if(trim($password) === '') return;
+    public function setPasswordAttribute($password)
+    {
+        if (trim($password) === '') return;
         $this->attributes['password'] =  Hash::make($password);
+    }
+
+    public function scopeGetByEmail($query, $email)
+    {
+        return $query->where('email', $email);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\User;
 use App\Models\UserRole;
+use App\Rules\AssignedRoleRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -30,20 +31,11 @@ class AssignRoleRequest extends FormRequest
         return [
             'email' => 'required | email |exists:users',
             'role_id' => [
-                'required', 'integer', 'exists:roles,id',
+                'required',
+                'integer',
+                'exists:roles,id',
+                new AssignedRoleRule($this->email, $this->role_id),
             ]
         ];
-    }
-
-
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $existingRoles = User::whereEmail($this->email)->first()->roles->pluck('id');
-
-            if ($existingRoles->contains($this->role_id)) {
-                $validator->errors()->add('role_id', 'User is already assigned this role');
-            }
-        });
     }
 }

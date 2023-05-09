@@ -15,6 +15,13 @@ use Mockery\Exception;
 
 class UserService
 {
+    protected User $userModel;
+
+    public function __construct(User $userModel)
+    {
+        $this->userModel = $userModel;
+    }
+
     public static function saveUserData(array $validatedUserRegister)
     {
         $invitedUser = InviteToken::where('email', $validatedUserRegister['email'])->first();
@@ -45,7 +52,7 @@ class UserService
 
     public function assignUserRole($cred)
     {
-        $user = User::where('email', $cred['email'])->first();
+        $user = $this->userModel->getByEmail($cred['email'])->first();
         $role = UserRole::create([
             'user_id' => $user['id'],
             'role_id' => $cred['role_id']
