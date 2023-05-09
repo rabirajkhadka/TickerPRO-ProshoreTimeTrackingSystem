@@ -7,16 +7,16 @@ use App\Models\Project;
 use App\Models\Client;
 use Mockery\Exception;
 use App\Services\ClientService;
-use App\Http\Requests\ClientRequest;
+use App\Http\Requests\AddClientRequest;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\ClientResource;
 
 class ClientController extends Controller
 {
-    public function addActivity(ClientRequest $request): JsonResponse
+    public function addActivity(AddClientRequest $request): JsonResponse
     {  
         $validatedAddClient = $request->validated();
-        $result = ClientService::addProject($validatedAddClient);
+        $result = ClientService::addClient($validatedAddClient);
         if (!$result) {
             return response()->json([
                 'message' => 'Could not add client'
@@ -29,11 +29,11 @@ class ClientController extends Controller
 
     public function viewAllClients()
     {
-        $projects = Client::all();
+        $clients = Client::all();
 
         return response()->json([
-            'total' => count($projects),
-            'clients' => ClientResource::collection($projects)
+            'total' => count($clients),
+            'clients' => ClientResource::collection($clients)
         ], 200);
     
     }
