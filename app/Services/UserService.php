@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-
+use App\Http\Resources\UserRoleResource;
 use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
@@ -16,10 +16,18 @@ use Mockery\Exception;
 class UserService
 {
     protected User $userModel;
+    protected UserRole $userRoleModel;
 
-    public function __construct(User $userModel)
+    /**
+     *
+     * @param User $userModel
+     * @param UserRole $userRoleModel
+     */
+
+    public function __construct(User $userModel, UserRole $userRoleModel)
     {
         $this->userModel = $userModel;
+        $this->userRoleModel = $userRoleModel;
     }
 
     public static function saveUserData(array $validatedUserRegister)
@@ -50,15 +58,27 @@ class UserService
         return $user;
     }
 
-    public function assignUserRole($cred)
+
+
+    /**
+     *
+     * @param array $cred
+     * 
+     */
+
+    public function assignUserRole(array $cred)
     {
-        $user = $this->userModel->getByEmail($cred['email'])->first();
-        $role = UserRole::create([
+        $user = $this->userModel->getByEmail($cred['email'])->firstOrFail();
+        $role = $this->userRoleModel->create([
             'user_id' => $user['id'],
             'role_id' => $cred['role_id']
         ]);
+        if (!$role)
+            throw new Exception("User could not be assigned role");
+
         return $role;
     }
+
 
     public static function getUser($cred, $rules)
     {

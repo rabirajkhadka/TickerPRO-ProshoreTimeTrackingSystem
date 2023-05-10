@@ -5,7 +5,7 @@ namespace App\Models;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,7 +72,15 @@ class User extends Authenticatable
         $this->attributes['password'] =  Hash::make($password);
     }
 
-    public function scopeGetByEmail($query, $email)
+
+    /**
+     *
+     * @param Builder $query
+     * @param string $email
+     * @return void
+     */
+
+    public function scopeGetByEmail(Builder $query, string $email)
     {
         return $query->where('email', $email);
     }

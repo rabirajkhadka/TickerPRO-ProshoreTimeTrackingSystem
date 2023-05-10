@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AssignRoleRequest;
 use App\Http\Requests\MemberInviteRequest;
-use App\Models\UserRole;
 use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -12,6 +11,8 @@ use App\Models\User;
 use Mockery\Exception;
 use App\Http\Resources\AdminResource;
 use App\Http\Resources\RoleResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class AdminController extends Controller
@@ -76,20 +77,30 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function assignRoles(AssignRoleRequest $request)
+
+    /**
+     * @param AssignRoleRequest $request
+     * @return JsonResponse
+     */
+
+    public function assignRoles(AssignRoleRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validated();
-            $role = $this->userService->assignUserRole($validated);
+            $role = $this->userService->assignUserRole($request->validated());
             $result = [
                 'status' => 200,
                 'message' => 'User role updated',
                 'user' => $role,
             ];
-        } catch (Exception $e) {
+        } catch (ModelNotFoundException $e) {
             $result = [
                 'status' => 404,
-                'error' => $e->getMessage()
+                'error' => "User not Found"
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 504,
+                'error' => 'Something went wrong'
             ];
         }
         return response()->json($result, $result['status']);

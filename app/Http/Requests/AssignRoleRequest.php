@@ -2,15 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
-use App\Models\UserRole;
-use App\Rules\AssignedRoleRule;
+use App\Rules\CheckUserRoleExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
+
 
 class AssignRoleRequest extends FormRequest
 {
+    protected $stopOnFirstFailure = true;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,12 +27,12 @@ class AssignRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required | email |exists:users',
+            'email' => 'required | email| exists:users',
             'role_id' => [
                 'required',
                 'integer',
                 'exists:roles,id',
-                new AssignedRoleRule($this->email, $this->role_id),
+                new CheckUserRoleExistsRule($this->email, $this->role_id),
             ]
         ];
     }
