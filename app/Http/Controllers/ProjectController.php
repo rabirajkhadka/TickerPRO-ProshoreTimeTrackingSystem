@@ -41,7 +41,7 @@ class ProjectController extends Controller
                 "message" => "Project Updated Successfully",
                 "project" => $updateProjectData
             ], Response::HTTP_OK);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {   
             return response()->json([
                 'message' => "Project with this Id doesnt Exists",
             ], Response::HTTP_BAD_REQUEST);

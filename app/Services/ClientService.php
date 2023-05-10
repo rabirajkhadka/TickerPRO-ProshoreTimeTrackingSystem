@@ -15,8 +15,11 @@ class ClientService
         return true;
     }
 
-    public static function editClient(array $validatatedEditClient)
+    public static function editClient(array $validatatedEditClient, $id)
     {
+        $client = Client::where('id', $id)->firstorfail();
+        $client->update($validatatedEditClient);
 
+        return $client;
     }
 }
