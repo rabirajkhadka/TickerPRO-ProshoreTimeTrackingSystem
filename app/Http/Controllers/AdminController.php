@@ -88,18 +88,18 @@ class AdminController extends Controller
         try {
             $role = $this->userService->assignUserRole($request->validated());
             $result = [
-                'status' => 200,
+                'status' => Response::HTTP_OK,
                 'message' => 'User role updated',
                 'user' => $role,
             ];
         } catch (ModelNotFoundException $e) {
             $result = [
-                'status' => 404,
+                'status' => Response::HTTP_NOT_FOUND,
                 'error' => "User not Found"
             ];
         } catch (Exception $e) {
             $result = [
-                'status' => 504,
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'error' => 'Something went wrong'
             ];
         }
