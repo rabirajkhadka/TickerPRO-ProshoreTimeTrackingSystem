@@ -24,8 +24,8 @@ class ClientRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255', //makes sure there are no numbers in the name and doesn't allow more than one space
-            'client_number' => 'required|numeric|digits:10|regex:/^\d{10}$/', // makes sure the number is exactly 10 digits 
+            'client_name' => 'required|regex:^[A-Za-z]+(?:\s[A-Za-z]+)+$|max:255', //makes sure the name only accepts aplabetic characters.
+            'client_number' => 'required|numeric|digits:10',
             'client_email' => 'required | email |max:255|unique:clients',
             'status' => 'required | boolean',
         ];
