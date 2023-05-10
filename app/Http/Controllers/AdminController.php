@@ -112,13 +112,43 @@ class AdminController extends Controller
     public function updateUserStatus(Request $request)
     {
         $user = User::where('id', $request->id)->first();
+    
+        if (!$user) {
+            return response()->json([
+                'message' => 'User does not exist with given id'
+            ], Response::HTTP_NOT_FOUND);
+        }
+    
+        $isAdmin = $user->roles()->pluck('role')->contains('admin');
+        
+        if ($isAdmin) {
+            // check if user is trying to disable/enable itself
+            if ($user->id === auth()->user()->id) {
+                return response()->json([
+                    'message' => 'Admin cannot disable itself'
+                ], 403);
+            }
+    
+            // check if disabling admin user will result in no active admin users
+            $activeAdminsCount = User::whereHas('roles', function ($query) {
+                $query->where('role', 'admin')->where('activeStatus', true);
+            })->count();
+            
+            if ($activeAdminsCount <= 1) {
+                return response()->json([
+                    'message' => 'At least one admin user must be active'
+                ], 403);
+            }
+        }
+
         try {
-            if (!$user->activeStatus) {
-                $user->activeStatus = true;
-            } else {
-                $user->activeStatus = false;
+            if(!$user->activeStatus){
+                $user->activeStatus=true;
+            }else{
+                $user->activeStatus=false;
             }
             $user->save();
+    
             $result = [
                 'status' => 200,
                 'message' => 'User status updated'
@@ -129,6 +159,7 @@ class AdminController extends Controller
                 'error' => $e->getMessage()
             ];
         }
+    
         return response()->json($result, $result['status']);
     }
 }
