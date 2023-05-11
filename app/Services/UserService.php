@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\UserRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -61,10 +62,10 @@ class UserService
 
 
 
+
     /**
      *
      * @param array $cred
-     * 
      */
 
     public function assignUserRole(array $cred)
@@ -75,9 +76,10 @@ class UserService
             throw new ModelNotFoundException("Email not found");
 
         $role = $this->userRoleModel->create([
-            'user_id' => $user['id'],
-            'role_id' => $cred['role_id']
+            'user_id' => Arr::get($user, 'id'),
+            'role_id' => Arr::get($cred, 'role_id')
         ]);
+
         if (!$role)
             throw new Exception("User could not be assigned role");
 
