@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Mockery\Exception;
 use App\Http\Resources\AdminResource;
+use App\Http\Resources\AssignRoleResource;
 use App\Http\Resources\RoleResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -91,7 +92,7 @@ class AdminController extends Controller
             $result = [
                 'status' => Response::HTTP_OK,
                 'message' => 'User role updated',
-                'user' => $role,
+                'user' => new AssignRoleResource($role),
             ];
         } catch (ModelNotFoundException $e) {
             $result = [
