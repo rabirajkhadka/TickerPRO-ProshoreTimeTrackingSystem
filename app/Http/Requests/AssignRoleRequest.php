@@ -28,11 +28,12 @@ class AssignRoleRequest extends FormRequest
     {
         return [
             'email' => 'required | email| exists:users',
+
             'role_id' => [
                 'required',
                 'integer',
                 'exists:roles,id',
-                new CheckUserRoleExistsRule($this->email, $this->role_id),
+                new CheckUserRoleExistsRule($this->email),
             ]
         ];
     }

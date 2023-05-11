@@ -7,6 +7,7 @@ use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -68,7 +69,11 @@ class UserService
 
     public function assignUserRole(array $cred)
     {
-        $user = $this->userModel->getByEmail($cred['email'])->firstOrFail();
+        $user = $this->userModel->getByEmail($cred['email'])->first();
+
+        if ($user === null)
+            throw new ModelNotFoundException("Email not found");
+
         $role = $this->userRoleModel->create([
             'user_id' => $user['id'],
             'role_id' => $cred['role_id']

@@ -14,6 +14,7 @@ use App\Http\Resources\RoleResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -97,11 +98,15 @@ class AdminController extends Controller
                 'status' => Response::HTTP_NOT_FOUND,
                 'error' => "User not Found"
             ];
+
+            Log::error($e->getMessage());
         } catch (Exception $e) {
             $result = [
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'error' => 'Something went wrong'
             ];
+
+            Log::error($e->getMessage());
         }
         return response()->json($result, $result['status']);
     }

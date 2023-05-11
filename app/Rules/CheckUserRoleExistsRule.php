@@ -3,23 +3,22 @@
 namespace App\Rules;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class CheckUserRoleExistsRule implements Rule
 {
-    protected $email, $roleId;
+    protected string|null $email;
 
 
     /**
-     * Undocumented function
      *
-     * @param string $email
-     * @param string $roleId
+     * @param string|null $email
      */
-    public function __construct(string $email, string $roleId)
+    public function __construct(?string $email)
     {
         $this->email = $email;
-        $this->roleId = $roleId;
     }
 
     /**
@@ -30,14 +29,16 @@ class CheckUserRoleExistsRule implements Rule
      * @return bool
      */
 
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
-        $user = User::getByEmail($this->email)->first();
-        if (!$user) {
+        try {
+            $user = User::getByEmail($this->email)->firstorFail();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
             return false;
         }
         $existingRoles = $user->roles->pluck('id');
-        return !$existingRoles->contains($this->roleId);
+        return !$existingRoles->contains($value);
     }
 
     /**
