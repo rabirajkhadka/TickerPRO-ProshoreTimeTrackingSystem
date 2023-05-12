@@ -7,7 +7,7 @@ use App\Models\Project;
 use App\Models\Client;
 use Mockery\Exception;
 use App\Services\ClientService;
-use App\Http\Requests\{AddClientRequest,EditClientRequest};
+use App\Http\Requests\{AddClientRequest, EditClientRequest};
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\ClientResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -19,42 +19,68 @@ class ClientController extends Controller
     protected Client $client;
     protected ClientService $clientService;
 
-    public function __construct(Client $client, ClientService $clientService )
+    public function __construct(Client $client, ClientService $clientService)
     {
-        $this->clientService =$clientService;
-        $this->client =$client;
+        $this->clientService = $clientService;
+        $this->client = $client;
     }
-    
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function index()
     {
-        try{
-            $clients = $this->client->all();
+        try {
+            $clients = $this->client->paginate(10);
             return response()->json([
                 'total' => count($clients),
                 'clients' => ClientResource::collection($clients)
             ], 200);
-        }
-        catch(ModelNotFoundException $modelnotfoundExecption){
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            return response()->json([
+                'message' => 'No Clients to display',
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
+
+    /**
+     * 
+     *
+     * @param AddClientRequest $request
+     * @return JsonResponse
+     */
     public function store(AddClientRequest $request): JsonResponse
-    {  
-        $validatedAddClient = $request->validated();
-        $result =  $this->clientService->addClient($validatedAddClient); ///// use dependency
-        if (!$result) {
+    {
+        try {
+            $validatedAddClient = $request->validated();
+            $result =  $this->clientService->addClient($validatedAddClient); ///// use dependency
+            return response()->json([
+                'message' => 'Client added successfully'
+            ]);
+        } catch (Exception $exception) {
             return response()->json([
                 'message' => 'Could not add client'
             ], 400);
         }
-        return response()->json([
-            'message' => 'Client added successfully'
-        ]);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param EditClientRequest $request
+     * @param [type] $id
+     * @return void
+     */
     public function update(EditClientRequest $request, $id)
     {
         $validatedEditClient = $request->validated();
-        try{
+        try {
             $result =  $this->clientService->EditCLient($validatedEditClient, $id); ////// use dependency
             return response()->json([
                 'message' => 'Client Edited succesfully',

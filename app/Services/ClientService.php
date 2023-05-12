@@ -3,28 +3,33 @@
 namespace App\Services;
 
 use App\Models\Client;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Mockery\Exception;
 
 class ClientService
 {
 
-    public function display()
+    public static function addClient(array $validatedAddClient)
     {
-
+        try {
+            Client::create($validatedAddClient);
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (Exception $exception) {
+            throw new Exception();
+        }
     }
-    
-    public static function addClient(array $validatedAddClient): bool
-    {
-        $log = Client::create($validatedAddClient);
-
-        if (!is_object($log)) return false;
-        return true;
-    }
-
     public static function editClient(array $validatatedEditClient, $id)
     {
-        $client = Client::where('id', $id)->firstorfail();
-        $client->update($validatatedEditClient);
-
-        return $client;
+        try {
+            $client = Client::where('id', $id)->firstorfail();
+            $client->update($validatatedEditClient);
+            return $client;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (Exception $exception) {
+            throw new Exception();
+        }
     }
 }
