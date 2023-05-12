@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Http\Resources\UserRoleResource;
 use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
 use App\Models\User;
+use Carbon\Carbon;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
@@ -61,29 +62,36 @@ class UserService
     }
 
 
-
-
     /**
      *
-     * @param array $cred
+     *
+     * @param array $credentials
+     * 
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return object
      */
 
-    public function assignUserRole(array $cred)
+    public function assignUserRole(array $credentials)
     {
-        $user = $this->userModel->getByEmail($cred['email'])->first();
+        try {
+            $user = $this->userModel->getByEmail(Arr::get($credentials, 'email'))->first();
 
-        if ($user === null)
-            throw new ModelNotFoundException("Email not found");
-
-        $role = $this->userRoleModel->create([
-            'user_id' => Arr::get($user, 'id'),
-            'role_id' => Arr::get($cred, 'role_id')
-        ]);
-
-        if (!$role)
-            throw new Exception("User could not be assigned role");
-
-        return $role;
+            $user->roles()->attach(
+                Arr::get($credentials, 'role_id'),
+                [
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]
+            );
+            return $user->roles;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (QueryException $queryException) {
+            throw new QueryException();
+        } catch (Exception $exception) {
+            throw new Exception();
+        }
     }
 
 

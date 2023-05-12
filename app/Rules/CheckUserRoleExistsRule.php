@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Log;
 
 class CheckUserRoleExistsRule implements Rule
 {
-    protected string|null $email;
+    protected string $email;
 
 
     /**
      *
-     * @param string|null $email
+     * @param string $email
      */
-    public function __construct(?string $email)
+    public function __construct(string $email)
     {
         $this->email = $email;
     }
@@ -33,12 +33,13 @@ class CheckUserRoleExistsRule implements Rule
     {
         try {
             $user = User::getByEmail($this->email)->firstorFail();
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
+            $existingRoles = $user->roles->pluck('id');
+
+            return !$existingRoles->contains($value);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
             return false;
         }
-        $existingRoles = $user->roles->pluck('id');
-        return !$existingRoles->contains($value);
     }
 
     /**

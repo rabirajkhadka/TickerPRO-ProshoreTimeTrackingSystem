@@ -10,16 +10,24 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Mockery\Exception;
 use App\Http\Resources\AdminResource;
-use App\Http\Resources\AssignRoleResource;
 use App\Http\Resources\RoleResource;
+use App\Traits\HttpResponses;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
+    use HttpResponses;
+
     private UserService $userService;
+
+    /**
+     *
+     * @param UserService $userService
+     */
 
     public function __construct(UserService $userService)
     {
@@ -80,37 +88,66 @@ class AdminController extends Controller
     }
 
 
+
     /**
      * @param AssignRoleRequest $request
      * @return JsonResponse
+     * @throws Exception
+     * @throws ModelNotFoundException
+     * @throws QueryException
      */
 
     public function assignRoles(AssignRoleRequest $request): JsonResponse
     {
         try {
-            $role = $this->userService->assignUserRole($request->validated());
-            $result = [
-                'status' => Response::HTTP_OK,
-                'message' => 'User role updated',
-                'user' => new AssignRoleResource($role),
-            ];
-        } catch (ModelNotFoundException $e) {
-            $result = [
-                'status' => Response::HTTP_NOT_FOUND,
-                'error' => "User not Found"
-            ];
-
-            Log::error($e->getMessage());
-        } catch (Exception $e) {
-            $result = [
-                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'error' => 'Something went wrong'
-            ];
-
-            Log::error($e->getMessage());
+            $roles = $this->userService->assignUserRole($request->validated());
+            return $this->successResponse(RoleResource::collection($roles), 'User role updated');
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], "User not Found", Response::HTTP_NOT_FOUND);
+        } catch (QueryException $queryException) {
+            Log::error($queryException->getMessage());
+            return $this->errorResponse([], 'Cannot assign role to User');
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
-        return response()->json($result, $result['status']);
     }
+
+    // public function assignRoles(AssignRoleRequest $request): JsonResponse
+    // {
+    //     try {
+    //         $roles = $this->userService->assignUserRole($request->validated());
+    //         $result = [
+    //             'status' => Response::HTTP_OK,
+    //             'message' => 'User role updated',
+    //             'data' => RoleResource::collection($roles),
+    //         ];
+    //     } catch (ModelNotFoundException $modelNotFoundException) {
+    //         $result = [
+    //             'status' => Response::HTTP_NOT_FOUND,
+    //             'error' => "User not Found"
+    //         ];
+
+    //         Log::error($modelNotFoundException->getMessage());
+    //     } catch (QueryException $queryException) {
+    //         $result = [
+    //             'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+    //             'error' => 'Cannot assign role to User'
+    //         ];
+
+    //         Log::error($queryException->getMessage());
+    //     } catch (Exception $exception) {
+    //         $result = [
+    //             'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+    //             'error' => 'Something went wrong'
+    //         ];
+
+    //         Log::error($exception->getMessage());
+    //     }
+    //     return response()->json($result, $result['status']);
+    // }
+
 
     public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
     {

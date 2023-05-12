@@ -9,14 +9,28 @@ use Illuminate\Foundation\Http\FormRequest;
 class AssignRoleRequest extends FormRequest
 {
     protected $stopOnFirstFailure = true;
+
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
+
     public function authorize()
     {
         return true;
+    }
+
+    /**
+     *
+     * @return void
+     */
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'email' => (string)$this->email
+        ]);
     }
 
     /**
@@ -30,6 +44,7 @@ class AssignRoleRequest extends FormRequest
             'email' => 'required | email| exists:users',
 
             'role_id' => [
+                'bail',
                 'required',
                 'integer',
                 'exists:roles,id',
