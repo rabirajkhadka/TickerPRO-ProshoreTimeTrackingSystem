@@ -14,10 +14,13 @@ use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
-
-    public function __construct(protected ProjectService $projectService)
+    protected ProjectService $projectService;
+    
+    public function __construct(ProjectService $projectService)
     {
+        $this->projectService = $projectService;
     }
+
     public function addActivity(ProjectRequest $request): JsonResponse
     {
         $validatedAddProject = $request->validated();

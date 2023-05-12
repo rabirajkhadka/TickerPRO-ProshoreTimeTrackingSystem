@@ -16,10 +16,31 @@ use Illuminate\Http\Response;
 
 class ClientController extends Controller
 {
-    public function addClient(AddClientRequest $request): JsonResponse
+    protected Client $client;
+    protected ClientService $clientService;
+
+    public function __construct(Client $client, ClientService $clientService )
+    {
+        $this->clientService =$clientService;
+        $this->client =$client;
+    }
+    
+    public function index()
+    {
+        try{
+            $clients = $this->client->all();
+            return response()->json([
+                'total' => count($clients),
+                'clients' => ClientResource::collection($clients)
+            ], 200);
+        }
+        catch(ModelNotFoundException $modelnotfoundExecption){
+        }
+    }
+    public function store(AddClientRequest $request): JsonResponse
     {  
         $validatedAddClient = $request->validated();
-        $result = ClientService::addClient($validatedAddClient);
+        $result =  $this->clientService->addClient($validatedAddClient); ///// use dependency
         if (!$result) {
             return response()->json([
                 'message' => 'Could not add client'
@@ -30,21 +51,11 @@ class ClientController extends Controller
         ]);
     }
 
-    public function viewAllClients()
-    {
-        $clients = Client::all();
-
-        return response()->json([
-            'total' => count($clients),
-            'clients' => ClientResource::collection($clients)
-        ], 200);
-    
-    }
-    public function EditClient(EditClientRequest $request, $id)
+    public function update(EditClientRequest $request, $id)
     {
         $validatedEditClient = $request->validated();
         try{
-            $result = ClientService::EditCLient($validatedEditClient, $id);
+            $result =  $this->clientService->EditCLient($validatedEditClient, $id); ////// use dependency
             return response()->json([
                 'message' => 'Client Edited succesfully',
                 'client' => $result

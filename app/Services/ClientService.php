@@ -2,11 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Project;
 use App\Models\Client;
 
 class ClientService
 {
+
+    public function display()
+    {
+
+    }
+    
     public static function addClient(array $validatedAddClient): bool
     {
         $log = Client::create($validatedAddClient);
