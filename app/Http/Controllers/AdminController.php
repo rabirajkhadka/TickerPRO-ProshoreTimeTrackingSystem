@@ -101,52 +101,18 @@ class AdminController extends Controller
     {
         try {
             $roles = $this->userService->assignUserRole($request->validated());
-            return $this->successResponse(RoleResource::collection($roles), 'User role updated');
+            return $this->successResponse(RoleResource::collection($roles), 'User role updated', Response::HTTP_OK);
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
             return $this->errorResponse([], "User not Found", Response::HTTP_NOT_FOUND);
         } catch (QueryException $queryException) {
             Log::error($queryException->getMessage());
-            return $this->errorResponse([], 'Cannot assign role to User');
+            return $this->errorResponse([], 'Cannot assign role to User', Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], 'Something went wrong');
         }
     }
-
-    // public function assignRoles(AssignRoleRequest $request): JsonResponse
-    // {
-    //     try {
-    //         $roles = $this->userService->assignUserRole($request->validated());
-    //         $result = [
-    //             'status' => Response::HTTP_OK,
-    //             'message' => 'User role updated',
-    //             'data' => RoleResource::collection($roles),
-    //         ];
-    //     } catch (ModelNotFoundException $modelNotFoundException) {
-    //         $result = [
-    //             'status' => Response::HTTP_NOT_FOUND,
-    //             'error' => "User not Found"
-    //         ];
-
-    //         Log::error($modelNotFoundException->getMessage());
-    //     } catch (QueryException $queryException) {
-    //         $result = [
-    //             'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-    //             'error' => 'Cannot assign role to User'
-    //         ];
-
-    //         Log::error($queryException->getMessage());
-    //     } catch (Exception $exception) {
-    //         $result = [
-    //             'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-    //             'error' => 'Something went wrong'
-    //         ];
-
-    //         Log::error($exception->getMessage());
-    //     }
-    //     return response()->json($result, $result['status']);
-    // }
 
 
     public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
