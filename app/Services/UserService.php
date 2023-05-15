@@ -65,15 +65,31 @@ class UserService
         return Role::exclude('admin')->get();
     }
 
-    public static function forgotPassword($validatedForgetPass): bool
+    /**
+     *
+     * @param array $validatedForgetPass
+     * @return boolean
+     */
+    public static function forgotPassword(array $validatedForgetPass): bool
     {
         $status = Password::sendResetLink($validatedForgetPass);
         if ($status === Password::INVALID_USER) return false;
         return true;
     }
 
+    /**
+     *
+     * @param array $validatedResetPass
+     * @return boolean
+     */
     public static function resetPassword(array $validatedResetPass): bool
     {
+        $user = User::where('email', $validatedResetPass['email'])->first();
+
+        if (Hash::check($validatedResetPass['password'], $user->password)) {
+            return false;
+        }
+
         $status = Password::reset($validatedResetPass, function ($user, $password) {
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();

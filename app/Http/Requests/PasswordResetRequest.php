@@ -21,12 +21,21 @@ class PasswordResetRequest extends FormRequest
      *
      * @return array
      */
+    /**
+     *  password-regex: 
+     *       -> Has at least three characters.
+     *       -> Contains at least one letter (lowercase or uppercase).
+     *       -> Includes at least one digit.
+     *       -> Includes at least one special characters from !$#%@.   
+     *
+     * @return void
+     */
     public function rules()
     {
         return [
             'email' => 'required | email |max:255',
             'token' => 'required',
-            'password' => ['required','min:6','regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/','confirmed'],
+            'password' => ['required','min:6','regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%@]).*$/','confirmed'],
         ];
     }
 }
