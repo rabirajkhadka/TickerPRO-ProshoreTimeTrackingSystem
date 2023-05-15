@@ -24,10 +24,12 @@ class ClientRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_name' => 'required|regex:^[A-Za-z]+(?:\s[A-Za-z]+)+$|max:255', //makes sure the name only accepts aplabetic characters.
+            // cleint_name-regex: allows for spaces and hyphens while also ensuring that the name only contains letters.
+            'client_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',  
             'client_number' => 'required|numeric|digits:10',
             'client_email' => 'required | email |max:255|unique:clients',
             'status' => 'required | boolean',
         ];
     }
+
 }
