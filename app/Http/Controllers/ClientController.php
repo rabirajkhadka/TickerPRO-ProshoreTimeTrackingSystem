@@ -88,8 +88,24 @@ class ClientController extends Controller
             ], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Client with this Id doesnt Exists',
+                'message' => 'Client with this Id doesnt Exists'
             ], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function destroy($id){
+        try {
+            $this->clientService->removeClient($id);
+            return response()->json([
+            ], Response::HTTP_NO_CONTENT);
+        }catch(ModelNotFoundException $modelNotFoundException){
+            return response()->json([
+                'message' => $modelNotFoundException->getMessage()
+            ],Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
