@@ -29,4 +29,5 @@ class EditClientRequest extends FormRequest
             'status' => 'required | boolean',
         ];
     }
+    
 }

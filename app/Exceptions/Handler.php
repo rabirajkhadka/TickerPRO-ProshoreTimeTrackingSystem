@@ -41,17 +41,4 @@ class Handler extends ExceptionHandler
             
         });
     }
-
-    public function render($request, Throwable $exception)
-    {
-        if ($exception instanceof ModelNotFoundException) {
-
-            if ($request->wantsJson()) {
-                return response()->json(['error' => 'Resouce not found'], 404);
-            }
-    
-            throw new NotFoundHttpException('Resource not found');        }
-
-        return parent::render($request, $exception);
-    }
 }
