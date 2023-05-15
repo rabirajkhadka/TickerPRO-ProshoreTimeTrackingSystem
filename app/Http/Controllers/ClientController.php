@@ -33,10 +33,8 @@ class ClientController extends Controller
     public function index()
     {
         try {
-            $clients = $this->client->paginate(10);
             return response()->json([
-                'total' => count($clients),
-                'clients' => ClientResource::collection($clients)
+                'clients' => ClientResource::collection($this->client->paginate())
             ], 200);
         } catch (ModelNotFoundException $modelNotFoundException) {
             return response()->json([
