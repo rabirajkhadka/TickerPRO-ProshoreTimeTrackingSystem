@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
             Route::delete('{id}', 'deleteProject');
             
         });
-        Route::controller(ClientController::class)->prefix('client')->group(function () {
+        Route::resource('clients', ClientController::class)->prefix('client')->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::patch('/{id}', 'update');
