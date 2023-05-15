@@ -14,9 +14,9 @@ class ClientService
     {
         try {
             Client::create($validatedAddClient);
-        } catch (ModelNotFoundException $modelNotFoundException) {
+        } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
-        } catch (Exception $exception) {
+        } catch (Exception) {
             throw new Exception();
         }
     }
@@ -26,9 +26,9 @@ class ClientService
             $client = Client::where('id', $id)->firstorfail();
             $client->update($validatatedEditClient);
             return $client;
-        } catch (ModelNotFoundException $modelNotFoundException) {
+        } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
-        } catch (Exception $exception) {
+        } catch (Exception) {
             throw new Exception();
         }
     }
