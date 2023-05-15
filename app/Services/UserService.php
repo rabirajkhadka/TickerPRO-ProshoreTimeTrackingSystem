@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use http\Exception\InvalidArgumentException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
@@ -19,6 +20,17 @@ use Mockery\Exception;
 
 class UserService
 {
+    protected User $userModel;
+
+    /**
+     *
+     * @param User $userModel
+     */
+    public function __construct(User $userModel)
+    {
+        $this->userModel = $userModel;
+    }
+
     public static function saveUserData(array $validatedUserRegister)
     {
         $invitedUser = InviteToken::where('email', $validatedUserRegister['email'])->first();
@@ -70,7 +82,7 @@ class UserService
      * @param array $validatedForgetPass
      * @return boolean
      */
-    public static function forgotPassword(array $validatedForgetPass): bool
+    public function forgotPassword(array $validatedForgetPass): bool
     {
         $status = Password::sendResetLink($validatedForgetPass);
         if ($status === Password::INVALID_USER) return false;
@@ -82,14 +94,23 @@ class UserService
      * @param array $validatedResetPass
      * @return boolean
      */
-    public static function resetPassword(array $validatedResetPass): bool
+    public function checkOldPass(array $validatedResetPass): bool
     {
-        $user = User::where('email', $validatedResetPass['email'])->first();
+        $user = $this->userModel->getByEmail(Arr::get($validatedResetPass, 'email'))->first();
 
         if (Hash::check($validatedResetPass['password'], $user->password)) {
             return false;
         }
+        return true;
+    }
 
+    /**
+     *
+     * @param array $validatedResetPass
+     * @return boolean
+     */
+    public function resetPassword(array $validatedResetPass): bool
+    {
         $status = Password::reset($validatedResetPass, function ($user, $password) {
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();
