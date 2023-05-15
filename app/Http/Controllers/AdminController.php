@@ -101,7 +101,7 @@ class AdminController extends Controller
     {
         try {
             $roles = $this->userService->assignUserRole($request->validated());
-            return $this->successResponse(RoleResource::collection($roles), 'User role updated', Response::HTTP_OK);
+            return $this->successResponse([RoleResource::collection($roles)], 'User role updated', Response::HTTP_OK);
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
             return $this->errorResponse([], "User not Found", Response::HTTP_NOT_FOUND);

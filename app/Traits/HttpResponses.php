@@ -14,7 +14,7 @@ trait HttpResponses
      * @return JsonResponse
      */
 
-    public function successResponse($data, string $message = null, int $code = Response::HTTP_OK): JsonResponse
+    public function successResponse(array $data, string $message = null, int $code = Response::HTTP_OK): JsonResponse
     {
         return response()->json([
             'status' => 'Success',
@@ -31,7 +31,7 @@ trait HttpResponses
      * @param integer $status
      * @return JsonResponse
      */
-    public function errorResponse($data, string $message = null, int $code = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
+    public function errorResponse(array $data, string $message = null, int $code = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
     {
         return response()->json([
             'status' => 'Error',
