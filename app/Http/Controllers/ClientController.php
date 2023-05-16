@@ -79,7 +79,7 @@ class ClientController extends Controller
     {
         $validatedEditClient = $request->validated();
         try {
-            $result =  $this->clientService->EditCLient($validatedEditClient, $id); ////// use dependency
+            $result =  $this->clientService->EditCLient($validatedEditClient, $id);
             return response()->json([
                 'message' => 'Client Edited succesfully',
                 'client' => $result
