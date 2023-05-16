@@ -38,11 +38,9 @@ class ClientController extends Controller
         try {
             return $this->successResponse([ClientResource::collection($this->client->paginate())]);
         } catch (ModelNotFoundException $modelNotFoundException) {
-            return response()->json([
-                'message' => 'No Clients to display',
-            ], Response::HTTP_BAD_REQUEST);
-        } 
-        catch (\Exception $exception) {
+            return $this->errorResponse([],'No Clients to display',Response::HTTP_BAD_REQUEST);
+        }catch (\Exception $exception) {
+            return $this->errorResponse([],'Something went wrong',Response::HTTP_BAD_REQUEST);
         }
     }
 
