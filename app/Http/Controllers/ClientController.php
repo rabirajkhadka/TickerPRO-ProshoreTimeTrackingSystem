@@ -10,12 +10,15 @@ use App\Services\ClientService;
 use App\Http\Requests\{AddClientRequest, EditClientRequest};
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\ClientResource;
+use App\Traits\HttpResponses;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 
 
 class ClientController extends Controller
 {
+    use HttpResponses;
+
     protected Client $client;
     protected ClientService $clientService;
 
@@ -33,17 +36,13 @@ class ClientController extends Controller
     public function index()
     {
         try {
-            return response()->json([
-                'clients' => ClientResource::collection($this->client->paginate())
-            ], 200);
+            return $this->successResponse([ClientResource::collection($this->client->paginate())]);
         } catch (ModelNotFoundException $modelNotFoundException) {
             return response()->json([
                 'message' => 'No Clients to display',
             ], Response::HTTP_BAD_REQUEST);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
+        } 
+        catch (\Exception $exception) {
         }
     }
 
@@ -79,7 +78,7 @@ class ClientController extends Controller
     {
         $validatedEditClient = $request->validated();
         try {
-            $result =  $this->clientService->EditCLient($validatedEditClient, $id);
+            $result =  $this->clientService->editCLient($validatedEditClient, $id); ////// use dependency
             return response()->json([
                 'message' => 'Client Edited succesfully',
                 'client' => $result
@@ -90,7 +89,7 @@ class ClientController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => $e->getMessage(),
+                'message' => 'Something went wrong',
             ], Response::HTTP_BAD_REQUEST);
         }
     }
