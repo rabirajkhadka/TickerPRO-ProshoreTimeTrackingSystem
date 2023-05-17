@@ -95,7 +95,9 @@ class AuthController extends Controller
 
             // Check for a valid user
             $status = $this->userService->forgotPassword($validatedForgetPass);
-            if(!$status) return $this->errorResponse([], "User with the given email address not found", Response::HTTP_NOT_FOUND);   
+            if(!$status) {
+                return $this->errorResponse([], "User with the given email address not found", Response::HTTP_NOT_FOUND); 
+            }
 
             return $this->successResponse([], 'Reset email sent successfully', Response::HTTP_OK);
 
@@ -126,11 +128,15 @@ class AuthController extends Controller
 
             // Check if the old pasword matches new password
             $checkOldPass = $this->userService->checkOldPass($validatedResetPass);
-            if (!$checkOldPass) return $this->errorResponse([], "New password cannot be your old password", Response::HTTP_BAD_REQUEST);
+            if (!$checkOldPass){
+                return $this->errorResponse([], "New password cannot be your old password", Response::HTTP_BAD_REQUEST);
+            }
 
             // Check for a valid token or the valid email address of user
             $status = $this->userService->resetPassword($validatedResetPass);
-            if (!$status) return $this->errorResponse([], "Could not reset password. Please check your token or email address", Response::HTTP_FORBIDDEN);
+            if (!$status){
+                return $this->errorResponse([], "Could not reset password. Please check your token or email address", Response::HTTP_FORBIDDEN);
+            }
     
             return $this->successResponse([], 'Password reset successfully', Response::HTTP_OK);
     
