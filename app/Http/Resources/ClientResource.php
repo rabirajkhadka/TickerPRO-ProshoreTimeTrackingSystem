@@ -19,6 +19,7 @@ class ClientResource extends JsonResource
             'client_name'=>$this->client_name,
             'client_email'=>$this->client_email,
             'client_number'=>$this->client_number,
+            'projects' => ProjectResource::collection($this->whenLoaded('projects')),
             'status'=>$this->status,
         ];
 

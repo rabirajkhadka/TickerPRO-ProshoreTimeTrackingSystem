@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AssignRoleRequest;
 use App\Http\Requests\MemberInviteRequest;
-use App\Models\UserRole;
 use App\Services\InviteService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -11,10 +11,29 @@ use App\Models\User;
 use Mockery\Exception;
 use App\Http\Resources\AdminResource;
 use App\Http\Resources\RoleResource;
+use App\Traits\HttpResponses;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
+    use HttpResponses;
+
+    private UserService $userService;
+
+    /**
+     *
+     * @param UserService $userService
+     */
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function deleteUser($id)
     {
         $user = User::where('id', $id)->first();
@@ -68,30 +87,33 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function assignRoles(Request $request)
+
+
+    /**
+     * @param AssignRoleRequest $request
+     * @return JsonResponse
+     * @throws Exception
+     * @throws ModelNotFoundException
+     * @throws QueryException
+     */
+
+    public function assignRoles(AssignRoleRequest $request): JsonResponse
     {
-        $rules = [
-            'email' => 'required | email',
-        ];
         try {
-            $user = UserService::getUser($request->toArray(), $rules);
-            $role = UserRole::create([
-                'user_id' => $user['id'],
-                'role_id' => $request->role_id
-            ]);
-            $result = [
-                'status' => 200,
-                'message' => 'User role updated',
-                'user' => $role,
-            ];
-        } catch (Exception $e) {
-            $result = [
-                'status' => 404,
-                'error' => $e->getMessage()
-            ];
+            $roles = $this->userService->assignUserRole($request->validated());
+            return $this->successResponse([RoleResource::collection($roles)], 'User is assigned the role ', Response::HTTP_OK);
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], "User not Found", Response::HTTP_NOT_FOUND);
+        } catch (QueryException $queryException) {
+            Log::error($queryException->getMessage());
+            return $this->errorResponse([], 'Cannot assign role to User', Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
-        return response()->json($result, $result['status']);
     }
+
 
     public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
     {

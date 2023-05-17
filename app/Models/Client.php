@@ -16,6 +16,7 @@ class Client extends Model
         'client_number',
         'status',
     ];
+    protected int $perpage = 20;
 
     public function projects(): HasMany
     {

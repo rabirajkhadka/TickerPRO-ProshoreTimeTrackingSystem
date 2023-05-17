@@ -18,7 +18,7 @@ class ProjectResource extends JsonResource
         return [
             'project_id'=>$this->id,
             'project_name'=>$this->project_name,
-            'client'=>new ClientResource($this->client),
+            'client'=> new ClientResource($this->whenloaded('client')),
             'billable'=>$this->billable,
             'status'=>$this->status,
         ];
