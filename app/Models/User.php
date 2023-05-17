@@ -10,8 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+
+class User extends Model
+
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -52,6 +55,21 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
+     /**
+         * Get the number of active admin users.
+         */
+        /**
+         * Undocumented function
+         *
+         * @return integer
+         */
+        public function getActiveAdminsCount(): int
+        {
+            return $this->whereHas('roles', function ($query) {
+                $query->where('role', 'admin')->where('activeStatus', true);
+            })->count();
+        }
+    
 
     /*
      * Get the project that belongs to the user
@@ -73,13 +91,18 @@ class User extends Authenticatable
     }
 
 
-    /**
-     *
-     * @param Builder $query
-     * @param string $email
-     * @return void
-     */
 
+ /**
+  * This is a PHP function that returns a query builder object filtered by a given email address.
+  * 
+  * @param Builder query The query parameter is an instance of the Laravel query builder, which allows
+  * you to build and execute database queries in a fluent and expressive way.
+  * @param string email The email parameter is a string that represents the email address of a user. It
+  * is used in the query to retrieve a user from the database based on their email address.
+  * 
+  * @return `scopeGetByEmail` function is returning a query builder instance filtered by the given
+  * email address.
+  */
     public function scopeGetByEmail(Builder $query, string $email)
     {
         return $query->where('email', $email);

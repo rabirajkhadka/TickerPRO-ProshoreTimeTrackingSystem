@@ -6,7 +6,6 @@ use App\Http\Requests\AssignRoleRequest;
 use App\Http\Requests\MemberInviteRequest;
 use App\Services\InviteService;
 use App\Services\UserService;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Mockery\Exception;
 use App\Http\Resources\AdminResource;
@@ -17,21 +16,52 @@ use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
-{
+{   
     use HttpResponses;
-
-    private UserService $userService;
-
     /**
+     * @var mixed
      *
-     * @param UserService $userService
+     * @var UserService
      */
-
-    public function __construct(UserService $userService)
+    private UserService $userService;
+    private User $userModel;
+    
+    public function __construct(UserService $userService, User $userModel)
     {
         $this->userService = $userService;
+        $this->userModel = $userModel;
+
+    }
+/** */
+/**
+ * Undocumented function
+ *
+ * @param  Request  $request
+ * @return JsonResponse
+ */
+
+ 
+    public function updateUserStatus(Request $request):JsonResponse
+    {
+        try {
+            $user = $this->userService->updateUserStatus($request->id);
+
+            return response()->json($user);
+        } catch (ModelNotFoundException $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'User does not exist with the given id'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'An error occurred',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function deleteUser($id)
@@ -131,57 +161,5 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function updateUserStatus(Request $request)
-    {
-        $user = User::where('id', $request->id)->first();
-    
-        if (!$user) {
-            return response()->json([
-                'message' => 'User does not exist with given id'
-            ], Response::HTTP_NOT_FOUND);
-        }
-    
-        $isAdmin = $user->roles()->pluck('role')->contains('admin');
-        
-        if ($isAdmin) {
-            // check if user is trying to disable/enable itself
-            if ($user->id === auth()->user()->id) {
-                return response()->json([
-                    'message' => 'Admin cannot disable itself'
-                ], 403);
-            }
-    
-            // check if disabling admin user will result in no active admin users
-            $activeAdminsCount = User::whereHas('roles', function ($query) {
-                $query->where('role', 'admin')->where('activeStatus', true);
-            })->count();
-            
-            if ($activeAdminsCount <= 1) {
-                return response()->json([
-                    'message' => 'At least one admin user must be active'
-                ], 403);
-            }
-        }
 
-        try {
-            if(!$user->activeStatus){
-                $user->activeStatus=true;
-            }else{
-                $user->activeStatus=false;
-            }
-            $user->save();
-    
-            $result = [
-                'status' => 200,
-                'message' => 'User status updated'
-            ];
-        } catch (Exception $e) {
-            $result = [
-                'status' => 500,
-                'error' => $e->getMessage()
-            ];
-        }
-    
-        return response()->json($result, $result['status']);
-    }
 }
