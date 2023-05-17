@@ -29,12 +29,10 @@ class ClientController extends Controller
 
     public function viewAllClients()
     {
-        $projects = Client::all();
-
+        $clients = Client::with(['projects'])->paginate();
+        return ClientResource::collection($clients);   
         return response()->json([
-            'total' => count($projects),
-            'clients' => ClientResource::collection($projects)
+            'clients' => ClientResource::collection($clients)
         ], 200);
-    
     }
 }

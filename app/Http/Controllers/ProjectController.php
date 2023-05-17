@@ -18,6 +18,7 @@ class ProjectController extends Controller
     public function __construct(protected ProjectService $projectService)
     {
     }
+    
     public function addActivity(ProjectRequest $request): JsonResponse
     {
         $validatedAddProject = $request->validated();
@@ -102,7 +103,7 @@ class ProjectController extends Controller
 
     public function viewAllProjects(Request $request)
     {
-        $projects = Project::orderBy('updated_at', 'desc')->paginate();
+        $projects = Project::orderBy('updated_at', 'desc')->with('client')->paginate();
         if ($request['search']) {
             $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->paginate();
         }
