@@ -28,10 +28,13 @@ class ClientService
             throw new Exception();
         }
     }
-    /**
-     * 
-     */
 
+    /**
+     * Undocumented function
+     *
+     * @param array $validatedAddClient
+     * @return void
+     */
     public static function addClient(array $validatedAddClient)
     {
         try {
@@ -50,7 +53,7 @@ class ClientService
      * @param [type] $id
      * @return void
      */
-    public static function editClient(array $validatatedEditClient, $client)
+    public static function editClient(array $validatatedEditClient,int $client)
     {
         // dd($client);
         try {
