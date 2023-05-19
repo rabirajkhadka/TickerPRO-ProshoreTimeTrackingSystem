@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
@@ -30,9 +32,12 @@ Route::get('all-roles', [UserController::class, 'allUserRoles']);
 Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('register', 'registerUser')->name('register');
     Route::post('login', 'loginUser')->name('login');
-    Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
-    Route::post('forgot-password', 'forgotPass');
-    Route::post('reset-password', 'resetPass');
+    Route::get('logout', 'logoutUser')->middleware('auth:sanctum');   
+});
+
+Route::prefix('user')->group(function () {
+    Route::post('forgot-password', ForgotPasswordController::class);
+    Route::post('reset-password', ResetPasswordController::class);
 });
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
