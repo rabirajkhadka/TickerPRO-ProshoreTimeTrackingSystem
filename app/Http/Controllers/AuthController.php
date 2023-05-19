@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
     use HttpResponses;
 
-    private UserService $userService;
+    protected UserService $userService;
 
     /**
      *

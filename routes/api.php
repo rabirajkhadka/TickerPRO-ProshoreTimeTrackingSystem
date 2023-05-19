@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Actions\Auth\ForgotPasswordAction;
+use App\Http\Controllers\Actions\Auth\ResetPasswordAction;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
@@ -36,8 +36,8 @@ Route::controller(AuthController::class)->prefix('user')->group(function () {
 });
 
 Route::prefix('user')->group(function () {
-    Route::post('forgot-password', ForgotPasswordController::class);
-    Route::post('reset-password', ResetPasswordController::class);
+    Route::post('forgot-password', ForgotPasswordAction::class);
+    Route::post('reset-password', ResetPasswordAction::class);
 });
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
