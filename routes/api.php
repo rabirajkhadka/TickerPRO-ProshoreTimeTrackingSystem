@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Actions\Invite\InviteOthersAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -49,13 +50,18 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
         Route::patch('{id}', 'editActivity');
         Route::delete('{id}', 'removeActivity');
     });
+
     Route::middleware(['isAdmin'])->group(function () {
+
+        Route::prefix('admin')->group(function () {
+            Route::post('invite', InviteOthersAction::class);
+        });
+
         Route::controller(AdminController::class)->prefix('admin')->group(function () {
             Route::get('users', 'viewAllUsers');
             Route::post('change-roles', 'assignRoles');
             Route::get('user-roles/{id}', 'viewUserRole');
             Route::delete('user/{id}', 'deleteUser');
-            Route::post('invite', 'inviteOthers');
             Route::patch('user-status/{id}', 'updateUserStatus');
         });
         Route::controller(InviteController::class)->prefix('invite')->group(function () {
