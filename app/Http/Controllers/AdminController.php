@@ -23,15 +23,19 @@ class AdminController extends Controller
     use HttpResponses;
 
     private UserService $userService;
+    protected InviteService $inviteService;
+
 
     /**
      *
      * @param UserService $userService
+     * @param InviteService $inviteService
      */
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, InviteService $inviteService)
     {
         $this->userService = $userService;
+        $this->inviteService = $inviteService;
     }
 
     public function deleteUser($id)
@@ -115,20 +119,33 @@ class AdminController extends Controller
     }
 
 
-    public function inviteOthers(MemberInviteRequest $request, InviteService $inviteService)
+
+    /**
+     *
+     * @param MemberInviteRequest $request
+     * @param InviteService $inviteService
+     * @throws QueryException
+     * @throws Exception
+     * @return JsonResponse
+     */
+
+    public function inviteOthers(MemberInviteRequest $request): JsonResponse
     {
-        $validated = $request->safe()->only(['role_id', 'email', 'user_id', 'name']);
-        $status = $inviteService->invite($validated['name'], $validated['email'], $validated['role_id'], $validated['user_id']);
-
-        if (!$status) {
-            return response()->json([
-                'message' => 'User could not be invited'
-            ], 500);
+        $validatedInputs =  $request->validated();
+        try {
+            $token = $this->inviteService->generateToken();
+            $this->inviteService->invite($validatedInputs, $token);
+            if (config('app.env') === 'local' || config('app.env') === "development") {
+                return $this->successResponse(['token' => $token], 'User invited successfully');
+            }
+            return $this->successResponse([], 'User invited successfully');
+        } catch (QueryException $queryException) {
+            Log::error($queryException->getMessage());
+            return $this->errorResponse([], 'User could not be invited');
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
-
-        return response()->json([
-            'message' => 'User invited successfully'
-        ], 200);
     }
 
     public function updateUserStatus(Request $request)

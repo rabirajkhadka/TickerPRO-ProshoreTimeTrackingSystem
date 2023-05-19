@@ -6,37 +6,61 @@ use App\Mail\InviteCreated;
 use App\Mail\ReInvite;
 use App\Models\InviteToken;
 use Carbon\Carbon;
+use Doctrine\DBAL\Query\QueryException;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class InviteService
 {
-    public function generateToken(): string
+    protected InviteToken $inviteToken;
+
+    /**
+     * @param InviteToken $inviteToken
+     */
+
+    public function __construct(InviteToken $inviteToken)
     {
-        $random = Str::random(60);
-        $time = Carbon::now();
-        return $random . $time->toDateTimeLocalString();
+        $this->inviteToken = $inviteToken;
     }
 
-    public function invite($name, $email, $role_id, $user_id): bool
-    {
-        $token = $this->generateToken();
-        $url = config('frontend.url') . '/register/' . $token . '?email=' . $email . '&name=' . urlencode($name);
+    /**
+     * @return string
+     */
 
-        $user = InviteToken::create([
-            'name' => $name,
-            'email' => $email,
-            'role_id' => $role_id,
-            'token' => $token,
-            'tokenExpires' => Carbon::now()->addDays(5),
-            'invitedUserId' => $user_id
-        ]);
-        if (!$user) return false;
-        // send an email notifying that you are invited
-        Mail::to($email)->send(new InviteCreated($url));
-        return true;
+    public static function generateToken(): string
+    {
+        $random = Str::random(45);
+        return $random . uniqid();
     }
+
+    /**
+     *
+     * @param array $credentials
+     * @return void
+     */
+
+    public function invite(array $credentials, string $token): void
+    {
+        $url = config('frontend.url') . '/register' . '?token=' . $token .
+            '&email=' .  $credentials['email'] . '&name=' . urlencode($credentials['name']);
+
+        $credentials['token'] = $token;
+        $credentials['tokenExpires'] = Carbon::now()->addDays(5);
+        $credentials['invitedUserId'] = $credentials['user_id'];
+
+        try {
+            $this->inviteToken->create($credentials);
+            Mail::to(Arr::get($credentials, 'email'))->send(new InviteCreated($url));
+        } catch (QueryException) {
+            throw new QueryException();
+        } catch (Exception) {
+            throw new Exception();
+        }
+    }
+
 
     public static function invitedList(): Collection
     {
