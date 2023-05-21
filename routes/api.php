@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Actions\Auth\ResetPasswordAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -27,13 +28,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('all-roles', [UserController::class, 'allUserRoles']);
 
+Route::prefix('user')->group(function () {
+    Route::post('reset-password', ResetPasswordAction::class);
+});
+
 Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('register', 'registerUser')->name('register');
     Route::post('login', 'loginUser')->name('login');
     Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
     Route::post('forgot-password', 'forgotPass');
-    Route::post('reset-password', 'resetPass');
 });
+
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::controller(UserController::class)->prefix('user')->group(function () {

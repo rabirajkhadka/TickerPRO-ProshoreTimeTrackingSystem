@@ -120,15 +120,30 @@ class UserService
         return true;
     }
 
+    /**
+     *
+     * @param array $validatedResetPass
+     * @throws QueryException
+     * @throws Exception
+     * @return bool
+     */
+
     public static function resetPassword(array $validatedResetPass): bool
     {
-        $status = Password::reset($validatedResetPass, function ($user, $password) {
-            $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
-            $user->save();
-        });
-        if ($status === Password::INVALID_TOKEN) return false;
-        return true;
+        try {
+            $status = Password::reset($validatedResetPass, function ($user, $password) {
+                $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
+                $user->save();
+            });
+
+            return $status === Password::PASSWORD_RESET ? true : false;
+        } catch (QueryException) {
+            throw new QueryException();
+        } catch (Exception) {
+            throw new Exception();
+        }
     }
+
 
     public static function checkUserIdExists($id)
     {
