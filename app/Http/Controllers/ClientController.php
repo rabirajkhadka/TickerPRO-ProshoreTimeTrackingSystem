@@ -28,7 +28,7 @@ class ClientController extends Controller
     /**
      *  
      *
-     * @return void
+     * @return jsonResource
      */
     public function index()
     {
@@ -70,7 +70,7 @@ class ClientController extends Controller
      *
      * @param EditClientRequest $request
      * @param integer $client
-     * @return void
+     * @return jsonResponse
      */
     public function update(EditClientRequest $request, int $client)
     {
