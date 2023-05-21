@@ -10,21 +10,29 @@ use Mockery\Exception;
 
 class ClientService
 {
+    protected Client $client;
+
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }   
+    
     /**
-     * Undocumented function
+     * 
      *
      * @return void
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return JsonResponse
      */
     public static function viewClients()
     {
-        try{
+        try {
             $clients = Client::with(['projects'])->paginate();
             return ClientResource::collection($clients);
-        }
-        catch(ModelNotFoundException){
+        } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
-        }
-        catch(Exception){
+        } catch (Exception) {
             throw new Exception();
         }
     }
@@ -33,6 +41,8 @@ class ClientService
      * Undocumented function
      *
      * @param array $validatedAddClient
+     * @throws QueryException
+     * @throws Exception
      * @return void
      */
     public static function addClient(array $validatedAddClient)
@@ -51,13 +61,15 @@ class ClientService
      *
      * @param array $validatatedEditClient
      * @param [type] $id
+     * @throws ModelNotFoundException
+     * @throws QueryException
+     * @throws Exception
      * @return void
      */
-    public static function editClient(array $validatatedEditClient,int $client)
+    public static function editClient(array $validatatedEditClient, int $client)
     {
-        // dd($client);
         try {
-            $clients = Client::where('id', $client)->firstorfail();  
+            $clients = Client::where('id', $client)->firstorfail();
             $clients->update($validatatedEditClient);
             return $clients;
         } catch (ModelNotFoundException) {
