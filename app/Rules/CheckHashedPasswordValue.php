@@ -6,6 +6,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Validation\InvokableRule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -38,7 +39,7 @@ class CheckHashedPasswordValue implements InvokableRule
     {
         try {
             $user = User::getByEmail($this->email)->firstorFail();
-            if (Hash::check($value, $user->password)) {
+            if (Hash::check($value, Arr::get($user, 'password'))) {
                 $fail("Your new password cannot be the same as your previous password. Please choose a different password.");
             }
         } catch (ModelNotFoundException $modelNotFoundException) {

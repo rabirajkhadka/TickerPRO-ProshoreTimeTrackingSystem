@@ -3,12 +3,13 @@
 namespace App\Rules;
 
 use App\Models\PasswordReset;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Validation\InvokableRule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Password;
 
 class VerifyResetToken implements InvokableRule
 {
@@ -38,7 +39,9 @@ class VerifyResetToken implements InvokableRule
     {
         try {
             $user = PasswordReset::getByEmail($this->email)->firstOrFail();
-            if (!Hash::check($value, $user->token)) {
+            $expired = Carbon::parse(Arr::get($user, 'created_at'))->addMinutes(30)->isPast();
+
+            if (!Hash::check($value, Arr::get($user, 'token')) || $expired) {
                 $fail("The entered token is Invalid or Expired");
             }
         } catch (ModelNotFoundException $modelNotFoundException) {
