@@ -5,13 +5,19 @@ namespace App\Services;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Mockery\Exception;
+use Illuminate\Http\JsonResponse;
 
 class ClientService
 {
     protected Client $client;
 
+    /**
+     *
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->client = $client;
@@ -66,7 +72,7 @@ class ClientService
      * @throws Exception
      * @return jsonResponse
      */
-    public function editClient(array $validatatedEditClient, int $client)
+    public function editClient(array $validatatedEditClient, int $client): JsonResponse
     {
         try {
             $clients = $this->client->where('id', $client)->firstorfail();

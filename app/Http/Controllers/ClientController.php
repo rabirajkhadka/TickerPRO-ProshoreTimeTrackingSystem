@@ -20,6 +20,10 @@ class ClientController extends Controller
 
     protected ClientService $clientService;
 
+    /**
+     *
+     * @param ClientService $clientService
+     */
     public function __construct(ClientService $clientService)
     {
         $this->clientService = $clientService;
@@ -30,7 +34,7 @@ class ClientController extends Controller
      *
      * @return jsonResource
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             $data =$this->clientService->viewClients();
@@ -72,7 +76,7 @@ class ClientController extends Controller
      * @param integer $client
      * @return jsonResponse
      */
-    public function update(EditClientRequest $request, int $client)
+    public function update(EditClientRequest $request, int $client): JsonResponse
     {
         try {
             $validatedEditClient = $request->validated();
