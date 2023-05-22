@@ -70,11 +70,6 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::delete('{id}', 'deleteProject');
         });
         Route::apiResource('client', ClientController::class)->except(['show']);
-        // Route::controller(ClientController::class)->prefix('client')->group(function () {
-        //     Route::get('/', 'index');
-        //     Route::post('/', 'store');
-        //     Route::patch('/{id}', 'update');
-        // });
     });
     Route::middleware(['project.status'])->group(function () {
         Route::controller(ProjectController::class)->prefix('project')->group(function () {
