@@ -10,7 +10,13 @@ use Mockery\Exception;
 
 class ClientService
 {
+    protected Client $client;
 
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }   
+    
     /**
      * 
      *
@@ -19,10 +25,10 @@ class ClientService
      * @throws Exception
      * @return JsonResponse
      */
-    public static function viewClients()
+    public function viewClients()
     {
         try {
-            $clients = Client::with(['projects'])->paginate();
+            $clients = $this->client->with(['projects'])->paginate();
             return ClientResource::collection($clients);
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
@@ -39,10 +45,10 @@ class ClientService
      * @throws Exception
      * @return void
      */
-    public static function addClient(array $validatedAddClient)
+    public function addClient(array $validatedAddClient)
     {
         try {
-            Client::create($validatedAddClient);
+            $this->client->create($validatedAddClient);
         } catch (QueryException) {
             throw new QueryException();
         } catch (Exception) {
@@ -60,10 +66,10 @@ class ClientService
      * @throws Exception
      * @return void
      */
-    public static function editClient(array $validatatedEditClient, int $client)
+    public function editClient(array $validatatedEditClient, int $client)
     {
         try {
-            $clients = Client::where('id', $client)->firstorfail();
+            $clients = $this->client->where('id', $client)->firstorfail();
             $clients->update($validatatedEditClient);
             return $clients;
         } catch (ModelNotFoundException) {
