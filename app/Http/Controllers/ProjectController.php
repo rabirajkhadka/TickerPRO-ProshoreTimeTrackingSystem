@@ -14,9 +14,11 @@ use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
-
-    public function __construct(protected ProjectService $projectService)
+    protected ProjectService $projectService;
+    
+    public function __construct(ProjectService $projectService)
     {
+        $this->projectService = $projectService;
     }
     
     public function addActivity(ProjectRequest $request): JsonResponse
@@ -42,7 +44,7 @@ class ProjectController extends Controller
                 "message" => "Project Updated Successfully",
                 "project" => $updateProjectData
             ], Response::HTTP_OK);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {   
             return response()->json([
                 'message' => "Project with this Id doesnt Exists",
             ], Response::HTTP_BAD_REQUEST);

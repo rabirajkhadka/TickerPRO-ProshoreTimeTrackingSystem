@@ -17,7 +17,7 @@ class Client extends Model
         'status',
     ];
     protected int $perpage = 20;
-
+    
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class, 'client_id');

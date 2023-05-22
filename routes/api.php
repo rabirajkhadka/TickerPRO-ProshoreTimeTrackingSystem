@@ -69,14 +69,11 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::patch('project-status/{id}', 'updateProjectStatus');
             Route::delete('{id}', 'deleteProject');
         });
-        Route::controller(ClientController::class)->prefix('client')->group(function () {
-            Route::post('/', 'addActivity');
-            Route::get('/', 'viewAllClients');
-        });
-        Route::middleware(['project.status'])->group(function () {
-            Route::controller(ProjectController::class)->prefix('project')->group(function () {
-                Route::patch('billable-status/{id}', 'updateBillableStatus');
-            });
+        Route::apiResource('client', ClientController::class)->except(['show']);
+    });
+    Route::middleware(['project.status'])->group(function () {
+        Route::controller(ProjectController::class)->prefix('project')->group(function () {
+            Route::patch('billable-status/{id}', 'updateBillableStatus');
         });
     });
 });
