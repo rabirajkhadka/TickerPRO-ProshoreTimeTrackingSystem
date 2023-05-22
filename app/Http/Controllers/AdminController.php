@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
@@ -77,14 +78,27 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function viewUserRole(Request $request)
-    {
-        $role = User::find($request->id)->roles;
 
-        return response()->json([
-            'total' => count($role),
-            'roles' => RoleResource::collection($role)
-        ], 200);
+    /**
+     *
+     * @param Request $request
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return JsonResponse
+     */
+    public function viewUserRole(Request $request): JsonResponse
+    {
+        try {
+            $role = User::findOrFail(Arr::get($request, 'id'))->roles;
+            return $this->successResponse([
+                'total' => count($role),
+                'roles' => RoleResource::collection($role)
+            ], "User Role Successfully Retrieved");
+        } catch (ModelNotFoundException) {
+            return $this->errorResponse([], "User does not exists", Response::HTTP_NOT_FOUND);
+        } catch (Exception) {
+            return $this->errorResponse([], "Something went wrong");
+        }
     }
 
 
