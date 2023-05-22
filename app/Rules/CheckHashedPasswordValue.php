@@ -19,7 +19,7 @@ class CheckHashedPasswordValue implements InvokableRule
      * @param string $email
      */
 
-    public function __construct(string $email)
+    public function __construct(string|null $email)
     {
         $this->email = $email;
     }
@@ -38,7 +38,10 @@ class CheckHashedPasswordValue implements InvokableRule
     public function __invoke($attribute, $value, $fail)
     {
         try {
-            $user = User::getByEmail($this->email)->firstorFail();
+            if (is_null($this->email)) {
+                $fail("Entered email is invalid");
+            }
+            $user = User::getByEmail($this->email)->firstOrFail();
             if (Hash::check($value, Arr::get($user, 'password'))) {
                 $fail("Your new password cannot be the same as your previous password. Please choose a different password.");
             }

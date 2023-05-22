@@ -20,17 +20,7 @@ class PasswordResetRequest extends FormRequest
         return true;
     }
 
-    /**
-     *
-     * @return void
-     */
 
-    public function prepareForValidation()
-    {
-        $this->merge([
-            'email' => (string)$this->email
-        ]);
-    }
 
 
     /**
@@ -41,9 +31,8 @@ class PasswordResetRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required | email |max:255',
+            'email' => 'required|email|max:255',
             'token' => [
-
                 'required',
                 new VerifyResetToken($this->email)
             ],

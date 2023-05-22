@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Log;
 
 class VerifyResetToken implements InvokableRule
 {
-    protected $email;
+    protected  $email;
 
     /**
      * @param string $email
      */
 
-    public function __construct(string $email)
+    public function __construct(string|null $email)
     {
         $this->email = $email;
     }
@@ -38,6 +38,9 @@ class VerifyResetToken implements InvokableRule
     public function __invoke($attribute, $value, $fail)
     {
         try {
+            if (is_null($this->email)) {
+                $fail("Entered email is invalid");
+            }
             $user = PasswordReset::getByEmail($this->email)->firstOrFail();
             $expired = Carbon::parse(Arr::get($user, 'created_at'))->addMinutes(30)->isPast();
 

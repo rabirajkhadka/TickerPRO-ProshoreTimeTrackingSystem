@@ -41,10 +41,8 @@ class ResetPasswordAction extends Controller
         $validatedResetPass = $request->validated();
         try {
             $status = $this->userService->resetPassword($validatedResetPass);
-            if ($status === true) {
-                return $this->successResponse([], 'Password reset successfully');
-            }
-            return $this->errorResponse([], 'The entered token is Invalid or Expired', Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $status === true ? $this->successResponse([], 'Password reset successfully') :
+                $this->errorResponse([], 'The entered token is Invalid or Expired', Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (QueryException $queryException) {
             Log::error($queryException->getMessage());
             return $this->errorResponse([], 'Failed to reset password. Please try again later.');
