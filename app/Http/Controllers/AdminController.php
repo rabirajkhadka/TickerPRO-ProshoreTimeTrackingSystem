@@ -19,6 +19,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
+use function PHPUnit\Framework\isEmpty;
+
 class AdminController extends Controller
 {
     use HttpResponses;
@@ -90,13 +92,16 @@ class AdminController extends Controller
     {
         try {
             $role = User::findOrFail(Arr::get($request, 'id'))->roles;
-            return $this->successResponse([
+            $data = [
                 'total' => count($role),
                 'roles' => RoleResource::collection($role)
-            ], "User Role Successfully Retrieved");
-        } catch (ModelNotFoundException) {
+            ];
+            return $this->successResponse($data, "User Role Successfully Retrieved");
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
             return $this->errorResponse([], "User does not exists", Response::HTTP_NOT_FOUND);
-        } catch (Exception) {
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
             return $this->errorResponse([], "Something went wrong");
         }
     }
