@@ -26,10 +26,9 @@ class ClientService
     /**
      * 
      *
-     * @return void
      * @throws ModelNotFoundException
      * @throws Exception
-     * @return JsonResponse
+     * @return Collection
      */
     public function viewClients()
     {
@@ -51,7 +50,7 @@ class ClientService
      * @throws Exception
      * @return void
      */
-    public function addClient(array $validatedAddClient)
+    public function addClient(array $validatedAddClient): Void
     {
         try {
             $this->client->create($validatedAddClient);
