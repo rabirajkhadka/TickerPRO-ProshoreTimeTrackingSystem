@@ -76,7 +76,7 @@ class ClientController extends Controller
      * @param integer $client
      * @return jsonResponse
      */
-    public function update(EditClientRequest $request, int $client): JsonResponse
+    public function update(EditClientRequest $request, $client): JsonResponse
     {
         try {
             $validatedEditClient = $request->validated();
