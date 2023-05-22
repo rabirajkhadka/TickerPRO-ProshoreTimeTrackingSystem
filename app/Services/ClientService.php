@@ -64,7 +64,7 @@ class ClientService
      * @throws ModelNotFoundException
      * @throws QueryException
      * @throws Exception
-     * @return void
+     * @return jsonResponse
      */
     public function editClient(array $validatatedEditClient, int $client)
     {
