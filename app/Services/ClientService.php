@@ -69,9 +69,9 @@ class ClientService
      * @throws ModelNotFoundException
      * @throws QueryException
      * @throws Exception
-     * @return jsonResponse
+     * @return JsonResponse
      */
-    public function editClient(array $validatatedEditClient, int $client): JsonResponse
+    public function editClient(array $validatatedEditClient, int $client)
     {
         try {
             $clients = $this->client->where('id', $client)->firstorfail();
