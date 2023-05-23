@@ -86,13 +86,13 @@ class ClientController extends Controller
             return $this->successResponse([$result], 'Client Edited successfully');
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
-            return $this->errorResponse([], 'Client with this Id doesnt Exists', Response::HTTP_NOT_FOUND);
+            return $this->errorResponse([], 'Resource Not Found', Response::HTTP_NOT_FOUND);
         } catch (TypeError $error) {
             Log::error($error->getMessage());
             return $this->errorResponse([], 'Bad Request', Response::HTTP_NOT_FOUND);
         } catch (QueryException $queryException) {
             Log::error($queryException->getMessage());
-            return $this->errorResponse([], 'Could not edit clients', Response::HTTP_BAD_REQUEST);
+            return $this->errorResponse([], 'Could not Edit', Response::HTTP_BAD_REQUEST);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], 'Something went wrong');
