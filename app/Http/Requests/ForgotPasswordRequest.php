@@ -24,7 +24,14 @@ class ForgotPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|max:255'
+            'email' => 'required|email|max:255|exists:users,email'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.exists' => 'User with the given email address not found'
         ];
     }
 }

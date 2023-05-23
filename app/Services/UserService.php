@@ -121,23 +121,7 @@ class UserService
     public function forgotPassword(array $validatedForgetPass): bool
     {
         $status = Password::sendResetLink($validatedForgetPass);
-        if ($status === Password::INVALID_USER) return false;
-        return true;
-    }
-
-    /**
-     *
-     * @param array $validatedResetPass
-     * @return boolean
-     */
-    public function checkOldPass(array $validatedResetPass): bool
-    {
-        $user = $this->userModel->getByEmail(Arr::get($validatedResetPass, 'email'))->first();
-
-        if (Hash::check($validatedResetPass['password'], $user->password)) {
-            return false;
-        }
-        return true;
+        return $status === Password::RESET_LINK_SENT ? true : false;
     }
 
     /**
@@ -151,8 +135,7 @@ class UserService
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();
         });
-        if ($status === Password::INVALID_TOKEN) return false;
-        return true;
+        return $status === Password::PASSWORD_RESET ? true : false;
     }
 
     public static function checkUserIdExists($id)
