@@ -35,7 +35,7 @@ Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('reset-password', 'resetPass');
 });
 
-Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
+Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::controller(UserController::class)->prefix('user')->group(function () {
         Route::get('me', 'viewMe');
         Route::patch('edit', 'updateMe');
@@ -49,7 +49,7 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
         Route::patch('{id}', 'editActivity');
         Route::delete('{id}', 'removeActivity');
     });
-    Route::middleware(['isAdmin'])->group(function (){
+    Route::middleware(['isAdmin'])->group(function () {
         Route::controller(AdminController::class)->prefix('admin')->group(function () {
             Route::get('users', 'viewAllUsers');
             Route::post('change-roles', 'assignRoles');
@@ -68,18 +68,12 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function (){
             Route::patch('{id}', 'updateActivity');
             Route::patch('project-status/{id}', 'updateProjectStatus');
             Route::delete('{id}', 'deleteProject');
-            
         });
-        Route::resource('clients', ClientController::class)->prefix('client')->group(function () {
-            Route::get('/', 'index');
-            Route::post('/', 'store');
-            Route::patch('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
-        });
+        Route::apiResource('client', ClientController::class)->except(['show']);
+    });
     Route::middleware(['project.status'])->group(function () {
-            Route::controller(ProjectController::class)->prefix('project')->group(function (){
+        Route::controller(ProjectController::class)->prefix('project')->group(function () {
             Route::patch('billable-status/{id}', 'updateBillableStatus');
         });
-    });
     });
 });

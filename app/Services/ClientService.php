@@ -2,44 +2,97 @@
 
 namespace App\Services;
 
+use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Mockery\Exception;
+use Illuminate\Http\JsonResponse;
 
 class ClientService
 {
+    protected Client $client;
 
-    public static function addClient(array $validatedAddClient)
+    /**
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * 
+     *
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return Collection
+     */
+    public function viewClients()
     {
         try {
-            Client::create($validatedAddClient);
+            $clients = $this->client->with(['projects'])->paginate();
+            return ClientResource::collection($clients);
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
         } catch (Exception) {
             throw new Exception();
         }
     }
-    public static function editClient(array $validatatedEditClient, $id)
+
+    /**
+     * Undocumented function
+     *
+     * @param array $validatedAddClient
+     * @throws QueryException
+     * @throws Exception
+     * @return void
+     */
+    public function addClient(array $validatedAddClient): Void
     {
         try {
-            $client = Client::where('id', $id)->firstorfail();
-            $client->update($validatatedEditClient);
-            return $client;
-        } catch (ModelNotFoundException) {
-            throw new ModelNotFoundException();
+            $this->client->create($validatedAddClient);
+        } catch (QueryException) {
+            throw new QueryException();
         } catch (Exception) {
             throw new Exception();
         }
     }
-    public function removeClient(int $id)
+
+    /**
+     * Undocumented function
+     *
+     * @param array $validatatedEditClient
+     * @param [type] $id
+     * @throws ModelNotFoundException
+     * @throws QueryException
+     * @throws Exception
+     * @return JsonResponse
+     */
+    public function editClient(array $validatatedEditClient, int $client)
     {
         try {
-            $clients = Client::where('id', $id)->firstorfail();
+            $clients = $this->client->where('id', $client)->firstorfail();
+            $clients->update($validatatedEditClient);
+            return $clients;
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (QueryException) {
+            throw new QueryException();
+        } catch (Exception) {
+            throw new Exception();
+        }
+    }
+    public function removeClient(int $client)
+    {
+        try {
+            $clients = $this->client->where('id', $client)->firstorfail();
             $clients->delete();
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException('Project With this Id doesnt exist');
-        }
-        catch (Exception){
+        } catch (Exception) {
             throw new Exception('Failed to Delete data');
         }
     }

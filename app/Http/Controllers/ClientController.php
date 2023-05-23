@@ -2,50 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Project;
 use App\Models\Client;
 use Mockery\Exception;
 use App\Services\ClientService;
 use App\Http\Requests\{AddClientRequest, EditClientRequest};
 use Illuminate\Http\JsonResponse;
-use App\Http\Resources\ClientResource;
+use App\Traits\HttpResponses;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 
 class ClientController extends Controller
 {
-    protected Client $client;
+    use HttpResponses;
+
     protected ClientService $clientService;
 
-    public function __construct(Client $client, ClientService $clientService)
+    /**
+     *
+     * @param ClientService $clientService
+     */
+    public function __construct(ClientService $clientService)
     {
         $this->clientService = $clientService;
-        $this->client = $client;
     }
 
     /**
-     * Undocumented function
+     *  
      *
-     * @return void
+     * @return jsonResource
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
-            $clients = $this->client->paginate(10);
-            return response()->json([
-                'total' => count($clients),
-                'clients' => ClientResource::collection($clients)
-            ], 200);
+            $data =$this->clientService->viewClients();
+            return $this->successResponse([$data]);
         } catch (ModelNotFoundException $modelNotFoundException) {
-            return response()->json([
-                'message' => 'No Clients to display',
-            ], Response::HTTP_BAD_REQUEST);
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], 'No Clients to display', Response::HTTP_NOT_FOUND);
         } catch (\Exception $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
     }
 
@@ -59,14 +58,14 @@ class ClientController extends Controller
     {
         try {
             $validatedAddClient = $request->validated();
-            $result =  $this->clientService->addClient($validatedAddClient); ///// use dependency
-            return response()->json([
-                'message' => 'Client added successfully'
-            ]);
+            $this->clientService->addClient($validatedAddClient);
+            return $this->successResponse([], 'Client added successfully');
+        } catch (QueryException $queryException) {
+            Log::error($queryException->getMessage());
+            return $this->errorResponse([], 'Could not add clients', Response::HTTP_BAD_REQUEST);
         } catch (Exception $exception) {
-            return response()->json([
-                'message' => 'Could not add client'
-            ], 400);
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
     }
 
@@ -74,42 +73,36 @@ class ClientController extends Controller
      * Undocumented function
      *
      * @param EditClientRequest $request
-     * @param [type] $id
-     * @return void
+     * @param integer $client
+     * @return jsonResponse
      */
-    public function update(EditClientRequest $request, $id)
+    public function update(EditClientRequest $request, $client): JsonResponse
     {
-        $validatedEditClient = $request->validated();
         try {
-            $result =  $this->clientService->editCLient($validatedEditClient, $id); ////// use dependency
-            return response()->json([
-                'message' => 'Client Edited succesfully',
-                'client' => $result
-            ], Response::HTTP_OK);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Client with this Id doesnt Exists'
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
+            $validatedEditClient = $request->validated();
+            $result =  $this->clientService->editCLient($validatedEditClient, $client);
+            return $this->successResponse([$result], 'Client Edited successfully');
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], 'Client with this Id doesnt Exists', Response::HTTP_NOT_FOUND);
+        } catch (QueryException $queryException) {
+            Log::error($queryException->getMessage());
+            return $this->errorResponse([], 'Could not add clients', Response::HTTP_BAD_REQUEST);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
     }
 
-    public function destroy($id){
+    public function destroy($client){
         try {
-            $this->clientService->removeClient($id);
-            return response()->json([
-            ], Response::HTTP_NO_CONTENT);
-        }catch(ModelNotFoundException $modelNotFoundException){
-            return response()->json([
-                'message' => $modelNotFoundException->getMessage()
-            ],Response::HTTP_BAD_REQUEST);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
+            $this->clientService->removeClient($client);
+            return $this->successResponse([], 'Client Deleted Successfully');
+        }catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+        }catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
     }
 }

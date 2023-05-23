@@ -2,23 +2,37 @@
 
 namespace App\Services;
 
-use App\Mail\InviteCreated;
 use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use http\Exception\InvalidArgumentException;
+use Carbon\Carbon;
+use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 
 
 class UserService
 {
+    protected User $userModel;
+    protected UserRole $userRoleModel;
+
+    /**
+     *
+     * @param User $userModel
+     * @param UserRole $userRoleModel
+     */
+
+    public function __construct(User $userModel, UserRole $userRoleModel)
+    {
+        $this->userModel = $userModel;
+        $this->userRoleModel = $userRoleModel;
+    }
+
     public static function saveUserData(array $validatedUserRegister)
     {
         $invitedUser = InviteToken::where('email', $validatedUserRegister['email'])->first();
@@ -46,6 +60,40 @@ class UserService
         }
         return $user;
     }
+
+
+    /**
+     *
+     *
+     * @param array $credentials
+     * 
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return object
+     */
+
+    public function assignUserRole(array $credentials)
+    {
+        try {
+            $user = $this->userModel->getByEmail(Arr::get($credentials, 'email'))->first();
+
+            $user->roles()->attach(
+                Arr::get($credentials, 'role_id'),
+                [
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]
+            );
+            return $user->roles;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (QueryException $queryException) {
+            throw new QueryException();
+        } catch (Exception $exception) {
+            throw new Exception();
+        }
+    }
+
 
     public static function getUser($cred, $rules)
     {
