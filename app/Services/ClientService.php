@@ -71,7 +71,7 @@ class ClientService
      * @throws Exception
      * @return JsonResponse
      */
-    public function editClient(array $validatatedEditClient, $client)
+    public function editClient(array $validatatedEditClient,int $client)
     {
         try {
             $clients = $this->client->where('id', (int)$client)->firstorfail();
