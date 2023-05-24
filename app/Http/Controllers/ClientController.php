@@ -94,12 +94,20 @@ class ClientController extends Controller
         }
     }
 
-    public function destroy($client){
+    /**
+     * Undocumented function
+     *
+     * @param [type] $client
+     * @return JsonResponse
+     */
+    public function destroy($client): JsonResponse
+    {
         try {
             $this->clientService->removeClient($client);
             return $this->successResponse([], 'Client Deleted Successfully');
         }catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([],'Client Not Found');
         }catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], 'Something went wrong');
