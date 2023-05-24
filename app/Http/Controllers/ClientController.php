@@ -100,7 +100,7 @@ class ClientController extends Controller
     }
 
     /**
-     * Undocumented function
+     * Delete the specified Resource
      *
      * @param [type] $client
      * @return JsonResponse
@@ -113,6 +113,9 @@ class ClientController extends Controller
         }catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
             return $this->errorResponse([],'Client Not Found');
+        } catch (TypeError $error) {
+            Log::error($error->getMessage());
+            return $this->errorResponse([], 'Bad Request', Response::HTTP_NOT_FOUND);
         }catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], 'Something went wrong');

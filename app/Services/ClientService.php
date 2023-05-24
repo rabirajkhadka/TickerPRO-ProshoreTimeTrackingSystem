@@ -71,7 +71,7 @@ class ClientService
      * @throws Exception
      * @return JsonResponse
      */
-    public function editClient(array $validatatedEditClient,int $client)
+    public function editClient(array $validatatedEditClient, int $client)
     {
         try {
             $clients = $this->client->where('id', (int)$client)->firstorfail();
@@ -92,14 +92,8 @@ class ClientService
      * @return void
      */
     public function removeClient(int $client)
-    {
-        try {
-            $clients = $this->client->where('id', $client)->firstorfail();
-            $clients->delete();
-        } catch (ModelNotFoundException) {
-            throw new ModelNotFoundException();
-        } catch (Exception) {
-            throw new Exception();
-        }
+    {   
+        $clients = $this->client->where('id', $client)->firstorfail();
+        $clients->delete();
     }
 }
