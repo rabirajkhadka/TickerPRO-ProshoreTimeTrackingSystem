@@ -74,7 +74,7 @@ class ClientService
     public function editClient(array $validatatedEditClient,int $client)
     {
         try {
-            $clients = $this->client->where('id', $client)->firstorfail();
+            $clients = $this->client->where('id', (int)$client)->firstorfail();
             $clients->update($validatatedEditClient);
             return $clients;
         } catch (ModelNotFoundException) {

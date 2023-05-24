@@ -33,8 +33,7 @@ class UserStoreRequest extends FormRequest
                 Password::min(6)
                     ->mixedCase()
                     ->numbers()
-                    ->symbols()
-                    ->uncompromised(),
+                    ->symbols(),
                 'confirmed'
             ],
             'token' => 'required'
