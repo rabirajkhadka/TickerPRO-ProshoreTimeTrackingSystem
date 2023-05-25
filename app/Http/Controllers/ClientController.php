@@ -105,7 +105,7 @@ class ClientController extends Controller
      * @param [type] $client
      * @return JsonResponse
      */
-    public function destroy($client): JsonResponse
+    public function destroy(int $client): JsonResponse
     {
         try {
             $this->clientService->removeClient($client);

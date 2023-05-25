@@ -86,14 +86,21 @@ class ClientService
         }
     }
     /**
-     * Undocumented function
      *
      * @param integer $client
      * @return void
      */
     public function removeClient(int $client)
-    {   
+    {
+        try{
         $clients = $this->client->where('id', $client)->firstorfail();
         $clients->delete();
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (QueryException) {
+            throw new QueryException();
+        } catch (Exception) {
+            throw new Exception();
+        }
     }
 }
