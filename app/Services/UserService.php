@@ -59,10 +59,6 @@ class UserService
                 );
                 $invitedUser->delete();
             });
-
-            if (!$user) {
-                throw new Exception();
-            }
             return $user;
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
