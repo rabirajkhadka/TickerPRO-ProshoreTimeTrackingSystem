@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -33,23 +34,39 @@ class UserService
         $this->userRoleModel = $userRoleModel;
     }
 
-    public static function saveUserData(array $validatedUserRegister)
+
+    /**
+     *
+     * @param array $validatedUserRegister
+     * @throws ModelNotFoundException
+     * @throws Exception
+     */
+
+    public function saveUserData(array $validatedData)
     {
-        $invitedUser = InviteToken::where('email', $validatedUserRegister['email'])->first();
-        $check = Hash::check($validatedUserRegister['token'], $invitedUser->token);
+        try {
+            $invitedUser = InviteToken::where('email', Arr::get($validatedData, 'email'))->firstOrFail();
+            $user = null;
 
-        if (!$check) {
-            throw new Exception('Please provide a valid token');
+            DB::transaction(function () use ($validatedData, $invitedUser, &$user) {
+                $user = $this->userModel->create($validatedData);
+                $user->roles()->attach(
+                    Arr::get($invitedUser, 'role_id'),
+                    [
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]
+                );
+                $invitedUser->delete();
+            });
+            return $user;
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (Exception) {
+            throw new Exception();
         }
-
-        $result = User::create($validatedUserRegister);
-        UserRole::create([
-            'user_id' => $result['id'],
-            'role_id' => $invitedUser['role_id'],
-        ]);
-        $invitedUser->delete();
-        return $result;
     }
+
 
     public static function getUserWithCreds(array $validatedUserCreds)
     {
