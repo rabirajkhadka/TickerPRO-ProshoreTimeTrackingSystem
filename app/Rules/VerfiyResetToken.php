@@ -2,9 +2,9 @@
 
 namespace App\Rules;
 
+use App\Models\PasswordReset;
 use Illuminate\Contracts\Validation\InvokableRule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -36,10 +36,8 @@ class VerfiyResetToken implements InvokableRule
             if (is_null($this->email)) {
                 $fail("The given email address is invalid");
             }    
-            $user = DB::table('password_resets')->where('email', $this->email)->first();
-            if (is_null($user)) {
-                throw new ModelNotFoundException();
-            }
+            $user = PasswordReset::getByEmail($this->email)->firstOrFail();
+
             if (!Hash::check($value, $user->token)) {
                 $fail("The entered token is invalid");
             }
