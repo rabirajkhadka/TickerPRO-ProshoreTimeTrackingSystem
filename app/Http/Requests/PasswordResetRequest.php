@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
+
 
 class PasswordResetRequest extends FormRequest
 {
@@ -26,7 +28,15 @@ class PasswordResetRequest extends FormRequest
         return [
             'email' => 'required | email |max:255',
             'token' => 'required',
-            'password' => ['required','min:6','regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/','confirmed'],
+            'password' => [
+                'required',
+                'max:30',
+                Password::min(6)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+                'confirmed'
+            ],
         ];
     }
 }
