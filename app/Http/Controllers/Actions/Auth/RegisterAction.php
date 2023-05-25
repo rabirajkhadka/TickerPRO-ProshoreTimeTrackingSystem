@@ -8,9 +8,11 @@ use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use App\Traits\HttpResponses;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class RegisterAction extends Controller
@@ -31,8 +33,6 @@ class RegisterAction extends Controller
     }
 
     /**
-     * Undocumented function
-     *
      * @param Request $request
      * @throws QueryException
      * @throws Exception
@@ -45,9 +45,9 @@ class RegisterAction extends Controller
             $user = $this->userService->saveUserData($validatedUserRegister);
             $data = new UserResource($user);
             return $this->successResponse([$data], "User Successfully Registered");
-        } catch (QueryException $queryException) {
-            Log::error($queryException->getMessage());
-            return $this->errorResponse([], "Failed To Register User");
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], "User not Invited", Response::HTTP_FORBIDDEN);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], "Something Went Wrong");

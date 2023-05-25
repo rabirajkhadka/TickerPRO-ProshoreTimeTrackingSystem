@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -39,23 +40,29 @@ class UserService
      * @param array $validatedUserRegister
      * @throws ModelNotFoundException
      * @throws Exception
-     * @return object
      */
 
-    public function saveUserData(array $validatedData): object
+    public function saveUserData(array $validatedData)
     {
         try {
             $invitedUser = InviteToken::where('email', Arr::get($validatedData, 'email'))->firstOrFail();
+            $user = null;
 
-            $user = $this->userModel->create($validatedData);
-            $user->roles()->attach(
-                Arr::get($invitedUser, 'role_id'),
-                [
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]
-            );
-            $invitedUser->delete();
+            DB::transaction(function () use ($validatedData, $invitedUser, &$user) {
+                $user = $this->userModel->create($validatedData);
+                $user->roles()->attach(
+                    Arr::get($invitedUser, 'role_id'),
+                    [
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]
+                );
+                $invitedUser->delete();
+            });
+
+            if (!$user) {
+                throw new Exception();
+            }
             return $user;
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
