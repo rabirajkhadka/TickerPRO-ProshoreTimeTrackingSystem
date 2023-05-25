@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Actions\Admin\DeleteUserAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -54,9 +55,11 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::get('users', 'viewAllUsers');
             Route::post('change-roles', 'assignRoles');
             Route::get('user-roles/{id}', 'viewUserRole');
-            Route::delete('user/{id}', 'deleteUser');
             Route::post('invite', 'inviteOthers');
             Route::patch('user-status/{id}', 'updateUserStatus');
+        });
+        Route::prefix('admin')->group(function () {
+            Route::delete('user/{id}', DeleteUserAction::class);
         });
         Route::controller(InviteController::class)->prefix('invite')->group(function () {
             Route::get('invited-users', 'listInvitedUsers');
