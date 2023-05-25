@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\CheckHashedPasswordValue;
+use App\Rules\VerfiyResetToken;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -29,7 +30,7 @@ class PasswordResetRequest extends FormRequest
     {
         return [
             'email' => 'required|email|max:255|exists:users,email',
-            'token' => 'required',
+            'token' => ['required', new VerfiyResetToken($this->email)],
             'password' => [
                 'required',
                 'max:30',
