@@ -17,7 +17,7 @@ class LoginAction extends Controller
 
     public function __construct(UserService $userService)
     {
-        $this->userService= $userService;
+        $this->userService = $userService;
     }
     /**
      * Handle the incoming request.
@@ -27,7 +27,22 @@ class LoginAction extends Controller
      */
     public function __invoke(UserLoginRequest $request)
     {
-        $validatedUserCreds =$request->validated();
-
+        try {
+            $validatedUserCreds = $request->validated();
+            $user = $this->userService->getUserWithCreds($validatedUserCreds);
+            $token = $user->createToken('auth_token');
+            $result = [
+                'status' => 200,
+                'user' => $user,
+                'access_token' => $token->plainTextToken,
+                'token_type' => 'Bearer',
+            ];
+        } catch (Exception $e) {
+            $result = [
+                'status' => 401,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response()->json($result, $result['status']);
     }
 }
