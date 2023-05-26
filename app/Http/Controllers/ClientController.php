@@ -12,7 +12,6 @@ use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Psy\Exception\TypeErrorException;
 use TypeError;
 
 
@@ -51,7 +50,7 @@ class ClientController extends Controller
     }
 
     /**
-     * 
+     * Add New Resource
      *
      * @param AddClientRequest $request
      * @return JsonResponse
@@ -72,13 +71,13 @@ class ClientController extends Controller
     }
 
     /**
-     * Undocumented function
-     *
+     * update the specfied resource     
+     * 
      * @param EditClientRequest $request
      * @param integer $client
      * @return jsonResponse
      */
-    public function update(EditClientRequest $request, $client): JsonResponse
+    public function update(EditClientRequest $request,int $client): JsonResponse
     {
         try {
             $validatedEditClient = $request->validated();
@@ -101,7 +100,7 @@ class ClientController extends Controller
 
     /**
      * Delete the specified Resource
-     * @param [type] $client
+     * @param integer $client
      * @return JsonResponse
      */
     public function destroy(int $client): JsonResponse

@@ -41,7 +41,6 @@ class ClientService
     }
 
     /**
-     * Undocumented function
      *
      * @param array $validatedAddClient
      * @throws QueryException
@@ -60,19 +59,18 @@ class ClientService
     }
 
     /**
-     * Undocumented function
      *
      * @param array $validatatedEditClient
-     * @param [type] $id
+     * @param integer $id
      * @throws ModelNotFoundException
      * @throws QueryException
      * @throws Exception
      * @return JsonResponse
      */
-    public function editClient(array $validatatedEditClient, int $client)
+    public function editClient(array $validatatedEditClient, int $id)
     {
         try {
-            $clients = $this->client->where('id', $client)->firstorfail();
+            $clients = $this->client->where('id', $id)->firstorfail();
             $clients->update($validatatedEditClient);
             return $clients;
         } catch (ModelNotFoundException) {

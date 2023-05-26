@@ -6,9 +6,12 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 Use TypeError;
 use Illuminate\Support\Str;
 use Throwable;
+use App\Traits\HttpResponses;
 
 class Handler extends ExceptionHandler
 {
+    use HttpResponses;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -52,7 +55,7 @@ class Handler extends ExceptionHandler
 
         $customErrorMessage = "Invalid value provided for parameter '{$parameterName}'.";
 
-        return response()->json(['error' => $customErrorMessage], 400); //use api error response trait
+        return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
     } 
 
     return parent::render($request, $exception);
