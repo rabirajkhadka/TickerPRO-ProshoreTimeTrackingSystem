@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckHashedPasswordValue;
+use App\Rules\VerfiyResetToken;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
 
 class PasswordResetRequest extends FormRequest
 {
+    protected $stopOnFirstFailure = true;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,8 +29,8 @@ class PasswordResetRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required | email |max:255',
-            'token' => 'required',
+            'email' => 'required|email|max:255|exists:users,email',
+            'token' => ['required', new VerfiyResetToken($this->email)],
             'password' => [
                 'required',
                 'max:30',
@@ -35,8 +38,17 @@ class PasswordResetRequest extends FormRequest
                     ->mixedCase()
                     ->numbers()
                     ->symbols(),
-                'confirmed'
+                'confirmed',
+                new CheckHashedPasswordValue($this->email)
             ],
         ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.exists' => 'User with the given email address not found'
+        ];
+        
     }
 }
