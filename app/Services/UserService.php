@@ -140,4 +140,11 @@ class UserService
 
         return true;
     }
+
+    public function hasRole($user, string $role): bool
+    {
+        $roles = $user->roles()->pluck('role');
+        if($roles->contains($role)) return false;
+        return true;
+    }
 }
