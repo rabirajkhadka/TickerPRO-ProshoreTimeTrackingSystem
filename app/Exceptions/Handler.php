@@ -3,7 +3,8 @@
 namespace App\Exceptions;
     
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+Use TypeError;
+use Illuminate\Support\Str;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -39,4 +40,21 @@ class Handler extends ExceptionHandler
             
         });
     }
+
+    public function render($request, Throwable $exception)
+{
+    if ($exception instanceof TypeError) {
+        $errorMessage = $exception->getMessage(); // Get the original error message
+
+        
+        $parameterName = Str::before($errorMessage, ' must be of type'); // Extract the parameter name
+        $parameterName = Str::replaceFirst('$', '', $parameterName); // Remove the '$' symbol if present
+
+        $customErrorMessage = "Invalid value provided for parameter '{$parameterName}'.";
+
+        return response()->json(['error' => $customErrorMessage], 400); //use api error response trait
+    } 
+
+    return parent::render($request, $exception);
+}
 }

@@ -101,7 +101,6 @@ class ClientController extends Controller
 
     /**
      * Delete the specified Resource
-     *
      * @param [type] $client
      * @return JsonResponse
      */

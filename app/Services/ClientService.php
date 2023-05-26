@@ -24,8 +24,6 @@ class ClientService
     }
 
     /**
-     * 
-     *
      * @throws ModelNotFoundException
      * @throws Exception
      * @return Collection
@@ -74,7 +72,7 @@ class ClientService
     public function editClient(array $validatatedEditClient, int $client)
     {
         try {
-            $clients = $this->client->where('id', (int)$client)->firstorfail();
+            $clients = $this->client->where('id', $client)->firstorfail();
             $clients->update($validatatedEditClient);
             return $clients;
         } catch (ModelNotFoundException) {
@@ -85,16 +83,17 @@ class ClientService
             throw new Exception();
         }
     }
+
     /**
      *
      * @param integer $client
      * @return void
      */
-    public function removeClient(int $client)
+    public function removeClient(int $id)
     {
         try{
-        $clients = $this->client->where('id', $client)->firstorfail();
-        $clients->delete();
+            $client = $this->client->where('id', $id)->firstorfail();
+            $client->delete();
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
         } catch (QueryException) {
