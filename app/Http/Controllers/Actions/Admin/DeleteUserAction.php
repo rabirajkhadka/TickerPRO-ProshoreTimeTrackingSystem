@@ -23,6 +23,7 @@ class DeleteUserAction extends Controller
     /**
      *
      * @param User $userModel
+     * @param UserService $userService
      */
     public function __construct(User $userModel, UserService $userService)
     {
