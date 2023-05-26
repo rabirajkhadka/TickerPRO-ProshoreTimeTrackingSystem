@@ -51,10 +51,15 @@ class UserService
         return $result;
     }
 
-    public static function getUserWithCreds(array $validatedUserCreds)
+    /**
+     * 
+     * @param array $validatedUserCreds
+     * @return 
+     */
+    public function getUserWithCreds(array $validatedUserCreds)
     {
+        $user = $this->userModel->whereEmail($validatedUserCreds['email'])->firstorfail();
 
-        $user = User::where('email', $validatedUserCreds['email'])->first();
         if (!$user || !Hash::check($validatedUserCreds['password'], $user->password)) {
             throw new Exception('Email address or password is invalid');
         }
