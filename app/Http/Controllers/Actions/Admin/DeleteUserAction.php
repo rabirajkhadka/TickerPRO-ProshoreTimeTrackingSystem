@@ -40,22 +40,15 @@ class DeleteUserAction extends Controller
     public function __invoke(int $id): JsonResponse
     {
         try {
-            $user = $this->userModel->where('id', $id)->firstOrFail(); // Do this in UserService
-            
-            // $roles = $user->roles()->pluck('role');
-            // if ($roles->contains('admin')) {
-            //     return $this->errorResponse([], "Admin user cannot be deleted.", Response::HTTP_FORBIDDEN);
-            // }
-            $isAdmin = $this->userService->hasRole($user, 'admin');
-            if(!$isAdmin){
+            $user = $this->userService->deleteUser($id);
+            if(!$user){
                 return $this->errorResponse([], "Admin user cannot be deleted.", Response::HTTP_FORBIDDEN);
             }
-            return $this->successResponse([], "User deleted successfully.");
 
-            // if ($user->delete()) {
-            //     return $this->successResponse([], "User deleted successfully.");
-            // }
-            // return $this->errorResponse([], "Failed to delete user.");
+            if($user->delete()){
+                return $this->successResponse([], "User deleted successfully.");
+            }
+            return $this->errorResponse([], "Failed to delete user.");
 
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
