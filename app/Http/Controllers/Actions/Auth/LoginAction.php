@@ -33,7 +33,6 @@ class LoginAction extends Controller
         try {
             $validatedUser = $request->validated();
             $user = $this->userService->getUserWithCreds($validatedUser);
-            // dd($user);
             $token = $user->createToken('auth_token');
             $result = [
                 'user' => $user,
@@ -42,11 +41,9 @@ class LoginAction extends Controller
             ];
             return $this->successResponse($result, 'Login Successful');
         } catch (ModelNotFoundException $modelNotFoundException) {
-
             return $this->errorResponse([], 'User does not Exist');
         } catch (Exception $exception) {
             return $this->errorResponse([],'Something Went Wrong');
         }
-        // return response()->json($result, $result['status']);
     }
 }
