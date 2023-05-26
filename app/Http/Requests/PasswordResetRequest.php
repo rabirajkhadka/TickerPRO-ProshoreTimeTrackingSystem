@@ -49,5 +49,6 @@ class PasswordResetRequest extends FormRequest
         return [
             'email.exists' => 'User with the given email address not found'
         ];
+        
     }
 }
