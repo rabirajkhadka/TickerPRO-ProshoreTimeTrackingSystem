@@ -49,14 +49,12 @@ class Handler extends ExceptionHandler
     if ($exception instanceof TypeError) {
         $errorMessage = $exception->getMessage(); // Get the original error message
 
-        // dd($errorMessage);
         $parameterName = Str::between($errorMessage, 'App\Http\Controllers\ClientController::update(): Argument #2 ' ,' must be of type', ); // Extract the parameter name
-        // $parameterName = Str::after ($errorMessage, 'App\Http\Controllers\ClientController::update(): Argument #2 ');
-        $parameterName = Str::replaceFirst('$', '', $parameterName);
-        $parameterName = Str::replaceFirst('(', '', $parameterName);
-        $parameterName = Str::replaceFirst(')', '', $parameterName); // Remove the '$' symbol if present
+        $parameterName = Str::replaceFirst('$', '', $parameterName);// Remove the '$' symbol if present
+        $parameterName = Str::replaceFirst('(', '', $parameterName);// Remove the '(' symbol if present
+        $parameterName = Str::replaceFirst(')', '', $parameterName); // Remove the ')' symbol if present
 
-        $customErrorMessage = "Invalid value provided for parameter' {$parameterName}'";
+        $customErrorMessage = "Invalid type provided for parameter {$parameterName}";
 
         return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
     } 
