@@ -21,11 +21,9 @@ class ClientService
     public function __construct(Client $client)
     {
         $this->client = $client;
-    }   
-    
+    }
+
     /**
-     * 
-     *
      * @throws ModelNotFoundException
      * @throws Exception
      * @return Collection
@@ -43,7 +41,6 @@ class ClientService
     }
 
     /**
-     * Undocumented function
      *
      * @param array $validatedAddClient
      * @throws QueryException
@@ -62,21 +59,39 @@ class ClientService
     }
 
     /**
-     * Undocumented function
      *
      * @param array $validatatedEditClient
-     * @param [type] $id
+     * @param integer $id
      * @throws ModelNotFoundException
      * @throws QueryException
      * @throws Exception
      * @return JsonResponse
      */
-    public function editClient(array $validatatedEditClient,int $client)
+    public function editClient(array $validatatedEditClient, int $id)
     {
         try {
-            $clients = $this->client->where('id', (int)$client)->firstorfail();
+            $clients = $this->client->where('id', $id)->firstorfail();
             $clients->update($validatatedEditClient);
             return $clients;
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (QueryException) {
+            throw new QueryException();
+        } catch (Exception) {
+            throw new Exception();
+        }
+    }
+
+    /**
+     *
+     * @param integer $client
+     * @return void
+     */
+    public function removeClient(int $id)
+    {
+        try{
+            $client = $this->client->where('id', $id)->firstorfail();
+            $client->delete();
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
         } catch (QueryException) {

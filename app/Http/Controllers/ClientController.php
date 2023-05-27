@@ -12,7 +12,6 @@ use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Psy\Exception\TypeErrorException;
 use TypeError;
 
 
@@ -51,7 +50,7 @@ class ClientController extends Controller
     }
 
     /**
-     * 
+     * Add New Resource
      *
      * @param AddClientRequest $request
      * @return JsonResponse
@@ -72,13 +71,13 @@ class ClientController extends Controller
     }
 
     /**
-     * Undocumented function
-     *
+     * update the specfied resource     
+     * 
      * @param EditClientRequest $request
      * @param integer $client
      * @return jsonResponse
      */
-    public function update(EditClientRequest $request, $client): JsonResponse
+    public function update(EditClientRequest $request,int $client): JsonResponse
     {
         try {
             $validatedEditClient = $request->validated();
@@ -94,6 +93,28 @@ class ClientController extends Controller
             Log::error($queryException->getMessage());
             return $this->errorResponse([], 'Could not Edit', Response::HTTP_BAD_REQUEST);
         } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
+        }
+    }
+
+    /**
+     * Delete the specified Resource
+     * @param integer $client
+     * @return JsonResponse
+     */
+    public function destroy(int $client): JsonResponse
+    {
+        try {
+            $this->clientService->removeClient($client);
+            return $this->successResponse([], 'Client Deleted Successfully');
+        }catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([],'Client Not Found');
+        } catch (TypeError $error) {
+            Log::error($error->getMessage());
+            return $this->errorResponse([], 'Bad Request', Response::HTTP_NOT_FOUND);
+        }catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], 'Something went wrong');
         }
