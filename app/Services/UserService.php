@@ -140,4 +140,20 @@ class UserService
 
         return true;
     }
+
+    /**
+     * 
+     * @param $request
+     * @return void
+     */
+    public function logoutUser($request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (Exception) {
+            throw new Exception();
+        }
+    }
 }
