@@ -66,7 +66,6 @@ class UserService
         return $user;
     }
 
-
     /**
      *
      *
