@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Actions\Auth\ForgotPasswordAction;
+use App\Http\Controllers\Actions\Auth\ResetPasswordAction;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
@@ -36,9 +38,12 @@ Route::prefix('user')->group(function () {
 
 Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('login', 'loginUser')->name('login');
-    Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
-    Route::post('forgot-password', 'forgotPass');
-    Route::post('reset-password', 'resetPass');
+    Route::get('logout', 'logoutUser')->middleware('auth:sanctum');   
+});
+
+Route::prefix('user')->group(function () {
+    Route::post('forgot-password', ForgotPasswordAction::class);
+    Route::post('reset-password', ResetPasswordAction::class);
 });
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
@@ -75,14 +80,11 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::patch('project-status/{id}', 'updateProjectStatus');
             Route::delete('{id}', 'deleteProject');
         });
-        Route::controller(ClientController::class)->prefix('client')->group(function () {
-            Route::post('/', 'addActivity');
-            Route::get('/', 'viewAllClients');
-        });
-        Route::middleware(['project.status'])->group(function () {
-            Route::controller(ProjectController::class)->prefix('project')->group(function () {
-                Route::patch('billable-status/{id}', 'updateBillableStatus');
-            });
+        Route::apiResource('client', ClientController::class)->except(['show']);
+    });
+    Route::middleware(['project.status'])->group(function () {
+        Route::controller(ProjectController::class)->prefix('project')->group(function () {
+            Route::patch('billable-status/{id}', 'updateBillableStatus');
         });
     });
 });
