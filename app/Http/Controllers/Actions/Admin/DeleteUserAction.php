@@ -9,9 +9,8 @@ use App\Traits\HttpResponses;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Mockery\Exception;
 use Illuminate\Support\Facades\Log;
-
+use Mockery\Exception;
 
 class DeleteUserAction extends Controller
 {
@@ -41,15 +40,10 @@ class DeleteUserAction extends Controller
     public function __invoke(int $id): JsonResponse
     {
         try {
-            $user = $this->userService->deleteUser($id);
-            if(!$user){
-                return $this->errorResponse([], "Admin user cannot be deleted.", Response::HTTP_FORBIDDEN);
-            }
-
-            if($user->delete()){
+            if($this->userService->deleteUser($id)){
                 return $this->successResponse([], "User deleted successfully.");
             }
-            return $this->errorResponse([], "Failed to delete user.");
+            return $this->errorResponse([], "Admin user cannot be deleted.", Response::HTTP_FORBIDDEN);
 
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
