@@ -90,7 +90,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => config('general.password_reset_token_expiration', 60),
+            'expire' => env('PASSWORD_RESET_TOKEN_EXPIRE'),
             'throttle' => 60,
         ],
     ],
