@@ -155,7 +155,7 @@ class UserService
         return $status === Password::PASSWORD_RESET ? true : false;
     }
 
-    public static function checkUserIdExists(int $id)
+    public static function checkUserIdExists($id)
     {
         $user = User::where('id', $id)->first();
 
