@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserLoginRequest;
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use App\Traits\HttpResponses;
 use Mockery\Exception;
 
 class AuthController extends Controller
