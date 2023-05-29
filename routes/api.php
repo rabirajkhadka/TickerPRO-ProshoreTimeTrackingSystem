@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\Actions\Auth\RegisterAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Actions\Auth\LoginAction;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Actions\Auth\ForgotPasswordAction;
+use App\Http\Controllers\Actions\Auth\ResetPasswordAction;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
@@ -29,13 +32,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('all-roles', [UserController::class, 'allUserRoles']);
 
 Route::prefix('user')->group(function () {
+    Route::post('register', RegisterAction::class)->name('register');
     Route::post('login', LoginAction::class)->name('login');
 });
+
 Route::controller(AuthController::class)->prefix('user')->group(function () {
-    Route::post('register', 'registerUser')->name('register');
-    Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
-    Route::post('forgot-password', 'forgotPass');
-    Route::post('reset-password', 'resetPass');
+    Route::get('logout', 'logoutUser')->middleware('auth:sanctum');   
+    Route::post('forgot-password', ForgotPasswordAction::class);
+    Route::post('reset-password', ResetPasswordAction::class);
 });
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
