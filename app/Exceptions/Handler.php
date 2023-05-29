@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Exceptions;
-    
+
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-Use TypeError;
+use TypeError;
 use Illuminate\Support\Str;
 use Throwable;
 use App\Traits\HttpResponses;
@@ -40,22 +40,16 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            
         });
     }
 
     public function render($request, Throwable $exception)
-{
-    if ($exception instanceof TypeError) {
-        $errorMessage = $exception->getMessage(); // Get the original error message
+    {
+        if ($exception instanceof TypeError) {
+            $customErrorMessage = "Wrong Type of input provided";
+            return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
+        }
 
-        // $parameterName = Str::between($errorMessage, 'App\Http\Controllers' ,' must be of type', );
-        // $parameterName = Str::of($parameterName)->remove(['(',')','$']);  // for later use, change accordingly
-        $customErrorMessage = "Wrong Type for id provided";
-
-        return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
-    } 
-
-    return parent::render($request, $exception);
-}
+        return parent::render($request, $exception);
+    }
 }
