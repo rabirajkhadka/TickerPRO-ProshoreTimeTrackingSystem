@@ -49,9 +49,9 @@ class Handler extends ExceptionHandler
     if ($exception instanceof TypeError) {
         $errorMessage = $exception->getMessage(); // Get the original error message
 
-        $parameterName = Str::between($errorMessage, 'App\Http\Controllers\ClientController::' ,' must be of type', );
+        $parameterName = Str::between($errorMessage, 'App\Http\Controllers' ,' must be of type', );
         $parameterName = Str::of($parameterName)->remove(['(',')','$']);  
-        $customErrorMessage = "Invalid type provided while {$parameterName}";
+        $customErrorMessage = "Invalid type provided for {$parameterName}";
 
         return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
     } 
