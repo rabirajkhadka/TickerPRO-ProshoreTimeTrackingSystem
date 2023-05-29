@@ -30,28 +30,6 @@ class AuthController extends Controller
         return response()->json($result, $result['status']);
     }
 
-    public function loginUser(UserLoginRequest $request)
-    {
-        try {
-            $validatedUserCreds = $request->validated();
-            $user = UserService::getUserWithCreds($validatedUserCreds);
-            $token = $user->createToken('auth_token');
-            $result = [
-                'status' => 200,
-                'user' => $user,
-                'access_token' => $token->plainTextToken,
-                'token_type' => 'Bearer',
-            ];
-
-        } catch (Exception $e) {
-            $result = [
-                'status' => 401,
-                'error' => $e->getMessage()
-            ];
-        }
-        return response()->json($result, $result['status']);
-    }
-
     public function logoutUser(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

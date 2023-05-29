@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Actions\Auth\LoginAction;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
@@ -27,9 +28,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('all-roles', [UserController::class, 'allUserRoles']);
 
+Route::prefix('user')->group(function () {
+    Route::post('login', LoginAction::class)->name('login');
+});
 Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('register', 'registerUser')->name('register');
-    Route::post('login', 'loginUser')->name('login');
     Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
     Route::post('forgot-password', 'forgotPass');
     Route::post('reset-password', 'resetPass');
