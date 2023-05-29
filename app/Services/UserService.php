@@ -50,8 +50,26 @@ class UserService
         $invitedUser->delete();
         return $result;
     }
+    /**
+     * login Service
+     *
+     * @param array $validatedUserCreds
+     * @return array
+     */
+    public function login(array $validatedUserCreds)
+    {
+        $user = $this->getUserWithCreds($validatedUserCreds);
+        $token = $user->createToken('auth_token');
+        $result = [
+            'user' => $user,
+            'access_token' => $token->plainTextToken,
+            'token_type' => 'Bearer',
+        ];
+        return $result;
+    }
 
     /**
+     * Login validation
      * 
      * @param array $validatedUserCreds
      * @return 

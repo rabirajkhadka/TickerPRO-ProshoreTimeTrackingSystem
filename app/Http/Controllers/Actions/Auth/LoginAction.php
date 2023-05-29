@@ -34,14 +34,15 @@ class LoginAction extends Controller
     {
         try {
             $validatedUser = $request->validated();
-            $user = $this->userService->getUserWithCreds($validatedUser);
-            $token = $user->createToken('auth_token');
-            $result = [
-                'user' => $user,
-                'access_token' => $token->plainTextToken,
-                'token_type' => 'Bearer',
-            ];
-            return $this->successResponse($result, 'Login Successful');
+            $results = $this->userService->login($validatedUser);
+            // $user = $this->userService->getUserWithCreds($validatedUser);
+            // $token = $user->createToken('auth_token');
+            // $result = [
+            //     'user' => $user,
+            //     'access_token' => $token->plainTextToken,
+            //     'token_type' => 'Bearer',
+            // ];
+            return $this->successResponse($results, 'Login Successful');
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
             return $this->errorResponse([], 'User not Registered');
