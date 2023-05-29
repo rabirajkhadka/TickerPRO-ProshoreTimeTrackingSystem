@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoleResource;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
-use App\Models\User;
-use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -36,7 +35,6 @@ class UserController extends Controller
                 'message' => 'User password updated',
                 'user' => $user,
             ];
-
         } catch (Exception $e) {
             $result = [
                 'status' => 500,
@@ -50,8 +48,7 @@ class UserController extends Controller
     {
         $allRoles = UserService::roles();
         return response()->json([
-            'UserRoles' => UserResource::collection($allRoles)
+            'UserRoles' => RoleResource::collection($allRoles)
         ]);
-
     }
 }

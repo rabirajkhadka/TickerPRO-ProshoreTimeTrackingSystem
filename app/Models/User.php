@@ -5,7 +5,7 @@ namespace App\Models;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -91,18 +91,12 @@ class User extends Model
     }
 
 
-
- /**
-  * This is a PHP function that returns a query builder object filtered by a given email address.
-  * 
-  * @param Builder query The query parameter is an instance of the Laravel query builder, which allows
-  * you to build and execute database queries in a fluent and expressive way.
-  * @param string email The email parameter is a string that represents the email address of a user. It
-  * is used in the query to retrieve a user from the database based on their email address.
-  * 
-  * @return `scopeGetByEmail` function is returning a query builder instance filtered by the given
-  * email address.
-  */
+    /**
+     *
+     * @param Builder $query
+     * @param string $email
+     * @return void
+     */
     public function scopeGetByEmail(Builder $query, string $email)
     {
         return $query->where('email', $email);
