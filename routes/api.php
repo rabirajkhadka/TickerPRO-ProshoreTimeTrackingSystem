@@ -9,6 +9,9 @@ use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Actions\Admin\UpdateUserStatusAction;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -56,8 +59,12 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::get('user-roles/{id}', 'viewUserRole');
             Route::delete('user/{id}', 'deleteUser');
             Route::post('invite', 'inviteOthers');
-            Route::patch('user-status/{id}', 'updateUserStatus');
         });
+
+        Route::prefix('admin')->group(function () {
+            Route::patch('user-status/{id}', [UpdateUserStatusAction::class,'__invoke']);
+        });
+        
         Route::controller(InviteController::class)->prefix('invite')->group(function () {
             Route::get('invited-users', 'listInvitedUsers');
             Route::post('resend', 'reInvite');

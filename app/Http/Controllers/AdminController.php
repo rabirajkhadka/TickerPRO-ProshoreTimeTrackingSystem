@@ -35,34 +35,7 @@ class AdminController extends Controller
         $this->userModel = $userModel;
 
     }
-/** */
-/**
- * Undocumented function
- *
- * @param  Request  $request
- * @return JsonResponse
- */
 
- 
-    public function updateUserStatus(Request $request):JsonResponse
-    {
-        try {
-            $user = $this->userService->updateUserStatus($request->id);
-
-            return response()->json($user);
-        } catch (ModelNotFoundException $e) {
-            Log::error($e->getMessage());
-            return response()->json([
-                'message' => 'User does not exist with the given id'
-            ], Response::HTTP_NOT_FOUND);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json([
-                'message' => 'An error occurred',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
 
     public function deleteUser($id)
     {

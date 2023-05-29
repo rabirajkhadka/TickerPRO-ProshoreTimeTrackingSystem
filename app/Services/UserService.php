@@ -7,14 +7,14 @@ use App\Models\UserRole;
 use App\Models\User;
 use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
+
 class UserService
 {
     protected User $userModel;
@@ -142,66 +142,24 @@ class UserService
 
 
     /**
- * Update the status of a user.
- *
- * @param int $userId The ID of the user to update.
- * @param int $authenticatedUserId The ID of the authenticated user.
- */
-public function updateUserStatus($userId) 
-{
-    try {
-        $user = User::findOrFail($userId);
+     *
+     * @param  integer  $userId
+     * @return boolean
+     * @throws AuthorizationException
+     */
+    public function updateUserStatus(int $userId): bool
+    {
+        $user = $this->userModel->findOrFail($userId);
 
-        if(!$user){
-            return response()->json([
-                'message' => 'User doesnot exists'
-            ], Response::HTTP_NOT_FOUND);
+        if ($user->id === auth()->user()->id) {
+            throw new AuthorizationException("Cannot disable yourselves");
         }
 
-        // Check if the user is an admin
-        $isAdmin = $user->roles()->pluck('role')->contains('admin');
-        
-        if ($isAdmin) {
-            // Check if the user is trying to disable itself
-            if ($user->id === auth()->user()->id) {
-                return response()->json([
-                    'message' => 'Admin cannot disable itself'
-                ], Response::HTTP_FORBIDDEN);
-                // $result = 'Admin cannot disable itself';
-                // return $result;
-            }
+        $user->activeStatus = !$user->activeStatus;
 
-            // Check if disabling admin user will result in no active admin users
-            $activeAdminsCount = $user->getActiveAdminsCount();
-
-            if ($activeAdminsCount <= 1) {
-                return response()->json([
-                    'message' => 'At least one admin user must be active'
-                ], Response::HTTP_FORBIDDEN);
-            }
-        }
-
-        // Update the user status
-        if(!$user->activeStatus){
-            $user->activeStatus = true;
-        }else{
-            $user->activeStatus = false;
-        }
-        $user->save();
-
-        $result = [
-            'status' => Response::HTTP_OK,
-            'message' => 'User status updated'
-        ];
-    } catch (Exception $e) {
-        Log::error($e->getMessage());
-        $result = [
-            'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            'error' => $e->getMessage()
-        ];
-    }
-
-    return $result;
+        if($user->save()) return true;
+        return false;
     }
 
 }
+
