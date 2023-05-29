@@ -174,13 +174,23 @@ class UserService
     public function deleteUser(int $id): bool
     {
         $user = $this->userModel->where('id', $id)->firstOrFail();
-        
+        if($this->hasRoleAdmin($user)) return false;
+        return $user->delete();
+    }
+
+    /**
+     *
+     * @param object $user
+     * @return boolean
+     */
+    public function hasRoleAdmin(object $user): bool
+    {
         foreach($user->roles->toArray() as $role){
             if($role['role'] === UserRoleEnum::ADMIN){
-                return false;
+                return true;
             }
         }
-        return $user->delete();
+        return false;
     }
 
 }
