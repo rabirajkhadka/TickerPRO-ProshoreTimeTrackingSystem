@@ -46,7 +46,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof TypeError) {
-            $customErrorMessage = "Wrong Type of input provided";
+            $customErrorMessage = "Invalid type provided for parameter";
             return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
         }
 
