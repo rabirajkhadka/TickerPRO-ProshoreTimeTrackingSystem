@@ -142,11 +142,12 @@ class UserService
     }
 
     /**
+     * logout Service
      * 
      * @param $request
      * @return void
      */
-    public function logoutUser($request)
+    public function logout($request)
     {
         try {
             $request->user()->currentAccessToken()->delete();

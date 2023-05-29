@@ -25,8 +25,8 @@ use App\Http\Controllers\ClientController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::prefix('user')->group(function () {
-    Route::get('logout', LogoutAction::class)->middleware('auth:sanctum')->name('logout');
+Route::middleware('auth:sanctum')->prefix('user')->group(function () {
+    Route::get('logout', LogoutAction::class)->name('logout');
 });
 
 Route::get('all-roles', [UserController::class, 'allUserRoles']);
@@ -34,7 +34,6 @@ Route::get('all-roles', [UserController::class, 'allUserRoles']);
 Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('register', 'registerUser')->name('register');
     Route::post('login', 'loginUser')->name('login');
-    // Route::get('logout', 'logoutUser')->middleware('auth:sanctum');
     Route::post('forgot-password', 'forgotPass');
     Route::post('reset-password', 'resetPass');
 });
