@@ -1,24 +1,22 @@
 <?php
 
- namespace App\Enum;
+namespace App\Enum;
 
- enum UserRoleEnum{
+enum UserRoleEnum
+{
+  // Regular Memeber
+  const MEMBER = 'member';
 
-   // Regular Memeber
-    const MEMBER ='member';
+  // Administrator
+  const ADMIN = 'admin';
 
-   // Administrator
-    const ADMIN ='admin';
+  // Human Resource
+  const HR = 'hr';
 
-    // Human Resource
-    const HR = 'hr';
+  // Developer
+  const DEV = 'dev';
 
-    // Developer
-    const DEV = 'dev';
+  // Management
+  const MANAGEMENT = 'management';
+}
 
-    // Management
-    const MANAGEMENT = 'management';
-
- }
- 
- 
