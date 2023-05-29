@@ -73,7 +73,7 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
         });
 
         Route::prefix('admin')->group(function () {
-            Route::patch('user-status/{id}', [UpdateUserStatusAction::class,'__invoke']);
+            Route::patch('user-status/{id}', UpdateUserStatusAction::class);
         });
         
         Route::controller(InviteController::class)->prefix('invite')->group(function () {
