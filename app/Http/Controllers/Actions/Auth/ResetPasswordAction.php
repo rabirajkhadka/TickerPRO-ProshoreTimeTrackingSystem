@@ -38,8 +38,8 @@ class ResetPasswordAction extends Controller
         $validatedResetPass = $request->validated();
         try {
             $status = $this->userService->resetPassword($validatedResetPass);
-            if(!$status){
-                return $this->errorResponse([], "Could not reset password. Please check your token or email address", Response::HTTP_FORBIDDEN);
+            if (!$status) {
+                return $this->errorResponse([], "The Entered email or token is invalid", Response::HTTP_FORBIDDEN);
             }
             return $this->successResponse([], 'Password reset successfully', Response::HTTP_OK);
         } catch (Exception $exception) {
