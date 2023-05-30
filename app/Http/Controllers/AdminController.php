@@ -35,39 +35,7 @@ class AdminController extends Controller
     {
         $this->userService = $userService;
     }
-
-    public function deleteUser($id)
-    {
-        $user = User::where('id', $id)->first();
-
-        $deleteStatus = UserService::checkUserIdExists($id);
-
-        if (!$deleteStatus) {
-            return response()->json([
-                'message' => 'User does not exist with given id'
-            ], Response::HTTP_NOT_FOUND);
-        }
-
-        $roles = $user->roles()->pluck('role');
-
-        if ($roles->contains('admin')) {
-
-            return response()->json([
-                'message' => 'Admin User cannot be deleted'
-            ], 403);
-        }
-
-        if ($user->delete()) {
-
-            return response()->json([
-                'message' => 'User deleted Successfully'
-            ], 200);
-        }
-
-        return response()->json([
-            'message' => 'Oops Something Went Wrong'
-        ], 403);
-    }
+    
 
     public function viewAllUsers()
     {

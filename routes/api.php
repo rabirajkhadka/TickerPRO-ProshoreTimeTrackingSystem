@@ -1,17 +1,18 @@
 <?php
 
+use App\Http\Controllers\Actions\Admin\DeleteUserAction;
 use App\Http\Controllers\Actions\Auth\RegisterAction;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Actions\Auth\ForgotPasswordAction;
 use App\Http\Controllers\Actions\Auth\ResetPasswordAction;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,18 +33,14 @@ Route::get('all-roles', [UserController::class, 'allUserRoles']);
 
 Route::prefix('user')->group(function () {
     Route::post('register', RegisterAction::class)->name('register');
+    Route::post('forgot-password', ForgotPasswordAction::class);
+    Route::post('reset-password', ResetPasswordAction::class);
 });
-
 
 
 Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('login', 'loginUser')->name('login');
     Route::get('logout', 'logoutUser')->middleware('auth:sanctum');   
-});
-
-Route::prefix('user')->group(function () {
-    Route::post('forgot-password', ForgotPasswordAction::class);
-    Route::post('reset-password', ResetPasswordAction::class);
 });
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
@@ -65,9 +62,11 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::get('users', 'viewAllUsers');
             Route::post('change-roles', 'assignRoles');
             Route::get('user-roles/{id}', 'viewUserRole');
-            Route::delete('user/{id}', 'deleteUser');
             Route::post('invite', 'inviteOthers');
             Route::patch('user-status/{id}', 'updateUserStatus');
+        });
+        Route::prefix('admin')->group(function () {
+            Route::delete('user/{id}', DeleteUserAction::class);
         });
         Route::controller(InviteController::class)->prefix('invite')->group(function () {
             Route::get('invited-users', 'listInvitedUsers');

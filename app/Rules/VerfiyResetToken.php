@@ -37,8 +37,9 @@ class VerfiyResetToken implements InvokableRule
                 $fail("The given email address is invalid");
             }    
             $user = PasswordReset::getByEmail($this->email)->firstOrFail();
+            $expire = $user->created_at->addMinutes(30)->isPast();
 
-            if (!Hash::check($value, $user->token)) {
+            if (!Hash::check($value, $user->token) || $expire) {
                 $fail("The entered token is invalid");
             }
         } catch (ModelNotFoundException $modelNotFoundException) {
