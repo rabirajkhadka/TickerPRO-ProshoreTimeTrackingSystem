@@ -206,11 +206,6 @@ class UserService
      */
     public function hasRoleAdmin(object $user): bool
     {
-        foreach ($user->roles->toArray() as $role) {
-            if (Arr::get($role, 'role') === UserRoleEnum::ADMIN) {
-                return true;
-            }
-        }
-        return false;
+        return $user->roles->pluck('role')->contains(UserRoleEnum::ADMIN);
     }
 }

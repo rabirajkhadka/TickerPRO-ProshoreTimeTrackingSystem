@@ -34,20 +34,20 @@ class VerfiyResetToken implements InvokableRule
     {
         try {
             if (is_null($this->email)) {
-                $fail("The given email address is invalid");
+                $fail("The email address is required.");
             }    
             $user = PasswordReset::getByEmail($this->email)->firstOrFail();
-            $expire = $user->created_at->addMinutes(30)->isPast();
+            $expired = $user->created_at->addMinutes(30)->isPast();
 
-            if (!Hash::check($value, $user->token) || $expire) {
-                $fail("The entered token is invalid");
+            if (!Hash::check($value, $user->token) || $expired) {
+                $fail("The entered token is invalid.");
             }
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
-            $fail("Could not reset password. Please check your token or email address.");
+            $fail("User does not exist.");
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            $fail("An unexpected error occurred. Please try again later.");
+            $fail("Something went wrong. Please try again later.");
         }
     }
 }

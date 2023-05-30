@@ -31,7 +31,7 @@ class ForgotPasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.exists' => 'User with the given email address not found'
+            'email.exists' => 'User not found. Please check your email address.'
         ];
     }
 }

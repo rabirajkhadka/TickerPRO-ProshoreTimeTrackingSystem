@@ -44,14 +44,12 @@ class DeleteUserAction extends Controller
                 return $this->successResponse([], "User deleted successfully.");
             }
             return $this->errorResponse([], "Admin user cannot be deleted.", Response::HTTP_FORBIDDEN);
-
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
-            return $this->errorResponse([], "User does not exists.", Response::HTTP_NOT_FOUND);
+            return $this->errorResponse([], "User does not exist.", Response::HTTP_NOT_FOUND);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            return $this->errorResponse([], "An unexpected error occurred. Please try again later.");
+            return $this->errorResponse([], "Something went wrong. Please try again later.");
         }
-        
     }
 }

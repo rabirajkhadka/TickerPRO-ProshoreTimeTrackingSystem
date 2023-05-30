@@ -44,7 +44,7 @@ class ResetPasswordAction extends Controller
             return $this->successResponse([], 'Password reset successfully', Response::HTTP_OK);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            return $this->errorResponse([], "An unexpected error occurred. Please try again later.");
+            return $this->errorResponse([], "Something went wrong. Please try again later.");
         }
     }
 }
