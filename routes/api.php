@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Actions\Admin\DeleteUserAction;
 use App\Http\Controllers\Actions\Auth\RegisterAction;
+use App\Http\Controllers\Actions\Auth\LoginAction;
 use App\Http\Controllers\Actions\Auth\ForgotPasswordAction;
 use App\Http\Controllers\Actions\Auth\ResetPasswordAction;
 use App\Http\Controllers\AuthController;
@@ -32,14 +33,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('all-roles', [UserController::class, 'allUserRoles']);
 
 Route::prefix('user')->group(function () {
+    Route::post('login', LoginAction::class)->name('login');
     Route::post('register', RegisterAction::class)->name('register');
-    Route::post('forgot-password', ForgotPasswordAction::class);
-    Route::post('reset-password', ResetPasswordAction::class);
+    Route::post('forgot-password', ForgotPasswordAction::class)->name('forgot-password');
+    Route::post('reset-password', ResetPasswordAction::class)->name('reset-password');
 });
 
 
 Route::controller(AuthController::class)->prefix('user')->group(function () {
-    Route::post('login', 'loginUser')->name('login');
     Route::get('logout', 'logoutUser')->middleware('auth:sanctum');   
 });
 

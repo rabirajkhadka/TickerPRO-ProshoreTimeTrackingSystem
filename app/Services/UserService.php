@@ -66,18 +66,39 @@ class UserService
             throw new Exception();
         }
     }
-
-
-    public static function getUserWithCreds(array $validatedUserCreds)
+    /**
+     * login Service
+     *
+     * @param array $validatedUserCreds
+     * @return array
+     */
+    public function login(array $validatedUserCreds)
     {
+        $user = $this->getUserWithCreds($validatedUserCreds);
+        $token = $user->createToken('auth_token');
+        $result = [
+            'user' => $user,
+            'access_token' => $token->plainTextToken,
+            'token_type' => 'Bearer',
+        ];
+        return $result;
+    }
 
-        $user = User::where('email', $validatedUserCreds['email'])->first();
+    /**
+     * Login validation
+     * 
+     * @param array $validatedUserCreds
+     * @return 
+     */
+    public function getUserWithCreds(array $validatedUserCreds)
+    {
+        $user = $this->userModel->whereEmail($validatedUserCreds['email'])->firstorfail();
+
         if (!$user || !Hash::check($validatedUserCreds['password'], $user->password)) {
             throw new Exception('Email address or password is invalid');
         }
         return $user;
     }
-
 
     /**
      *
