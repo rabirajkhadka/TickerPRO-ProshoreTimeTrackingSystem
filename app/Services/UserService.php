@@ -159,8 +159,6 @@ class UserService
            /** @var \Laravel\Sanctum\PersonalAccessToken $token **/
            $token = $user->currentAccessToken();
            $token->delete();
-        } catch (ModelNotFoundException) {
-            throw new ModelNotFoundException();
         } catch (Exception) {
             throw new Exception();
         }
