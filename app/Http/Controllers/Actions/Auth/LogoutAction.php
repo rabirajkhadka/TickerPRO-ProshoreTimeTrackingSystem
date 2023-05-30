@@ -33,10 +33,10 @@ class LogoutAction extends Controller
      * @return JsonResponse
      */
 
-    public function __invoke(Request $request) : JsonResponse
+    public function __invoke() : JsonResponse
     {
         try {
-            $this->userService->logout($request);
+            $this->userService->logout();
             return $this->successResponse([], 'Successfully Logged out');
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());

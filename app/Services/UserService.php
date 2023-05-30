@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -146,11 +147,18 @@ class UserService
      * 
      * @param $request
      * @return void
+     * 
+     * 
      */
-    public function logout($request)
+
+    public function logout()
     {
         try {
-            $request->user()->currentAccessToken()->delete();
+           /** @var \App\Models\User $user **/
+           $user = Auth::user();
+           /** @var \Laravel\Sanctum\PersonalAccessToken $token **/
+           $token = $user->currentAccessToken();
+           $token->delete();
         } catch (ModelNotFoundException) {
             throw new ModelNotFoundException();
         } catch (Exception) {
