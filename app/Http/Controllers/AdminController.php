@@ -28,8 +28,8 @@ class AdminController extends Controller
      *
      * @var UserService
      */
-    private UserService $userService;
-    private User $userModel;
+    protected UserService $userService;
+    protected User $userModel;
     
     public function __construct(UserService $userService, User $userModel)
     {
