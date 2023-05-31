@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Actions\Admin\{ForgotPasswordAction,LoginAction, RegisterAction, LogoutAction, DeleteUserAction};
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Actions\Auth\{ForgotPasswordAction,LoginAction, RegisterAction, LogoutAction, ResetPasswordAction};
+use App\Http\Controllers\Actions\Admin\DeleteUserAction;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
