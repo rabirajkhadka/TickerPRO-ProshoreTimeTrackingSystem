@@ -1,11 +1,7 @@
 <?php
 
+use App\Http\Controllers\Actions\Auth\{ForgotPasswordAction,LoginAction, RegisterAction, LogoutAction, ResetPasswordAction};
 use App\Http\Controllers\Actions\Admin\DeleteUserAction;
-use App\Http\Controllers\Actions\Auth\RegisterAction;
-use App\Http\Controllers\Actions\Auth\LoginAction;
-use App\Http\Controllers\Actions\Auth\ForgotPasswordAction;
-use App\Http\Controllers\Actions\Auth\ResetPasswordAction;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
@@ -38,10 +34,8 @@ Route::prefix('user')->group(function () {
     Route::post('forgot-password', ForgotPasswordAction::class)->name('forgot-password');
     Route::post('reset-password', ResetPasswordAction::class)->name('reset-password');
 });
-
-
-Route::controller(AuthController::class)->prefix('user')->group(function () {
-    Route::get('logout', 'logoutUser')->middleware('auth:sanctum');   
+Route::middleware('auth:sanctum')->prefix('user')->group(function () {
+    Route::get('logout', LogoutAction::class)->name('logout');
 });
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {

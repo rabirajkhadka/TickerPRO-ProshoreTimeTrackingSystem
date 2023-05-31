@@ -18,7 +18,6 @@ class ResetPasswordAction extends Controller
     protected UserService $userService;
 
     /**
-     *
      * @param UserService $userService
      */
     public function __construct(UserService $userService)

@@ -18,7 +18,7 @@ class LoginAction extends Controller
 
     /**
     * @param UserService $userService
-     */
+    */
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
