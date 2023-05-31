@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\UserRoleEnum;
 use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
@@ -15,7 +16,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
-
 
 class UserService
 {
@@ -185,5 +185,27 @@ class UserService
         }
 
         return true;
+    }
+
+    /**
+     *
+     * @param integer $id
+     * @return boolean
+     */
+    public function deleteUser(int $id): bool
+    {
+        $user = $this->userModel->where('id', $id)->firstOrFail();
+        if ($this->hasRoleAdmin($user)) return false;
+        return $user->delete();
+    }
+
+    /**
+     *
+     * @param object $user
+     * @return boolean
+     */
+    public function hasRoleAdmin(object $user): bool
+    {
+        return $user->roles->pluck('role')->contains(UserRoleEnum::ADMIN);
     }
 }

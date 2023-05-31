@@ -44,7 +44,7 @@ class ForgotPasswordAction extends Controller
             return $this->successResponse([], 'Reset email sent successfully', Response::HTTP_OK);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            return $this->errorResponse([], "An unexpected error occurred. Please try again later.");
+            return $this->errorResponse([], "Something went wrong. Please try again later.");
         }
     }
 

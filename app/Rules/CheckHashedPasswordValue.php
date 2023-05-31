@@ -35,18 +35,19 @@ class CheckHashedPasswordValue implements InvokableRule
     {
         try {
             if (is_null($this->email)) {
-                $fail("The given email address is invalid");
+                $fail("The email address is required.");
             }
             $user = User::getByEmail($this->email)->firstOrFail();
+            
             if (Hash::check($value, Arr::get($user, 'password'))) {
-                $fail("Your new password cannot be the same as your previous password. Please choose a different password.");
+                $fail("New password cannot be the same as your previous password. Please choose a different password.");
             }
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
-            $fail("Could not reset password. Please check your email address");
+            $fail("User does not exist.");
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            $fail("An unexpected error occurred. Please try again later.");
+            $fail("Something went wrong. Please try again later.");
         }
     }
 }
