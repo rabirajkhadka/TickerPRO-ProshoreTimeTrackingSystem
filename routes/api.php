@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Actions\Auth\LogoutAction;
+use App\Http\Controllers\Actions\Admin\{ForgotPasswordAction,LoginAction, RegisterAction, LogoutAction, DeleteUserAction};
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
@@ -10,6 +8,8 @@ use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,17 +25,17 @@ use App\Http\Controllers\ClientController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::middleware('auth:sanctum')->prefix('user')->group(function () {
-    Route::get('logout', LogoutAction::class)->name('logout');
-});
 
 Route::get('all-roles', [UserController::class, 'allUserRoles']);
 
-Route::controller(AuthController::class)->prefix('user')->group(function () {
-    Route::post('register', 'registerUser')->name('register');
-    Route::post('login', 'loginUser')->name('login');
-    Route::post('forgot-password', 'forgotPass');
-    Route::post('reset-password', 'resetPass');
+Route::prefix('user')->group(function () {
+    Route::post('login', LoginAction::class)->name('login');
+    Route::post('register', RegisterAction::class)->name('register');
+    Route::post('forgot-password', ForgotPasswordAction::class)->name('forgot-password');
+    Route::post('reset-password', ResetPasswordAction::class)->name('reset-password');
+});
+Route::middleware('auth:sanctum')->prefix('user')->group(function () {
+    Route::get('logout', LogoutAction::class)->name('logout');
 });
 
 Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
@@ -57,9 +57,11 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::get('users', 'viewAllUsers');
             Route::post('change-roles', 'assignRoles');
             Route::get('user-roles/{id}', 'viewUserRole');
-            Route::delete('user/{id}', 'deleteUser');
             Route::post('invite', 'inviteOthers');
             Route::patch('user-status/{id}', 'updateUserStatus');
+        });
+        Route::prefix('admin')->group(function () {
+            Route::delete('user/{id}', DeleteUserAction::class);
         });
         Route::controller(InviteController::class)->prefix('invite')->group(function () {
             Route::get('invited-users', 'listInvitedUsers');

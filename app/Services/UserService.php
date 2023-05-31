@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\UserRoleEnum;
 use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
@@ -10,12 +11,12 @@ use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
-
 
 class UserService
 {
@@ -34,34 +35,71 @@ class UserService
         $this->userRoleModel = $userRoleModel;
     }
 
-    public static function saveUserData(array $validatedUserRegister)
+
+    /**
+     *
+     * @param array $validatedUserRegister
+     * @throws ModelNotFoundException
+     * @throws Exception
+     */
+
+    public function saveUserData(array $validatedData)
     {
-        $invitedUser = InviteToken::where('email', $validatedUserRegister['email'])->first();
-        $check = Hash::check($validatedUserRegister['token'], $invitedUser->token);
+        try {
+            $invitedUser = InviteToken::where('email', Arr::get($validatedData, 'email'))->firstOrFail();
+            $user = null;
 
-        if (!$check) {
-            throw new Exception('Please provide a valid token');
+            DB::transaction(function () use ($validatedData, $invitedUser, &$user) {
+                $user = $this->userModel->create($validatedData);
+                $user->roles()->attach(
+                    Arr::get($invitedUser, 'role_id'),
+                    [
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]
+                );
+                $invitedUser->delete();
+            });
+            return $user;
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (Exception) {
+            throw new Exception();
         }
-
-        $result = User::create($validatedUserRegister);
-        UserRole::create([
-            'user_id' => $result['id'],
-            'role_id' => $invitedUser['role_id'],
-        ]);
-        $invitedUser->delete();
+    }
+    /**
+     * login Service
+     *
+     * @param array $validatedUserCreds
+     * @return array
+     */
+    public function login(array $validatedUserCreds)
+    {
+        $user = $this->getUserWithCreds($validatedUserCreds);
+        $token = $user->createToken('auth_token');
+        $result = [
+            'user' => $user,
+            'access_token' => $token->plainTextToken,
+            'token_type' => 'Bearer',
+        ];
         return $result;
     }
 
-    public static function getUserWithCreds(array $validatedUserCreds)
+    /**
+     * Login validation
+     * 
+     * @param array $validatedUserCreds
+     * @return 
+     */
+    public function getUserWithCreds(array $validatedUserCreds)
     {
+        $user = $this->userModel->whereEmail($validatedUserCreds['email'])->firstorfail();
 
-        $user = User::where('email', $validatedUserCreds['email'])->first();
         if (!$user || !Hash::check($validatedUserCreds['password'], $user->password)) {
             throw new Exception('Email address or password is invalid');
         }
         return $user;
     }
-
 
     /**
      *
@@ -114,21 +152,29 @@ class UserService
         return Role::exclude('admin')->get();
     }
 
-    public static function forgotPassword($validatedForgetPass): bool
+    /**
+     *
+     * @param array $validatedForgetPass
+     * @return boolean
+     */
+    public function forgotPassword(array $validatedForgetPass): bool
     {
         $status = Password::sendResetLink($validatedForgetPass);
-        if ($status === Password::INVALID_USER) return false;
-        return true;
+        return $status === Password::RESET_LINK_SENT ? true : false;
     }
 
-    public static function resetPassword(array $validatedResetPass): bool
+    /**
+     *
+     * @param array $validatedResetPass
+     * @return boolean
+     */
+    public function resetPassword(array $validatedResetPass): bool
     {
         $status = Password::reset($validatedResetPass, function ($user, $password) {
             $user->forceFill(['password' => $password])->setRememberToken(Str::random(60));
             $user->save();
         });
-        if ($status === Password::INVALID_TOKEN) return false;
-        return true;
+        return $status === Password::PASSWORD_RESET ? true : false;
     }
 
     public static function checkUserIdExists($id)
@@ -140,6 +186,28 @@ class UserService
         }
 
         return true;
+    }
+
+    /**
+     *
+     * @param integer $id
+     * @return boolean
+     */
+    public function deleteUser(int $id): bool
+    {
+        $user = $this->userModel->where('id', $id)->firstOrFail();
+        if ($this->hasRoleAdmin($user)) return false;
+        return $user->delete();
+    }
+
+    /**
+     *
+     * @param object $user
+     * @return boolean
+     */
+    public function hasRoleAdmin(object $user): bool
+    {
+        return $user->roles->pluck('role')->contains(UserRoleEnum::ADMIN);
     }
 
     /**

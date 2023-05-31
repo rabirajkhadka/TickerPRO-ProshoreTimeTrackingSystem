@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Exceptions;
-    
+
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-Use TypeError;
+use TypeError;
 use Illuminate\Support\Str;
 use Throwable;
 use App\Traits\HttpResponses;
@@ -40,25 +40,16 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            
         });
     }
 
     public function render($request, Throwable $exception)
-{
-    if ($exception instanceof TypeError) {
-        $errorMessage = $exception->getMessage(); // Get the original error message
+    {
+        if ($exception instanceof TypeError) {
+            $customErrorMessage = "Invalid type provided for parameter";
+            return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
+        }
 
-        $parameterName = Str::between($errorMessage, 'App\Http\Controllers\ClientController::update(): Argument #2 ' ,' must be of type', ); // Extract the parameter name
-        $parameterName = Str::replaceFirst('$', '', $parameterName);// Remove the '$' symbol if present
-        $parameterName = Str::replaceFirst('(', '', $parameterName);// Remove the '(' symbol if present
-        $parameterName = Str::replaceFirst(')', '', $parameterName); // Remove the ')' symbol if present
-
-        $customErrorMessage = "Invalid type provided for parameter {$parameterName}";
-
-        return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
-    } 
-
-    return parent::render($request, $exception);
-}
+        return parent::render($request, $exception);
+    }
 }
