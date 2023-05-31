@@ -24,6 +24,7 @@ class LogoutAction extends Controller
     {
         $this->userService = $userService;
     }
+    
     /**
      * Handle the incoming logout request.
      *
@@ -31,7 +32,6 @@ class LogoutAction extends Controller
      * @return \Illuminate\Http\Response
      * @return JsonResponse
      */
-
     public function __invoke(): JsonResponse
     {
         try {

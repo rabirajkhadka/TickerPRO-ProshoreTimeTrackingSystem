@@ -24,25 +24,20 @@ class UserService
     protected UserRole $userRoleModel;
 
     /**
-     *
      * @param User $userModel
      * @param UserRole $userRoleModel
      */
-
     public function __construct(User $userModel, UserRole $userRoleModel)
     {
         $this->userModel = $userModel;
         $this->userRoleModel = $userRoleModel;
     }
 
-
     /**
-     *
      * @param array $validatedUserRegister
      * @throws ModelNotFoundException
      * @throws Exception
      */
-
     public function saveUserData(array $validatedData)
     {
         try {
@@ -67,9 +62,10 @@ class UserService
             throw new Exception();
         }
     }
+
     /**
      * login Service
-     *
+     * 
      * @param array $validatedUserCreds
      * @return array
      */
@@ -102,15 +98,11 @@ class UserService
     }
 
     /**
-     *
-     *
      * @param array $credentials
-     * 
      * @throws ModelNotFoundException
      * @throws Exception
      * @return object
      */
-
     public function assignUserRole(array $credentials)
     {
         try {
@@ -133,7 +125,6 @@ class UserService
         }
     }
 
-
     public static function getUser($cred, $rules)
     {
         $validateReq = validator($cred, $rules);
@@ -153,7 +144,6 @@ class UserService
     }
 
     /**
-     *
      * @param array $validatedForgetPass
      * @return boolean
      */
@@ -164,7 +154,6 @@ class UserService
     }
 
     /**
-     *
      * @param array $validatedResetPass
      * @return boolean
      */
@@ -180,16 +169,13 @@ class UserService
     public static function checkUserIdExists($id)
     {
         $user = User::where('id', $id)->first();
-
         if (!$user) {
             return false;
         }
-
         return true;
     }
 
     /**
-     *
      * @param integer $id
      * @return boolean
      */
@@ -201,7 +187,6 @@ class UserService
     }
 
     /**
-     *
      * @param object $user
      * @return boolean
      */
@@ -212,21 +197,17 @@ class UserService
 
     /**
      * logout Service
-     * 
      * @param $request
      * @return void
-     * 
-     * 
      */
-
     public function logout()
     {
         try {
-           /** @var \App\Models\User $user **/
-           $user = Auth::user();
-           /** @var \Laravel\Sanctum\PersonalAccessToken $token **/
-           $token = $user->currentAccessToken();
-           $token->delete();
+            /** @var \App\Models\User $user **/
+            $user = Auth::user();
+            /** @var \Laravel\Sanctum\PersonalAccessToken $token **/
+            $token = $user->currentAccessToken();
+            $token->delete();
         } catch (Exception) {
             throw new Exception();
         }
