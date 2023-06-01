@@ -8,10 +8,12 @@ use App\Services\ProjectService;
 use App\Services\TimeLogService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Http\Resources\TimeLogResource;
 use App\Traits\HttpResponses;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class TimeLogController extends Controller
 {
@@ -47,27 +49,32 @@ class TimeLogController extends Controller
         ]);
     }
 
-    public function viewLogs(Request $request): JsonResponse
+
+    /**
+     * @param integer $id
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return JsonResponse
+     */
+    public function viewLogs(int $id): JsonResponse
     {
-        //validate if user id passed is actually do exist
-        $status = UserService::checkUserIdExists($request->id);
-        if (!$status) {
-            return $this->errorResponse([], 'User does not exist', Response::HTTP_BAD_REQUEST);
+        try {
+            $totals = $this->timeLogService->viewTotalTimeLogs($id);
+            $logs = $this->timeLogService->viewPaginateTimeLogs($id);
+
+            return empty($totals) ? $this->errorResponse([], 'No logs found', Response::HTTP_NOT_FOUND) :
+                $this->successResponse([
+                    'total' => $totals,
+                    'logs' => TimeLogResource::collection($logs)
+                ], 'Logs found');
+        } catch (ModelNotFoundException $modelNotFoundException) {
+
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], 'User does not exist', Response::HTTP_NOT_FOUND);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], 'Something went wrong');
         }
-        // if user exists then view their logs
-
-        $size = $request->size;
-        $totals = $this->timeLogService->viewTotalTimeLogs($request->id);
-        $logs = $this->timeLogService->viewPaginateTimeLogs(size: (int)$size, id: (int)$request->id);
-
-        if (empty($logs)) {
-            return $this->errorResponse([], 'No logs found', Response::HTTP_NOT_FOUND);
-        }
-
-        return $this->successResponse([
-            'total' => $totals,
-            'logs' => TimeLogResource::collection($logs)
-        ], 'Logs found');
     }
 
     public function editActivity(EditTimeLogRequest $request, $id): JsonResponse

@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\TimeLog;
 use App\Models\User;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TimeLogService
 {
@@ -24,23 +26,42 @@ class TimeLogService
         return TimeLog::create($validatedAddLog);
     }
 
-    public static function viewTotalTimeLogs($id)
+
+    /**
+     * @param integer $id
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return int
+     */
+    public function viewTotalTimeLogs(int $id): int
     {
-        return User::find($id)->timeLogs()->count();
+        try {
+            return $this->user->findOrFail($id)->timeLogs()->count();
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (Exception) {
+            throw new Exception();
+        }
     }
 
 
     /**
-     * Undocumented function
-     *
      * @param integer $id
-     * @param integer $size
-     * @return void
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return object
      */
-    public function viewPaginateTimeLogs(int $id, int $size): object
+    public function viewPaginateTimeLogs(int $id): object
     {
-        return $this->user->find($id)->timeLogs()->latest()->paginate($size);
+        try {
+            return $this->user->findOrFail($id)->timeLogs()->latest()->paginate();
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (Exception) {
+            throw new Exception();
+        }
     }
+
 
     public static function editTimeLog(array $validatedEditLog, $id): bool
     {
