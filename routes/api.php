@@ -8,6 +8,7 @@ use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\GenerateReportAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,9 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
     });
     Route::controller(ProjectController::class)->prefix('project')->group(function () {
         Route::get('/', 'viewAllProjects');
+    });
+    Route::prefix('log')->group(function() {
+        Route::post('report', GenerateReportAction::class)->name('report');
     });
     Route::controller(TimeLogController::class)->prefix('log')->group(function () {
         Route::post('/', 'addActivity');
