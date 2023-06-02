@@ -11,6 +11,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+
 use Mockery\Exception;
 
 
@@ -49,12 +51,6 @@ class UpdateUserStatusAction extends Controller
         }catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
             return $this->errorResponse([], "User not Found", Response::HTTP_NOT_FOUND);
-        }catch (AuthorizationException $authorizationException) {
-            Log::error($authorizationException->getMessage());
-            return $this->errorResponse([],$authorizationException->getMessage(), Response::HTTP_FORBIDDEN);
-        }catch (QueryException $queryException) {
-            Log::error($queryException->getMessage());
-            return $this->errorResponse([], 'Could not update user status', Response::HTTP_BAD_REQUEST);
         }catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], 'Something went wrong. Please try again later.');
