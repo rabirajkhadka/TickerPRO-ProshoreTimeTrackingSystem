@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 
 namespace App\Http\Controllers\Actions\Auth;
@@ -55,4 +53,3 @@ class RegisterAction extends Controller
         }
     }
 }
->>>>>>> main

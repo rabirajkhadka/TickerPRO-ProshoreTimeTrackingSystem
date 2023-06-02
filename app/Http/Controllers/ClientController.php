@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 
 namespace App\Http\Controllers;
@@ -35,7 +33,7 @@ class ClientController extends Controller
     /**
      *  
      *
-     * @return jsonResource
+     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -122,4 +120,3 @@ class ClientController extends Controller
         }
     }
 }
->>>>>>> main

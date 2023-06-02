@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 
 namespace App\Rules;
@@ -53,4 +51,3 @@ class CheckHashedPasswordValue implements InvokableRule
         }
     }
 }
->>>>>>> main

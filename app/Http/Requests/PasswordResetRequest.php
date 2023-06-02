@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 
 namespace App\Http\Requests;
@@ -54,4 +52,3 @@ class PasswordResetRequest extends FormRequest
         
     }
 }
->>>>>>> main

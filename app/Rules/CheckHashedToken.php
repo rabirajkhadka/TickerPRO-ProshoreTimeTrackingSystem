@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 
 namespace App\Rules;
@@ -59,4 +57,3 @@ class CheckHashedToken implements InvokableRule
         }
     }
 }
->>>>>>> main

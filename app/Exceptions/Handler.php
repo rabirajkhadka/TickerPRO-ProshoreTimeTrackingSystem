@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 
 namespace App\Exceptions;
@@ -55,4 +53,3 @@ class Handler extends ExceptionHandler
         return parent::render($request, $exception);
     }
 }
->>>>>>> main

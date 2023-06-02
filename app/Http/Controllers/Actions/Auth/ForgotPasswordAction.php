@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 
 namespace App\Http\Controllers\Actions\Auth;
@@ -50,4 +48,3 @@ class ForgotPasswordAction extends Controller
     }
 
 }
->>>>>>> main
