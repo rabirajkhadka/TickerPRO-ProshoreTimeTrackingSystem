@@ -34,7 +34,7 @@
             tr:nth-child(even) {
                 background-color: #f9f9f9;
             }
-            p{
+            p {
                 color: #222;
             }
             hr {
@@ -46,11 +46,11 @@
             .date-range {
             text-align: center;
             margin-bottom: 35px;
-        }
-        .date-range p {
-            font-weight: bold;
-            color: #666;
-        }
+            }
+            .date-range p {
+                font-weight: bold;
+                color: #666;
+            }
         </style>
     </head>
     <body>
