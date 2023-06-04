@@ -27,31 +27,40 @@
     </style>
 </head>
 <body>
-    <h1>Weekly Report</h1>
+    <h1>User Report</h1>
+    {{-- @dd($reports); --}}
+    @foreach($reports as $report)
+    {{-- @dd($report); --}}
+        <p>User: {{ $report['user_name'] }}</p>
+        <p>Project: {{ $report['project'] }}</p>
+        <p>Client: {{ $report['client'] }}</p>
 
-    <p>User: {{ $user->name }}</p>
-    <p>Start Date: {{ $start_date->toDateString() }}</p>
-    <p>End Date: {{ $end_date->toDateString() }}</p>
+        {{-- <p>Start Date: {{ $start_date->toDateString() }}</p>
+        <p>End Date: {{ $end_date->toDateString() }}</p> --}}
 
-    <table>
-        <thead>
-            <tr>
-                <th>Activity</th>
-                <th>Date</th>
-                <th>Project</th>
-                <th>Total Hours</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($report as $item)
-            <tr>
-                <td>{{ $item['activity'] }}</td>
-                <td>{{ $item['date'] }}</td>
-                <td>{{ $item['project'] }}</td>
-                <td>{{ $item['total_hours'] }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    {{-- <th>Date</th> --}}
+                    {{-- <th>Project</th> --}}
+                    <th>Total Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($report['activities'] as $item)
+                <tr>
+                    <td>{{ $item['activity'] }}</td>
+                    {{-- <td>{{ $item['date'] }}</td> --}}
+                    {{-- <td>{{ $item['project'] }}</td> --}}
+                    <td>{{ $item['total_time'] }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <br>
+        <br>
+    @endforeach
+    
 </body>
 </html>
