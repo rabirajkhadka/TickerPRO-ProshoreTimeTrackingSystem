@@ -51,6 +51,7 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
         Route::get('{id}', 'viewLogs');
         Route::patch('{id}', 'editActivity');
         Route::delete('{id}', 'removeActivity');
+        Route::post('reports', 'generateReport');
     });
     Route::middleware(['isAdmin'])->group(function () {
         Route::controller(AdminController::class)->prefix('admin')->group(function () {

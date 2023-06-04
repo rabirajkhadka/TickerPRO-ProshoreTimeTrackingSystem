@@ -9,11 +9,18 @@ use App\Services\TimeLogService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\TimeLogResource;
+use App\Models\Project;
+use App\Models\TimeLog;
+use App\Models\User;
 use App\Traits\HttpResponses;
+use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+
 
 class TimeLogController extends Controller
 {
@@ -107,5 +114,91 @@ class TimeLogController extends Controller
         return response()->json([
             'message' => 'Time log deleted successfully'
         ]);
+    }
+
+    
+    public function generateReport(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $start_date = Carbon::parse($request->start_date);
+        $end_date = Carbon::parse($request->end_date);
+    
+        $report = [];
+        $overall_total_time = 0;
+    
+        // TimeLogs of that particular user only
+        $timeLogs = $user->timeLogs()
+            ->whereBetween('start_date', [$start_date, $end_date])
+            ->get();
+        // dd($timeLogs->toArray());
+        
+        //
+        $report = [];
+        $overall_total_time = 0;
+    
+        // TimeLogs of that particular user only
+        $timeLogs = $user->timeLogs()
+            ->whereBetween('start_date', [$start_date, $end_date])
+            ->get();
+        // dd($timeLogs->toArray());
+        
+        // get project id worked on by that user only
+        $projectIds = $timeLogs->pluck('project_id')->unique();
+    
+        foreach ($projectIds as $projectId) {
+            $project = Project::find($projectId);
+            $project_total_time = 0;
+    
+            $activities = $timeLogs->where('project_id', $projectId);
+    
+            foreach ($activities as $activity) {
+                $startDateTime = Carbon::parse($activity->start_date . ' ' . $activity->started_time);
+                $endDateTime = Carbon::parse($activity->end_date . ' ' . $activity->ended_time);
+                $activity_total_time = $endDateTime->diffInHours($startDateTime);
+
+                $formattedDate = Carbon::parse($activity->start_date)->format('M j');
+    
+                $report[] = [
+                    'activity' => $activity->activity_name,
+                    'date' => $formattedDate,
+                    'project' => $project->project_name,
+                    'total_hours' => $activity_total_time,
+                ];
+    
+                $project_total_time += $activity_total_time;
+                $overall_total_time += $activity_total_time;
+            }
+    
+            $report[] = [
+                'activity' => 'Total',
+                'date' => '',
+                'project' => $project->project_name,
+                'total_hours' => $project_total_time,
+            ];
+        }
+    
+        $report[] = [
+            'activity' => '',
+            'date' => '',
+            'project' => 'Overall Total Time',
+            'total_hours' => $overall_total_time,
+        ];
+    
+        // return view('reports.index', compact('report', 'user', 'start_date', 'end_date'));
+
+        // Generate HTML for the report view
+        $html = view('reports.index', compact('report', 'user', 'start_date', 'end_date'))->render();
+        
+        // Generate the PDF using Dompdf
+        $dompdf = new Dompdf;
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        
+        // Generate a unique filename for the PDF
+        $filename = 'report_' . Carbon::now()->format('YmdHis') . '.pdf';
+
+        // Save the PDF file
+        $dompdf->stream($filename);
     }
 }
