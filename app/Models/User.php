@@ -55,21 +55,7 @@ class User extends Model
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
-     /**
-         * Get the number of active admin users.
-         */
-        /**
-         * Undocumented function
-         *
-         * @return integer
-         */
-        public function getActiveAdminsCount(): int
-        {
-            return $this->whereHas('roles', function ($query) {
-                $query->where('role', 'admin')->where('activeStatus', true);
-            })->count();
-        }
-    
+   
 
     /*
      * Get the project that belongs to the user
@@ -99,6 +85,6 @@ class User extends Model
      */
     public function scopeGetByEmail(Builder $query, string $email)
     {
-        return $query->where('email', $email);
+        $query->where('email', $email);
     }
 }

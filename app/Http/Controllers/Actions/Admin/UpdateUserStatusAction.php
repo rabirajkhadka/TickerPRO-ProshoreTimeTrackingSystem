@@ -24,6 +24,7 @@ class UpdateUserStatusAction extends Controller
     /**
      *
      * @param  UserService  $userService
+     * @var UserService
      */
     public function __construct(UserService $userService)
     {
@@ -35,18 +36,15 @@ class UpdateUserStatusAction extends Controller
      * @param  integer  $id
      * @return JsonResponse
      * @throws ModelNotFoundException
-     * @throws AuthorizationException
-     * @throws QueryException
      * @throws Exception
      */
     public function __invoke(int $id): JsonResponse
     {
         try{
             $result = $this->userService->updateUserStatus($id);
-            if($result){
-                return $this->SuccessResponse([],"User status successfully updated");
-            }
-            return $this->errorResponse([], "Failed to update user status");
+           
+            return $result ? $this->SuccessResponse([],"User status successfully updated") : 
+            $this->errorResponse([], "Failed to update user status");
 
         }catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());

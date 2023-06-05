@@ -168,23 +168,23 @@ class UserService
 
     /**
      *
-     * @param  integer  $userId
-     * @return boolean
+     * @param  int  $userId
+     * @return bool
      * @throws AuthorizationException
      */
     public function updateUserStatus(int $userId): bool
     {
         $user = $this->userModel->findOrFail($userId);
-
+    
         if ($user->id === auth()->user()->id) {
-            throw new AuthorizationException("Cannot disable yourselves");
+            return false; // Indicate error with false
         }
-
+    
         $user->activeStatus = !$user->activeStatus;
-
-        if($user->save()) return true;
-        return false;
+    
+         return $user->save ? true : false;
     }
+    
 
 }
 
