@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EditClientRequest extends FormRequest
 {
@@ -26,7 +27,11 @@ class EditClientRequest extends FormRequest
 
         return [
             'client_name' => 'required|max:255|regex:/^[A-Za-z]+(?:\s[A-Za-z]+)+$/', //makes sure the name only accepts aplabetic characters and some specific name formats.
-            'client_number' => 'required|numeric|digits:10',
+            // 'client_number' => 'required|numeric|digits:10|unique:clients',
+             'client_number' => ['required',
+                'numeric',
+                'digits:10',
+                Rule::unique('clients')->ignore($this->client)],
             'status' => 'required | boolean',
         ];
     } 
