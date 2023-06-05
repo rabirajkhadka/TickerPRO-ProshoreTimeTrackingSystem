@@ -81,6 +81,16 @@ class User extends Authenticatable
      */
     public function scopeGetByEmail(Builder $query, string $email)
     {
-        return $query->where('email', $email);
+         $query->where('email', $email);
     }
+
+// /**
+//  *
+//  * @return boolean
+//  */
+//     public function isActive()
+//     {
+//         return $this->status === 'active'; // Example: assuming 'status' is a column in the users table
+//     }
 }
+

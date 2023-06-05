@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Mockery\Exception;
 use Illuminate\Http\JsonResponse;
 
+
 class ClientService
 {
     protected Client $client;
@@ -28,17 +29,17 @@ class ClientService
      * @throws Exception
      * @return Collection
      */
-    public function viewClients()
-    {
-        try {
-            $clients = $this->client->with(['projects'])->paginate();
-            return ClientResource::collection($clients);
-        } catch (ModelNotFoundException) {
-            throw new ModelNotFoundException();
-        } catch (Exception) {
-            throw new Exception();
+        public function viewClients():Collection
+        {
+            try {
+                $clients = $this->client->with(['projects'])->paginate();
+                return ClientResource::collection($clients);
+            } catch (ModelNotFoundException) {
+                throw new ModelNotFoundException();
+            } catch (Exception) {
+                throw new Exception();
+            }
         }
-    }
 
     /**
      *

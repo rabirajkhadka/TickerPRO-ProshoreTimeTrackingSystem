@@ -8,6 +8,7 @@ use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Exceptions;
-
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
 use TypeError;
-use Illuminate\Support\Str;
 use Throwable;
 use App\Traits\HttpResponses;
 
@@ -43,6 +43,16 @@ class Handler extends ExceptionHandler
         });
     }
 
+
+
+/**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Exception  $exception
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
+     */
+
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof TypeError) {
@@ -50,6 +60,12 @@ class Handler extends ExceptionHandler
             return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
         }
 
+        // if  ($exception instanceof AuthenticationException && auth()->check() && !auth()->user()->isActive()) {
+        //     $customErrorMessage = "You are currently disabled";
+        //     return $this->errorResponse([], "$customErrorMessage");
+        // }
+
         return parent::render($request, $exception);
     }
+
 }
