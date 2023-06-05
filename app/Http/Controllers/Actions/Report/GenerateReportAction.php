@@ -3,17 +3,15 @@
 namespace App\Http\Controllers\Actions\Report;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TimelogReportRequest;
 use Illuminate\Http\Request;
 
 class GenerateReportAction extends Controller
 {
     /**
-     * Handle the incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param TimelogReportRequest $request
      */
-    public function __invoke(Request $request)
+    public function __invoke(TimelogReportRequest $request)
     {
         //
     }
