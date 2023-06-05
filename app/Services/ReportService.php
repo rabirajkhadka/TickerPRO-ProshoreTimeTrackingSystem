@@ -21,9 +21,9 @@ class ReportService
 
     /**
      * @param array $validated
-     * @return void
+     * @return object
      */
-    public function getUsersReport(array $validated)
+    public function getUsersReport(array $validated): object
     {
         $users = $this->user->whereIn('id', Arr::get($validated, 'user_id'))
             ->with(['timelogs' => function ($query) use ($validated) {
@@ -41,44 +41,45 @@ class ReportService
             }])->get();
 
         $report = $this->getUsersReportDetails($validated, $users);
+
         return $report;
     }
 
 
-   /**
+    /**
      * @param array $validated
      * @param object $users
-     * @return void
+     * @return object
      */
-    public function getUsersReportDetails(array $validated, object $users)
+    public function getUsersReportDetails(array $validated, object $users): object
     {
-        {
-            $reports = $users->map(function ($user) use ($validated) {
-                $userTotalTime = $user->timelogs->sum(function ($timelog) {
-                    $startDateTime = Carbon::parse($timelog->start_date . ' ' . $timelog->started_time);
-                    $endDateTime = Carbon::parse($timelog->end_date . ' ' . $timelog->ended_time);
-                    return $endDateTime->diffInMinutes($startDateTime);
-                });
-                $activites= $this->getUserActivity($validated, $user);
-                return [
-                    'user_id' => $user->id,
-                    'user_name' => $user->name,
-                    'client' => $user->timelogs->pluck('project.client.client_name')->first(),
-                    'total_time' => intdiv($userTotalTime, 60) . 'hrs ' . ' ' . ($userTotalTime % 60) . 'min',
-                    'activities' => $activites
-                ];
+        $reports = $users->map(function ($user) use ($validated) {
+            $userTotalTime = $user->timelogs->sum(function ($timelog) {
+                $startDateTime = Carbon::parse($timelog->start_date . ' ' . $timelog->started_time);
+                $endDateTime = Carbon::parse($timelog->end_date . ' ' . $timelog->ended_time);
+                return $endDateTime->diffInMinutes($startDateTime);
             });
-            return ($reports->all());
-            }
+            $activities = $this->getUserActivity($validated, $user);
+
+            return [
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'client' => $user->timelogs->pluck('project.client.client_name')->first(),
+                'total_time' => intdiv($userTotalTime, 60) . 'hrs ' . ' ' . ($userTotalTime % 60) . 'min',
+                'activities' => $activities
+            ];
+        });
+
+        return $reports;
     }
 
 
-   /**
+    /**
      * @param array $validated
      * @param object $user
-     * @return void
+     * @return object
      */
-    public function getUserActivity(array $validated, object $user)
+    public function getUserActivity(array $validated, object $user): object
     {
         $activities = $user->timelogs->map(function ($timelog) use ($validated) {
             $startDateTime = Carbon::parse($timelog->start_date . ' ' . $timelog->started_time);
@@ -89,10 +90,11 @@ class ReportService
                 'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ' ' . ($totalTime % 60) . 'min',
                 'project' => $timelog->project->project_name
             ];
-            if ($validated['project_id'] === null)
+            if (Arr::get($validated, 'project_id') === null)
                 $activity += ['project' => $timelog->project->project_name];
             return $activity;
         });
+
         return $activities;
     }
 }
