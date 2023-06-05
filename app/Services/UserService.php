@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
+use App\Http\Resources\UserResource;
 
 class UserService
 {
@@ -74,7 +75,7 @@ class UserService
         $user = $this->getUserWithCreds($validatedUserCreds);
         $token = $user->createToken('auth_token');
         $result = [
-            'user' => $user,
+            'user' => new UserResource($user->load('roles')),
             'access_token' => $token->plainTextToken,
             'token_type' => 'Bearer',
         ];
