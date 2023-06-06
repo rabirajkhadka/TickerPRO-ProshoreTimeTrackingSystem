@@ -65,7 +65,7 @@ class ReportService
                 'user_id' => $user->id,
                 'user_name' => $user->name,
                 'client' => $user->timelogs->pluck('project.client.client_name')->first(),
-                'total_time' => intdiv($userTotalTime, 60) . 'hrs ' . ' ' . ($userTotalTime % 60) . 'min',
+                'total_time' => intdiv($userTotalTime, 60) . 'hrs ' . ($userTotalTime % 60) . 'min',
                 'activities' => $activities
             ];
         });
@@ -87,7 +87,7 @@ class ReportService
             $totalTime = $endDateTime->diffInMinutes($startDateTime);
             $activity = [
                 'activity' => $timelog->activity_name,
-                'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ' ' . ($totalTime % 60) . 'min',
+                'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ($totalTime % 60) . 'min',
                 'project' => $timelog->project->project_name
             ];
             if (Arr::get($validated, 'project_id') === null)
