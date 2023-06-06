@@ -30,7 +30,9 @@ class GenerateReportAction extends Controller
 
 
     /**
+     *
      * @param TimelogReportRequest $request
+     * @return JsonResponse
      */
     public function __invoke(TimelogReportRequest $request): JsonResponse
     {
