@@ -47,8 +47,8 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::controller(ProjectController::class)->prefix('project')->group(function () {
         Route::get('/', 'viewAllProjects');
     });
-    Route::prefix('log')->group(function () {
-        Route::post('report', GenerateReportAction::class)->name('report');
+    Route::prefix('report')->group(function () {
+        Route::post('/', GenerateReportAction::class)->name('report');
     });
     Route::controller(TimeLogController::class)->prefix('log')->group(function () {
         Route::post('/', 'addActivity');
