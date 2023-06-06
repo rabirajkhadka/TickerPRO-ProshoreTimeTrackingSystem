@@ -77,7 +77,7 @@
             <p>From: {{ $start_date }} / To: {{ $end_date }}</p>
         </div>
 
-        @foreach($report as $report)
+        @foreach($reports as $report)
             <hr>
 
             <div class="report-section">

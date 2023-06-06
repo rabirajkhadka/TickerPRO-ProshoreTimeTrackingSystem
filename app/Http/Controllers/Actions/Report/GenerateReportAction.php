@@ -42,25 +42,7 @@ class GenerateReportAction extends Controller
         try {
             $validated = $request->validated();
             $report = $this->reportService->getUsersReport($validated);
-
-            // dd($report);
-            $start_date = Carbon::parse($validated['start_date'])->toFormattedDateString();
-            $end_date = Carbon::parse($validated['end_date'])->toFormattedDateString();
-
-            // Generate HTML for the report view
-            $html = view('reports.reportPdf', compact(['report', 'start_date', 'end_date']))->render();
-
-            $options = new Options();
-            $options->set('isRemoteEnabled', true);
-            $options->setChroot(public_path());
-            $dompdf = new Dompdf($options);
-            $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'portrait');
-            $dompdf->render();
-            $dompdf->stream();
-
-            // $filename = 'report_' . Carbon::now()->format('YmdHis') . '.pdf';
-            // $dompdf->stream($filename);
+            $this->reportService->generatePdfReport($report, $validated['start_date'], $validated['end_date']);
             
             return $this->successResponse([$report], 'Report successfully retrieved');
         } catch (ModelNotFoundException $modelNotFoundException) {
