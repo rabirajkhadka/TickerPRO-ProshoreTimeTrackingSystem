@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Actions\Auth\{ForgotPasswordAction,LoginAction, RegisterAction, LogoutAction, ResetPasswordAction};
+use App\Http\Controllers\Actions\Auth\{ForgotPasswordAction, LoginAction, RegisterAction, LogoutAction, ResetPasswordAction};
 use App\Http\Controllers\Actions\Admin\DeleteUserAction;
+use App\Http\Controllers\Actions\Admin\UpdateUserStatusAction;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
@@ -58,10 +59,10 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
             Route::post('change-roles', 'assignRoles');
             Route::get('user-roles/{id}', 'viewUserRole');
             Route::post('invite', 'inviteOthers');
-            Route::patch('user-status/{id}', 'updateUserStatus');
         });
         Route::prefix('admin')->group(function () {
             Route::delete('user/{id}', DeleteUserAction::class);
+            Route::patch('user-status/{id}', UpdateUserStatusAction::class);
         });
         Route::controller(InviteController::class)->prefix('invite')->group(function () {
             Route::get('invited-users', 'listInvitedUsers');
