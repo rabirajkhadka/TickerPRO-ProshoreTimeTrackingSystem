@@ -44,6 +44,7 @@ class ReportService
             ])->get();
 
         $report = $this->getUsersReportDetails($validated, $users);
+
         return $report;
     }
 
