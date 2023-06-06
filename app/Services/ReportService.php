@@ -90,8 +90,6 @@ class ReportService
                 'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ($totalTime % 60) . 'min',
                 'project' => $timelog->project->project_name
             ];
-            if (Arr::get($validated, 'project_id') === null)
-                $activity += ['project' => $timelog->project->project_name];
             return $activity;
         });
 
