@@ -99,7 +99,14 @@ class ReportService
         return $activities;
     }
 
-    public function generatePdfReport($reports, $startDate, $endDate)
+    /**
+     *
+     * @param object $reports
+     * @param string $startDate
+     * @param string $endDate
+     * @return void
+     */
+    public function generatePdfReport(object $reports, string $startDate, string $endDate): void
     {
         $start_date = Carbon::parse($startDate)->toFormattedDateString();
         $end_date = Carbon::parse($endDate)->toFormattedDateString();
