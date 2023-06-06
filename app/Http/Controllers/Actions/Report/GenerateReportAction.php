@@ -33,7 +33,9 @@ class GenerateReportAction extends Controller
 
 
     /**
+     *
      * @param TimelogReportRequest $request
+     * @return JsonResponse
      */
     public function __invoke(TimelogReportRequest $request): JsonResponse
     {
@@ -55,10 +57,10 @@ class GenerateReportAction extends Controller
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
+            $dompdf->stream();
 
-            $filename = 'report_' . Carbon::now()->format('YmdHis') . '.pdf';
-            // Save the PDF file
-            $dompdf->stream($filename);
+            // $filename = 'report_' . Carbon::now()->format('YmdHis') . '.pdf';
+            // $dompdf->stream($filename);
             
             return $this->successResponse([$report], 'Report successfully retrieved');
         } catch (ModelNotFoundException $modelNotFoundException) {
