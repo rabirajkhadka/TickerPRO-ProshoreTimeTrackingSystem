@@ -43,13 +43,13 @@ class VerifyPasswordTokenAction extends Controller
 
         } catch (NotFoundHttpException $notFoundHttpException) {
             Log::error($notFoundHttpException->getMessage());
-            return $this->errorResponse([], "Token does not exists", Response::HTTP_NOT_FOUND);
+            return $this->errorResponse([], "Token does not exist", Response::HTTP_NOT_FOUND);
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
             return $this->errorResponse([], "Token not found.", Response::HTTP_NOT_FOUND);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            return $this->errorResponse([], "An unexpected error occurred. Please try again later.");
+            return $this->errorResponse([], "Something went wrong. Please try again later.");
         }
     }
 }
