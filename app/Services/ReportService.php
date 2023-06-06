@@ -89,10 +89,8 @@ class ReportService
                 'activity' => $timelog->activity_name,
                 'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ($totalTime % 60) . 'min',
                 'project' => $timelog->project->project_name,
-                'date' =>  Carbon::parse($startDateTime)->toFormattedDateString(),
+                'date' => Carbon::parse($startDateTime)->format('M j')
             ];
-            if (Arr::get($validated, 'project_id') === null)
-                $activity += ['project' => $timelog->project->project_name];
             return $activity;
         });
 
