@@ -25,23 +25,25 @@ class ReportService
      */
     public function getUsersReport(array $validated): object
     {
-        $users = $this->user->whereIn('id', Arr::get($validated, 'user_id'))
-            ->with(['timelogs' => function ($query) use ($validated) {
-                $timelogQuery = $query->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                    ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                    ->where('billable', 1)
-                    ->whereHas('project', function ($query) {
-                        $query->where('billable', 1);
-                    })
-                    ->with('project.client');
-
-                if ($validated['project_id'] !== null) {
-                    $timelogQuery->where('project_id', Arr::get($validated, 'project_id'));
+        $users = $this->user
+            ->whereIn('id', Arr::get($validated, 'user_id'))
+            ->with([
+                'timelogs' => function ($query) use ($validated) {
+                    $query
+                        ->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
+                        ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
+                        ->where('billable', 1)
+                        ->whereHas('project', function ($query) {
+                            $query->where('billable', 1);
+                        })
+                        ->with('project.client')
+                        ->when($validated['project_id'] !== null, function ($query) use ($validated) {
+                            $query->where('project_id', Arr::get($validated, 'project_id'));
+                        });
                 }
-            }])->get();
+            ])->get();
 
         $report = $this->getUsersReportDetails($validated, $users);
-
         return $report;
     }
 
