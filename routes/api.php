@@ -33,7 +33,7 @@ Route::prefix('user')->group(function () {
     Route::post('register', RegisterAction::class)->name('register');
     Route::post('forgot-password', ForgotPasswordAction::class)->name('forgot-password');
     Route::post('reset-password', ResetPasswordAction::class)->name('reset-password');
-    Route::get('verify-token/{token}', VerifyPasswordTokenAction::class);
+    Route::get('verify-reset-token', VerifyPasswordTokenAction::class)->name('verify-reset-token');
 });
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     Route::get('logout', LogoutAction::class)->name('logout');

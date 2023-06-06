@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Resources\UserResource;
 
 class UserService
@@ -176,30 +175,6 @@ class UserService
         }
         return true;
     }
-
-    /**
-     *
-     * @param string $token
-     * @return array
-     */
-    public function checkIfTokenMatches(string $token): array
-    {
-        $tokens = DB::table('password_resets')->get();
-        if ($tokens->isEmpty()) {
-            throw new ModelNotFoundException();
-        }
-
-        foreach ($tokens as $dbToken) {
-            $verified = Hash::check($token, $dbToken->token);
-            if ($verified) {
-                return [
-                    // 'token' => $dbToken->token,
-                    'email' => $dbToken->email,
-                ];
-            }
-        }
-        throw new NotFoundHttpException();
-    } 
 
     /**
      * 
