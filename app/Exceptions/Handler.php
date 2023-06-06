@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Exceptions;
-    
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use TypeError;
+use Illuminate\Support\Str;
 use Throwable;
+use App\Traits\HttpResponses;
 
 class Handler extends ExceptionHandler
 {
+    use HttpResponses;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -36,7 +40,16 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof TypeError) {
+            $customErrorMessage = "Invalid type provided for parameter";
+            return $this->errorResponse([], "$customErrorMessage"); //use api error response trait
+        }
+
+        return parent::render($request, $exception);
     }
 }

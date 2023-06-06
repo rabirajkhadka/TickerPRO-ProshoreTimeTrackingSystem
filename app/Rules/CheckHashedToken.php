@@ -38,22 +38,22 @@ class CheckHashedToken implements InvokableRule
 
     public function __invoke($attribute, $value, $fail)
     {
-
         try {
             if (is_null($this->email)) {
-                $fail("Entered email is invalid");
+                $fail("The email address is required.");
             }
             $invitedUser = InviteToken::where('email', $this->email)->firstOrFail();
             $expired =   Carbon::parse($invitedUser->tokenExpires)->isPast();
+
             if (!Hash::check($value, Arr::get($invitedUser, 'token')) || $expired) {
-                $fail("Please provide a valid token");
+                $fail("The entered token is invalid.");
             }
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
-            $fail("User does not exists");
+            $fail("User does not exist.");
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            $fail("Something went wrong");
+            $fail("Something went wrong. Please try again later.");
         }
     }
 }

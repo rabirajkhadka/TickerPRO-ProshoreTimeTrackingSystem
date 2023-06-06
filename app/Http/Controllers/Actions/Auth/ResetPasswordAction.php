@@ -18,7 +18,6 @@ class ResetPasswordAction extends Controller
     protected UserService $userService;
 
     /**
-     *
      * @param UserService $userService
      */
     public function __construct(UserService $userService)
@@ -38,13 +37,13 @@ class ResetPasswordAction extends Controller
         $validatedResetPass = $request->validated();
         try {
             $status = $this->userService->resetPassword($validatedResetPass);
-            if(!$status){
-                return $this->errorResponse([], "Could not reset password. Please check your token or email address", Response::HTTP_FORBIDDEN);
+            if (!$status) {
+                return $this->errorResponse([], "The Entered email or token is invalid", Response::HTTP_FORBIDDEN);
             }
             return $this->successResponse([], 'Password reset successfully', Response::HTTP_OK);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            return $this->errorResponse([], "An unexpected error occurred. Please try again later.");
+            return $this->errorResponse([], "Something went wrong. Please try again later.");
         }
     }
 }

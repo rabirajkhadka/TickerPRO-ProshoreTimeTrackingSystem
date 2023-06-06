@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\UserRoleEnum;
 use App\Models\InviteToken;
 use App\Models\Role;
 use App\Models\UserRole;
@@ -11,11 +12,13 @@ use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Http\Resources\UserResource;
 
 class UserService
 {
@@ -23,25 +26,20 @@ class UserService
     protected UserRole $userRoleModel;
 
     /**
-     *
      * @param User $userModel
      * @param UserRole $userRoleModel
      */
-
     public function __construct(User $userModel, UserRole $userRoleModel)
     {
         $this->userModel = $userModel;
         $this->userRoleModel = $userRoleModel;
     }
 
-
     /**
-     *
      * @param array $validatedUserRegister
      * @throws ModelNotFoundException
      * @throws Exception
      */
-
     public function saveUserData(array $validatedData)
     {
         try {
@@ -67,28 +65,46 @@ class UserService
         }
     }
 
-
-    public static function getUserWithCreds(array $validatedUserCreds)
+    /**
+     * login Service
+     * 
+     * @param array $validatedUserCreds
+     * @return array
+     */
+    public function login(array $validatedUserCreds)
     {
+        $user = $this->getUserWithCreds($validatedUserCreds);
+        $token = $user->createToken('auth_token');
+        $result = [
+            'user' => new UserResource($user->load('roles')),
+            'access_token' => $token->plainTextToken,
+            'token_type' => 'Bearer',
+        ];
+        return $result;
+    }
 
-        $user = User::where('email', $validatedUserCreds['email'])->first();
+    /**
+     * Login validation
+     * 
+     * @param array $validatedUserCreds
+     * @return 
+     */
+    public function getUserWithCreds(array $validatedUserCreds)
+    {
+        $user = $this->userModel->whereEmail($validatedUserCreds['email'])->firstorfail();
+
         if (!$user || !Hash::check($validatedUserCreds['password'], $user->password)) {
             throw new Exception('Email address or password is invalid');
         }
         return $user;
     }
 
-
     /**
-     *
-     *
      * @param array $credentials
-     * 
      * @throws ModelNotFoundException
      * @throws Exception
      * @return object
      */
-
     public function assignUserRole(array $credentials)
     {
         try {
@@ -111,7 +127,6 @@ class UserService
         }
     }
 
-
     public static function getUser($cred, $rules)
     {
         $validateReq = validator($cred, $rules);
@@ -131,7 +146,6 @@ class UserService
     }
 
     /**
-     *
      * @param array $validatedForgetPass
      * @return boolean
      */
@@ -142,7 +156,6 @@ class UserService
     }
 
     /**
-     *
      * @param array $validatedResetPass
      * @return boolean
      */
@@ -158,11 +171,9 @@ class UserService
     public static function checkUserIdExists($id)
     {
         $user = User::where('id', $id)->first();
-
         if (!$user) {
             return false;
         }
-
         return true;
     }
 
@@ -189,4 +200,43 @@ class UserService
         }
         throw new NotFoundHttpException();
     } 
+
+    /**
+     * 
+     * @param integer $id
+     * @return boolean
+     */
+    public function deleteUser(int $id): bool
+    {
+        $user = $this->userModel->where('id', $id)->firstOrFail();
+        if ($this->hasRoleAdmin($user)) return false;
+        return $user->delete();
+    }
+
+    /**
+     * @param object $user
+     * @return boolean
+     */
+    public function hasRoleAdmin(object $user): bool
+    {
+        return $user->roles->pluck('role')->contains(UserRoleEnum::ADMIN);
+    }
+
+    /**
+     * logout Service
+     * @param $request
+     * @return void
+     */
+    public function logout()
+    {
+        try {
+            /** @var \App\Models\User $user **/
+            $user = Auth::user();
+            /** @var \Laravel\Sanctum\PersonalAccessToken $token **/
+            $token = $user->currentAccessToken();
+            $token->delete();
+        } catch (Exception) {
+            throw new Exception();
+        }
+    }
 }

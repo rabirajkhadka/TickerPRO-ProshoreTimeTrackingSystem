@@ -90,7 +90,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 60,
+            'expire' => env('PASSWORD_RESET_TOKEN_EXPIRE', 60),
             'throttle' => 60,
         ],
     ],
