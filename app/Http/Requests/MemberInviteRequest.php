@@ -25,7 +25,11 @@ class MemberInviteRequest extends FormRequest
     {
         return [
             'name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
-            'email' => 'required | email |max:255|unique:invite_tokens|unique:users',
+            'email' => ['required' , 
+                'email:rfc,dns',
+                'max:255',
+                'unique:invite_tokens',
+                'unique:users'],
             'role_id' => 'required | integer|max:255',
             'user_id' => 'required | integer'
         ];
