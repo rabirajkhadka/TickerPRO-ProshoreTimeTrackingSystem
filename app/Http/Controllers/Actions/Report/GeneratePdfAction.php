@@ -26,6 +26,7 @@ class GeneratePdfAction extends Controller
     /**
      *
      * @param TimelogReportRequest $request
+     * @throws Exception
      */
     public function __invoke(TimelogReportRequest $request)
     {
@@ -33,7 +34,6 @@ class GeneratePdfAction extends Controller
             $validated = $request->validated();
             $validated['user_id'] = explode(",",$validated['user_id']);
             $report = $this->reportService->getUsersReport($validated);
-            
             return $this->reportService->generatePdfReport($report, $validated['start_date'], $validated['end_date']);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
