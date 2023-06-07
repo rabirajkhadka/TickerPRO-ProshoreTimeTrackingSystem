@@ -63,11 +63,9 @@ class ReportService
                 return $endDateTime->diffInMinutes($startDateTime);
             });
             $activities = $this->getUserActivity($validated, $user);
-
             return [
                 'user_id' => $user->id,
                 'user_name' => $user->name,
-                'client' => $user->timelogs->pluck('project.client.client_name')->first(),
                 'total_time' => intdiv($userTotalTime, 60) . 'hrs ' . ($userTotalTime % 60) . 'min',
                 'activities' => $activities
             ];
@@ -85,6 +83,7 @@ class ReportService
     public function getUserActivity(array $validated, object $user): object
     {
         $activities = $user->timelogs->map(function ($timelog) use ($validated) {
+            // dd($timelog->project->client->client_name);
             $startDateTime = Carbon::parse($timelog->start_date . ' ' . $timelog->started_time);
             $endDateTime = Carbon::parse($timelog->end_date . ' ' . $timelog->ended_time);
             $totalTime = $endDateTime->diffInMinutes($startDateTime);
@@ -92,6 +91,7 @@ class ReportService
                 'activity' => $timelog->activity_name,
                 'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ($totalTime % 60) . 'min',
                 'project' => $timelog->project->project_name,
+                'client' => $timelog->project->client->client_name,
                 'date' => Carbon::parse($startDateTime)->format('M j')
             ];
             return $activity;
