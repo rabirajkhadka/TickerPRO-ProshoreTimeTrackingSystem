@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TimelogReportRequest;
 use App\Services\ReportService;
 use App\Traits\HttpResponses;
-use Carbon\Carbon;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -42,8 +39,6 @@ class GenerateReportAction extends Controller
         try {
             $validated = $request->validated();
             $report = $this->reportService->getUsersReport($validated);
-            $this->reportService->generatePdfReport($report, $validated['start_date'], $validated['end_date']);
-            
             return $this->successResponse([$report], 'Report successfully retrieved');
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());

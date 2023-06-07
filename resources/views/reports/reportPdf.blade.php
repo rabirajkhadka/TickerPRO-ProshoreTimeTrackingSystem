@@ -11,8 +11,7 @@
             h1 {
                 text-align: center;
                 color: #333;
-                margin-top: 10px;
-                margin-bottom: 5px;
+                margin: 5px 0;
             }
             h3 {
                 color: #444;
@@ -55,6 +54,9 @@
                 background-color: #d9d4d4;
                 padding: 5px;
             }
+            .logo img {
+                padding-top: 10px;
+            }
             .proshore-logo {
                 height: 70px;
             }
@@ -83,14 +85,13 @@
             <div class="report-section">
                 <h3>{{ $report['user_name'] }}</h3>
 
-                <p>Client: <b>{{ $report['client'] }}</b></p>
-
                 <table>
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Activity</th>
                             <th>Project</th>
+                            <th>Client</th>
                             <th>Date</th>
                             <th>Total Time</th>
                         </tr>
@@ -101,6 +102,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $activity['activity'] }}</td>
                             <td>{{ $activity['project'] }}</td>
+                            <td>{{ $activity['client'] }}</td>
                             <td>{{ $activity['date'] }}</td>
                             <td>{{ $activity['total_time'] }}</td>
                         </tr>

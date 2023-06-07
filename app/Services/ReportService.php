@@ -109,12 +109,12 @@ class ReportService
      * @param string $endDate
      * @return void
      */
-    public function generatePdfReport(object $reports, string $startDate, string $endDate): void
+    public function generatePdfReport(object $reports, string $startDate, string $endDate)
     {
         $start_date = Carbon::parse($startDate)->toFormattedDateString();
         $end_date = Carbon::parse($endDate)->toFormattedDateString();
 
-        $html = view('reports.reportPdf', compact(['reports', 'start_date', 'end_date']))->render();
+        $html = view('reports.reportPdf', compact(['reports', 'start_date', 'end_date']));
 
         $options = new Options();
         $options->setChroot(public_path());
@@ -123,6 +123,8 @@ class ReportService
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        $dompdf->stream();
+
+        $filename = 'report_' . Carbon::now()->format('YmdHis') . '.pdf';
+        $dompdf->stream($filename);
     }
 }
