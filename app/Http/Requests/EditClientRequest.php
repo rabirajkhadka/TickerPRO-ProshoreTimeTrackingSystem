@@ -27,7 +27,6 @@ class EditClientRequest extends FormRequest
 
         return [
             'client_name' => 'required|max:255|regex:/^[A-Za-z]+(?:\s[A-Za-z]+)+$/', //makes sure the name only accepts aplabetic characters and some specific name formats.
-            // 'client_number' => 'required|numeric|digits:10|unique:clients',
              'client_number' => ['required',
                 'numeric',
                 'digits:10',
