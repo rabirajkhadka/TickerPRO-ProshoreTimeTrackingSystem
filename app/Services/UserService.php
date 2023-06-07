@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
+use App\Http\Resources\UserResource;
 
 class UserService
 {
@@ -74,7 +75,7 @@ class UserService
         $user = $this->getUserWithCreds($validatedUserCreds);
         $token = $user->createToken('auth_token');
         $result = [
-            'user' => $user,
+            'user' => new UserResource($user->load('roles')),
             'access_token' => $token->plainTextToken,
             'token_type' => 'Bearer',
         ];
@@ -209,6 +210,29 @@ class UserService
             $token = $user->currentAccessToken();
             $token->delete();
         } catch (Exception) {
+            throw new Exception();
+        }
+    }
+
+    /**
+     * @param  int  $userId
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return bool
+     */
+    public function updateUserStatus(int $userId, int $authId): bool
+    {
+        try {
+            $user = $this->userModel->findOrFail($userId);
+            if ($user->id != $authId) {
+                $user->activeStatus = !$user->activeStatus;
+                $user->save();
+                return true;
+            }
+            return false;
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (\Exception) {
             throw new Exception();
         }
     }
