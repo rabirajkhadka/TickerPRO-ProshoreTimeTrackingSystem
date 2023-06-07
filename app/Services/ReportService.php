@@ -33,16 +33,14 @@ class ReportService
                     $query
                         ->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
                         ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                        ->where('billable', 1)
+                        ->where('billable', 0)
+                        ->whereIn('project_id', Arr::get($validated, 'project_id'))
                         ->whereHas('project', function ($query) {
                             $query->where('billable', 1);
-                        })
-                        ->with('project.client')
-                        ->when($validated['project_id'] !== null, function ($query) use ($validated) {
-                            $query->where('project_id', Arr::get($validated, 'project_id'));
                         });
                 }
             ])->get();
+
 
         $report = $this->getUsersReportDetails($validated, $users);
 
