@@ -27,20 +27,23 @@ class ReportService
      */
     public function getUsersReport(array $validated): object
     {
-        $users = $this->user->whereIn('id', Arr::get($validated, 'user_id'))
-            ->with(['timelogs' => function ($query) use ($validated) {
-                $timelogQuery = $query->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                    ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                    ->where('billable', 1)
-                    ->whereHas('project', function ($query) {
-                        $query->where('billable', 1);
-                    })
-                    ->with('project.client');
-
-                if ($validated['project_id'] !== null) {
-                    $timelogQuery->where('project_id', Arr::get($validated, 'project_id'));
+        $users = $this->user
+            ->whereIn('id', Arr::get($validated, 'user_id'))
+            ->with([
+                'timelogs' => function ($query) use ($validated) {
+                    $query
+                        ->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
+                        ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
+                        ->where('billable', 1)
+                        ->whereHas('project', function ($query) {
+                            $query->where('billable', 1);
+                        })
+                        ->with('project.client')
+                        ->when($validated['project_id'] !== null, function ($query) use ($validated) {
+                            $query->where('project_id', Arr::get($validated, 'project_id'));
+                        });
                 }
-            }])->get();
+            ])->get();
 
         $report = $this->getUsersReportDetails($validated, $users);
 
@@ -62,11 +65,9 @@ class ReportService
                 return $endDateTime->diffInMinutes($startDateTime);
             });
             $activities = $this->getUserActivity($validated, $user);
-
             return [
                 'user_id' => $user->id,
                 'user_name' => $user->name,
-                'client' => $user->timelogs->pluck('project.client.client_name')->first(),
                 'total_time' => intdiv($userTotalTime, 60) . 'hrs ' . ($userTotalTime % 60) . 'min',
                 'activities' => $activities
             ];
@@ -84,6 +85,7 @@ class ReportService
     public function getUserActivity(array $validated, object $user): object
     {
         $activities = $user->timelogs->map(function ($timelog) use ($validated) {
+            // dd($timelog->project->client->client_name);
             $startDateTime = Carbon::parse($timelog->start_date . ' ' . $timelog->started_time);
             $endDateTime = Carbon::parse($timelog->end_date . ' ' . $timelog->ended_time);
             $totalTime = $endDateTime->diffInMinutes($startDateTime);
@@ -91,6 +93,7 @@ class ReportService
                 'activity' => $timelog->activity_name,
                 'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ($totalTime % 60) . 'min',
                 'project' => $timelog->project->project_name,
+                'client' => $timelog->project->client->client_name,
                 'date' => Carbon::parse($startDateTime)->format('M j')
             ];
             return $activity;
