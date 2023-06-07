@@ -3,10 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportService
 {
@@ -107,24 +106,13 @@ class ReportService
      * @param object $reports
      * @param string $startDate
      * @param string $endDate
-     * @return void
      */
     public function generatePdfReport(object $reports, string $startDate, string $endDate)
     {
         $start_date = Carbon::parse($startDate)->toFormattedDateString();
         $end_date = Carbon::parse($endDate)->toFormattedDateString();
 
-        $html = view('reports.reportPdf', compact(['reports', 'start_date', 'end_date']));
-
-        $options = new Options();
-        $options->setChroot(public_path());
-
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        $filename = 'report_' . Carbon::now()->format('YmdHis') . '.pdf';
-        $dompdf->stream($filename);
+        $pdf = Pdf::loadView('reports.reportPdf',  compact(['reports', 'start_date', 'end_date']));
+        return $pdf->stream('report.pdf');
     }
 }

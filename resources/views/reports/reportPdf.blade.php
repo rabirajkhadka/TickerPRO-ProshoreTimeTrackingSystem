@@ -11,7 +11,7 @@
             h1 {
                 text-align: center;
                 color: #333;
-                margin: 5px 0;
+                margin: 0px;
             }
             h3 {
                 color: #444;
@@ -67,7 +67,6 @@
         </style>
     </head>
     <body>
-        {{-- @dd($reports); --}}
         <div class="logo">
             <img src="./img/proshore-logo.png" alt="" class="proshore-logo">
             <img src="./img/ticker-logo.png" alt="" class="ticker-logo">
@@ -83,7 +82,7 @@
             <hr>
 
             <div class="report-section">
-                <h3>{{ $report['user_name'] }}</h3>
+                <h3>Name: {{ $report['user_name'] }}</h3>
 
                 <table>
                     <thead>

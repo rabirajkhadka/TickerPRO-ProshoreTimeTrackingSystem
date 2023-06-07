@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Actions\Report;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TimelogReportRequest;
 use App\Services\ReportService;
+use App\Traits\HttpResponses;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
 class GeneratePdfAction extends Controller
 {
+    use HttpResponses;
+
     protected ReportService $reportService;
 
     /**
@@ -28,8 +31,10 @@ class GeneratePdfAction extends Controller
     {
         try {
             $validated = $request->validated();
+            $validated['user_id'] = explode(",",$validated['user_id']);
             $report = $this->reportService->getUsersReport($validated);
-            $this->reportService->generatePdfReport($report, $validated['start_date'], $validated['end_date']);
+            
+            return $this->reportService->generatePdfReport($report, $validated['start_date'], $validated['end_date']);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], "Something went wrong.");
