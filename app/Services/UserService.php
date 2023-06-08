@@ -214,4 +214,27 @@ class UserService
             throw new Exception();
         }
     }
+
+    /**
+     * @param  int  $userId
+     * @throws ModelNotFoundException
+     * @throws Exception
+     * @return bool
+     */
+    public function updateUserStatus(int $userId, int $authId): bool
+    {
+        try {
+            $user = $this->userModel->findOrFail($userId);
+            if ($user->id != $authId) {
+                $user->activeStatus = !$user->activeStatus;
+                $user->save();
+                return true;
+            }
+            return false;
+        } catch (ModelNotFoundException) {
+            throw new ModelNotFoundException();
+        } catch (\Exception) {
+            throw new Exception();
+        }
+    }
 }

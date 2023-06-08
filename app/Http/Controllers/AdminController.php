@@ -24,7 +24,7 @@ class AdminController extends Controller
 {
     use HttpResponses;
 
-    private UserService $userService;
+    protected UserService $userService;
 
     /**
      *
@@ -35,7 +35,7 @@ class AdminController extends Controller
     {
         $this->userService = $userService;
     }
-    
+
 
     public function viewAllUsers()
     {
@@ -115,28 +115,5 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'User invited successfully'
         ], 200);
-    }
-
-    public function updateUserStatus(Request $request)
-    {
-        $user = User::where('id', $request->id)->first();
-        try {
-            if (!$user->activeStatus) {
-                $user->activeStatus = true;
-            } else {
-                $user->activeStatus = false;
-            }
-            $user->save();
-            $result = [
-                'status' => 200,
-                'message' => 'User status updated'
-            ];
-        } catch (Exception $e) {
-            $result = [
-                'status' => 500,
-                'error' => $e->getMessage()
-            ];
-        }
-        return response()->json($result, $result['status']);
     }
 }
