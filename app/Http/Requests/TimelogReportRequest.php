@@ -26,10 +26,10 @@ class TimelogReportRequest extends FormRequest
         return [
             'user_ids' => 'required|array',
             'user_ids.*' => 'integer|exists:users,id',
-            'project_ids' => ' array',
+            'project_ids' => 'array',
             'project_ids.*' => 'integer|exists:projects,id',
-            'start_date' => ' required|date_format:Y-m-d',
-            'end_date' => '  nullable|date_format:Y-m-d',
+            'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'nullable|date_format:Y-m-d',
         ];
     }
 }
