@@ -54,9 +54,6 @@
                 background-color: #d9d4d4;
                 padding: 5px;
             }
-            .logo img {
-                padding-top: 10px;
-            }
             .proshore-logo {
                 height: 70px;
             }

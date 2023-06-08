@@ -33,7 +33,7 @@ class ReportService
                     $query
                         ->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
                         ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                        ->where('billable', 0)
+                        ->where('billable', 1)
                         ->whereIn('project_id', Arr::get($validated, 'project_id'))
                         ->whereHas('project', function ($query) {
                             $query->where('billable', 1);
