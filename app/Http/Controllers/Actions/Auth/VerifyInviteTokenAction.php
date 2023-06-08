@@ -18,7 +18,6 @@ class VerifyInviteTokenAction extends Controller
      */
     public function __invoke(ValidateInviteTokenRequest $request): JsonResponse
     {
-        // dd($request);
         return $this->successResponse([], 'Token verified');
     }
 }
