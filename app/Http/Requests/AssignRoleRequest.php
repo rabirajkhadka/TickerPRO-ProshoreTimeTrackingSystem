@@ -41,8 +41,7 @@ class AssignRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required | email| exists:users',
-
+            'email' => ['required', 'email:filter', 'exists:users'],
             'role_id' => [
                 'bail',
                 'required',

@@ -29,7 +29,10 @@ class PasswordResetRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|max:255|exists:users,email',
+            'email' => ['required',
+                'email:filter',
+                'max:255',
+                'exists:users,email'],
             'token' => ['required', new VerfiyResetToken($this->email)],
             'password' => [
                 'required',
