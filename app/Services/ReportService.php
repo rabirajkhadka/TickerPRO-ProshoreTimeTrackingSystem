@@ -26,14 +26,14 @@ class ReportService
     public function getUsersReport(array $validated): object
     {
         $users = $this->user
-            ->whereIn('id', Arr::get($validated, 'user_id'))
+            ->whereIn('id', Arr::get($validated, 'user_ids'))
             ->with([
                 'timelogs' => function ($query) use ($validated) {
                     $query
                         ->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
                         ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                        ->where('billable', 0)
-                        ->whereIn('project_id', Arr::get($validated, 'project_id'))
+                        ->where('billable', 1)
+                        ->whereIn('project_id', Arr::get($validated, 'project_ids'))
                         ->whereHas('project', function ($query) {
                             $query->where('billable', 1);
                         });

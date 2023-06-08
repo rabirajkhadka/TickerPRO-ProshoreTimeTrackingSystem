@@ -24,9 +24,10 @@ class TimelogReportRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'integer|exists:users,id',
+            'user_ids' => 'required|array|exists:users,id',
+            'user_ids.*' => 'integer',
             'project_ids' => ' array|exists:projects,id',
+            'project_ids.*' => 'integer',
             'start_date' => ' required|date_format:Y-m-d',
             'end_date' => '  nullable|date_format:Y-m-d',
         ];
