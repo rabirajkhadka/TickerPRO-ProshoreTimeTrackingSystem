@@ -108,6 +108,6 @@ class ReportService
         $end_date = Carbon::parse($endDate)->toFormattedDateString();
 
         $pdf = Pdf::loadView('reports.reportPdf',  compact(['reports', 'start_date', 'end_date']));
-        return $pdf->stream('report.pdf');
+        return $pdf->download('report.pdf');
     }
 }
