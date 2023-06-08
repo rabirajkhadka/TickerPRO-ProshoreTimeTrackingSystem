@@ -42,7 +42,6 @@ class AssignRoleRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email:filter', 'exists:users'],
-
             'role_id' => [
                 'bail',
                 'required',

@@ -29,7 +29,8 @@ class UserStoreRequest extends FormRequest
         return [
             'name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
             'email' => ['required' ,
-                ' email|max:255',
+                'email:filter',
+                'max:255',
                 'unique:users',
                 'exists:invite_tokens,email'],
             'password' => [
