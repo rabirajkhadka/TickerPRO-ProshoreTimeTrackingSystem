@@ -52,7 +52,6 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::prefix('log')->group(function () {
         Route::post('report', GenerateReportAction::class)->name('report');
         Route::post('report/pdf', GeneratePdfAction::class)->name('report-pdf');
-        // Route::get('report/pdf', GeneratePdfAction::class)->name('report-pdf');
     });
     Route::controller(TimeLogController::class)->prefix('log')->group(function () {
         Route::post('/', 'addActivity');

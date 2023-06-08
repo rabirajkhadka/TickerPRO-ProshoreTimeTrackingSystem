@@ -32,7 +32,6 @@ class GeneratePdfAction extends Controller
     {
         try {
             $validated = $request->validated();
-            // $validated['user_id'] = explode(",",$validated['user_id']);
             $report = $this->reportService->getUsersReport($validated);
             return $this->reportService->generatePdfReport($report, $validated['start_date'], $validated['end_date']);
         } catch (Exception $exception) {
