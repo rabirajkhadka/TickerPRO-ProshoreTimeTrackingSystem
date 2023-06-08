@@ -177,6 +177,7 @@ class UserService
     }
 
     /**
+     * 
      * @param integer $id
      * @return boolean
      */
