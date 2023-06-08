@@ -24,7 +24,7 @@ class AddClientRequest extends FormRequest
     public function rules()
     {
         return [
-            // cleint_name-regex: allows for spaces and hyphens while also ensuring that the name only contains letters.
+            // client_name-regex: allows for spaces and hyphens while also ensuring that the name only contains letters.
             'client_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',  
             'client_number' => 'required|numeric|digits:10|unique:clients',
             'client_email' => 'required | email |max:255|unique:clients',
