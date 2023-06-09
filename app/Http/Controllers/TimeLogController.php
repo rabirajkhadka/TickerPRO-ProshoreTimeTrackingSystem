@@ -9,7 +9,6 @@ use App\Services\TimeLogService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\TimeLogResource;
-use App\Traits\HttpResponses;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
@@ -17,7 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 class TimeLogController extends Controller
 {
-    use HttpResponses;
     protected TimeLogService $timeLogService;
 
     /**

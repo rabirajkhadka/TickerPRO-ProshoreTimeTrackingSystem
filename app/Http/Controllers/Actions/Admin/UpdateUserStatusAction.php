@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Actions\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\UserService;
-use App\Traits\HttpResponses;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -15,8 +14,6 @@ use Illuminate\Support\Facades\Log;
 
 class UpdateUserStatusAction extends Controller
 {
-    use HttpResponses;
-
     protected User $userModel;
     protected UserService $userService;
 

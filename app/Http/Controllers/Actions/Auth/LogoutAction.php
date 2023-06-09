@@ -6,15 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\UserService;
-use App\Traits\HttpResponses;
 use Mockery\Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
 class LogoutAction extends Controller
 {
-    use HttpResponses;
-
     protected UserService $userService;
 
     /**
@@ -24,7 +21,7 @@ class LogoutAction extends Controller
     {
         $this->userService = $userService;
     }
-    
+
     /**
      * Handle the incoming logout request.
      *
