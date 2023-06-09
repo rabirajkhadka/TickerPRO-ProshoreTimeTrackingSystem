@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Actions\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ValidateInviteTokenRequest;
-use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
