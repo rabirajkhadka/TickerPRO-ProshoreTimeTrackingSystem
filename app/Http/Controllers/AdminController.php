@@ -11,7 +11,6 @@ use App\Models\User;
 use Mockery\Exception;
 use App\Http\Resources\AdminResource;
 use App\Http\Resources\RoleResource;
-use App\Traits\HttpResponses;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +21,6 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
-    use HttpResponses;
 
     protected UserService $userService;
 
