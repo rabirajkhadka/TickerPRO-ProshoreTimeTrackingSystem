@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 
 class VerifyInviteTokenAction extends Controller
 {
-    use HttpResponses;
-
     /**
      * @param Request $request
      * @return JsonResponse

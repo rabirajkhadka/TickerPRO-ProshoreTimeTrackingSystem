@@ -15,7 +15,7 @@ class InviteService
     public function generateToken(): string
     {
         $random = Str::random(60);
-        return $random . uniqid();
+        return $random;
     }
 
     public function invite($name, $email, $role_id, $user_id): bool
