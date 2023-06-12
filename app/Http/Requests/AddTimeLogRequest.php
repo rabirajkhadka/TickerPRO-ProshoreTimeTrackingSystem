@@ -24,7 +24,7 @@ class AddTimeLogRequest extends FormRequest
     public function rules()
     {
         return [
-            'activity_name' => 'required|max:255',
+            'activity_name' => ['required', 'max:255', 'regex:/^(?=.*[a-zA-Z0-9])[a-zA-Z0-9!@#$%^&*()+-_=~`;:",<.>]+$/'],
             'user_id' => 'required | integer|exists:users,id',
             'project_id' => 'required | integer|exists:projects,id',
             'billable' => 'required | boolean',
