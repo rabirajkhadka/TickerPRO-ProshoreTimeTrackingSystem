@@ -14,7 +14,7 @@ class UserController extends Controller
     {
         $user = Auth::guard('sanctum')->user();
         return response()->json([
-            'user_details' => $user
+            'user_details' => $user->with('roles')->first()
         ]);
     }
 
