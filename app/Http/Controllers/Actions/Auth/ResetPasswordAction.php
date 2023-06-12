@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Actions\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PasswordResetRequest;
 use App\Services\UserService;
-use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -13,8 +12,6 @@ use Mockery\Exception;
 
 class ResetPasswordAction extends Controller
 {
-    use HttpResponses;
-
     protected UserService $userService;
 
     /**

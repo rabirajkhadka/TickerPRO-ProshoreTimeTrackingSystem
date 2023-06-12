@@ -1,16 +1,22 @@
 <?php
 
-use App\Http\Controllers\Actions\Auth\{ForgotPasswordAction,LoginAction, RegisterAction, LogoutAction, ResetPasswordAction, VerifyPasswordTokenAction};
-use App\Http\Controllers\Actions\Admin\DeleteUserAction;
-use App\Http\Controllers\Actions\Admin\UpdateUserStatusAction;
+use App\Http\Controllers\Actions\Auth\{
+    ForgotPasswordAction,
+    LoginAction,
+    RegisterAction,
+    LogoutAction,
+    ResetPasswordAction,
+    VerifyInviteTokenAction,
+    VerifyPasswordTokenAction
+};
+use App\Http\Controllers\Actions\Admin\{DeleteUserAction, UpdateUserStatusAction};
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\Actions\Report\GenerateReportAction;
-use App\Http\Controllers\Actions\Report\GeneratePdfAction;
+use App\Http\Controllers\Actions\Report\{GeneratePdfAction, GenerateReportAction};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +42,8 @@ Route::prefix('user')->group(function () {
     Route::post('register', RegisterAction::class)->name('register');
     Route::post('forgot-password', ForgotPasswordAction::class)->name('forgot-password');
     Route::post('reset-password', ResetPasswordAction::class)->name('reset-password');
-    Route::get('verify/reset/token', VerifyPasswordTokenAction::class);
+    Route::get('verify/reset-token', VerifyPasswordTokenAction::class);
+    Route::get('verify/invite-token', VerifyInviteTokenAction::class);
 });
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     Route::get('logout', LogoutAction::class)->name('logout');

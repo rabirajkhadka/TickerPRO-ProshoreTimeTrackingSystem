@@ -14,9 +14,7 @@ class InviteService
 {
     public function generateToken(): string
     {
-        $random = Str::random(60);
-        $time = Carbon::now();
-        return $random . $time->toDateTimeLocalString();
+        return Str::random(60);
     }
 
     public function invite($name, $email, $role_id, $user_id): bool

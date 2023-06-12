@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Actions\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Services\UserService;
-use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -13,8 +12,6 @@ use Mockery\Exception;
 
 class ForgotPasswordAction extends Controller
 {
-    use HttpResponses;
-
     protected UserService $userService;
 
     /**
@@ -37,8 +34,8 @@ class ForgotPasswordAction extends Controller
         $validatedForgetPass = $request->validated();
         try {
             $status = $this->userService->forgotPassword($validatedForgetPass);
-            if(!$status){
-                return $this->errorResponse([], "Failed to send email. Please try again later."); 
+            if (!$status) {
+                return $this->errorResponse([], "Failed to send email. Please try again later.");
             }
             return $this->successResponse([], 'Reset email sent successfully', Response::HTTP_OK);
         } catch (Exception $exception) {
@@ -46,5 +43,4 @@ class ForgotPasswordAction extends Controller
             return $this->errorResponse([], "Something went wrong. Please try again later.");
         }
     }
-
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Actions\Report;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TimelogReportRequest;
 use App\Services\ReportService;
-use App\Traits\HttpResponses;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -15,8 +14,6 @@ use Illuminate\Support\Facades\Log;
 
 class GenerateReportAction extends Controller
 {
-    use HttpResponses;
-
     protected ReportService $reportService;
 
 
