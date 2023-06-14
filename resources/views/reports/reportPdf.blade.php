@@ -65,6 +65,7 @@
             }
             .billable {
                 height: 25px;
+                transform: translateX(12px);
             }
         </style>
     </head>
