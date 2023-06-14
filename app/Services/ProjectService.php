@@ -12,11 +12,13 @@ class ProjectService
 {
     protected TimeLog $timeLog;
     protected Project $project;
+    protected UserService $userService;
 
-    public function __construct(TimeLog $timeLog, Project $project)
+    public function __construct(TimeLog $timeLog, Project $project, UserService $userService)
     {
         $this->timeLog = $timeLog;
         $this->project = $project;
+        $this->userService = $userService;
     }
 
     public static function addProject(array $validatedAddProject): bool
@@ -64,10 +66,10 @@ class ProjectService
      * @param boolean $retrieveOption
      * @return void
      */
-    public function listProjects(object $userRoles, $retrieveOption)
+    public function listProjects(object $user, $retrieveOption)
     {
         try {
-            $isAdmin = $userRoles->pluck('role')->contains('admin');
+            $isAdmin = $this->userService->hasRoleAdmin($user);
             if (!$isAdmin && !$retrieveOption) {
                 $timelogs = $this->timeLog->where('user_id', auth()->id())->with('project')->get();
 

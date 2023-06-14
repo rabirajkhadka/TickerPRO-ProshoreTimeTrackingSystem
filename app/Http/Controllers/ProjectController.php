@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use \Exception;
 use App\Services\ProjectService;
-use App\Http\Requests\{ProjectRequest, EditProjectRequest};
+use App\Http\Requests\{ProjectRequest, EditProjectRequest, ViewProjectRequest};
+use App\Http\Resources\ProjectResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -18,6 +21,28 @@ class ProjectController extends Controller
     public function __construct(ProjectService $projectService)
     {
         $this->projectService = $projectService;
+    }
+
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(ViewProjectRequest $request): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            $retrieveOption = $request->validated('all');
+            $projects = $this->projectService->listProjects($user, $retrieveOption);
+            $data = [ProjectResource::collection($projects)];
+            return $this->successResponse($data, 'Projects retrieved successfully', Response::HTTP_OK);
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], "Project not found", Response::HTTP_NOT_FOUND);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], "Something went wrong.");
+        }
     }
 
     public function addActivity(ProjectRequest $request): JsonResponse
