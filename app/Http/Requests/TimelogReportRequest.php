@@ -28,6 +28,8 @@ class TimelogReportRequest extends FormRequest
             'user_ids.*' => 'integer|exists:users,id',
             'project_ids' => 'required|array',
             'project_ids.*' => 'integer|exists:projects,id',
+            'billable' => 'required|array',
+            'billable.*' => 'boolean',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
         ];
