@@ -64,7 +64,7 @@ class ProjectService
      * @param boolean $retrieveOption
      * @return void
      */
-    public function listProjects(object $userRoles, bool $retrieveOption)
+    public function listProjects(object $userRoles, $retrieveOption)
     {
         try {
             $isAdmin = $userRoles->pluck('role')->contains('admin');
