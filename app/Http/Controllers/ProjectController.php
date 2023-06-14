@@ -8,19 +8,18 @@ use \Exception;
 use App\Services\ProjectService;
 use App\Http\Requests\{ProjectRequest, EditProjectRequest};
 use Illuminate\Http\JsonResponse;
-use App\Http\Resources\ProjectResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
     protected ProjectService $projectService;
-    
+
     public function __construct(ProjectService $projectService)
     {
         $this->projectService = $projectService;
     }
-    
+
     public function addActivity(ProjectRequest $request): JsonResponse
     {
         $validatedAddProject = $request->validated();
@@ -44,7 +43,7 @@ class ProjectController extends Controller
                 "message" => "Project Updated Successfully",
                 "project" => $updateProjectData
             ], Response::HTTP_OK);
-        } catch (ModelNotFoundException $e) {   
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'message' => "Project with this Id doesnt Exists",
             ], Response::HTTP_BAD_REQUEST);
@@ -101,16 +100,6 @@ class ProjectController extends Controller
             ];
         }
         return response()->json($result, $result['status']);
-    }
-
-    public function viewAllProjects(Request $request)
-    {
-        $projects = Project::orderBy('updated_at', 'desc')->with('client')->paginate();
-        if ($request['search']) {
-            $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->paginate();
-        }
-        return ProjectResource::collection($projects);
-
     }
 
     public function deleteProject(int $id): JsonResponse

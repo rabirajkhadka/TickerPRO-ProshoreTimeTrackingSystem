@@ -10,6 +10,7 @@ use App\Http\Controllers\Actions\Auth\{
     VerifyPasswordTokenAction
 };
 use App\Http\Controllers\Actions\Admin\{DeleteUserAction, UpdateUserStatusAction};
+use App\Http\Controllers\Actions\Project\ViewProjectsAction;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimeLogController;
@@ -54,9 +55,11 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
         Route::get('me', 'viewMe');
         Route::patch('edit', 'updateMe');
     });
-    Route::controller(ProjectController::class)->prefix('project')->group(function () {
-        Route::get('/', 'viewAllProjects');
+
+    Route::prefix('project')->group(function () {
+        Route::get('/', ViewProjectsAction::class);
     });
+
     Route::prefix('log')->group(function () {
         Route::post('report', GenerateReportAction::class)->name('report');
         Route::post('report/pdf', GeneratePdfAction::class)->name('report-pdf');
