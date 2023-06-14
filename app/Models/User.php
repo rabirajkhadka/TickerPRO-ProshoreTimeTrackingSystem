@@ -83,4 +83,15 @@ class User extends Authenticatable
     {
         return $query->where('email', $email);
     }
+
+    public function isAdmin()
+    {
+        $roles = $this->roles;
+        
+        foreach ($roles as $role) {
+            if ($role['role'] === 'admin'){
+                return true;
+            }
+        }
+    }
 }
