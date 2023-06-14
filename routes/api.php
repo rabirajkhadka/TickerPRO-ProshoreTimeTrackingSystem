@@ -55,9 +55,7 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
         Route::patch('edit', 'updateMe');
     });
 
-    Route::controller(ProjectController::class)->prefix('project')->group(function () {
-        Route::get('/', 'index');
-    });
+    Route::apiResource('project', ProjectController::class)->only(['index']);
 
     Route::prefix('log')->group(function () {
         Route::post('report', GenerateReportAction::class)->name('report');
