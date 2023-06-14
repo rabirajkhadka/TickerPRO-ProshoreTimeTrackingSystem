@@ -62,11 +62,11 @@ class ProjectService
 
 
     /**
-     * @param object $userRoles
+     * @param object $user
      * @param boolean $retrieveOption
-     * @return void
+     * @return object
      */
-    public function listProjects(object $user, $retrieveOption)
+    public function listProjects(object $user, $retrieveOption): object
     {
         try {
             $isAdmin = $this->userService->hasRoleAdmin($user);
