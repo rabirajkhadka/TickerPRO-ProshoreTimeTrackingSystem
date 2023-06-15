@@ -33,7 +33,7 @@ class ReportService
                     $query
                         ->whereBetween('start_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
                         ->whereBetween('end_date', [Arr::get($validated, 'start_date'), Arr::get($validated, 'end_date')])
-                        ->where('billable', 1)
+                        ->whereIn('billable', Arr::get($validated, 'billable'))
                         ->whereIn('project_id', Arr::get($validated, 'project_ids'))
                         ->whereHas('project', function ($query) {
                             $query->where('billable', 1);
@@ -88,6 +88,7 @@ class ReportService
                 'total_time' =>  intdiv($totalTime, 60) . 'hrs ' . ($totalTime % 60) . 'min',
                 'project' => $timelog->project->project_name,
                 'client' => $timelog->project->client->client_name,
+                'billable' => $timelog->billable,
                 'date' => Carbon::parse($startDateTime)->format('M j')
             ];
             return $activity;
