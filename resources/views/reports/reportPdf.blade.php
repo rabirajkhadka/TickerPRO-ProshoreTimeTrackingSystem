@@ -63,6 +63,10 @@
                 height: 30px;
                 float: right;
             }
+            .billable {
+                height: 25px;
+                transform: translateX(12px);
+            }
         </style>
     </head>
     <body>
@@ -90,6 +94,7 @@
                             <th>Activity</th>
                             <th>Project</th>
                             <th>Client</th>
+                            <th>Billable</th>
                             <th>Date</th>
                             <th>Total Time</th>
                         </tr>
@@ -101,6 +106,18 @@
                             <td>{{ $activity['activity'] }}</td>
                             <td>{{ $activity['project'] }}</td>
                             <td>{{ $activity['client'] }}</td>
+
+                            @if ($activity['billable'] === 1)
+                                <td>
+                                    <img src="./img/billable.png" alt="billable" class="billable">
+                                </td>
+                            @endif
+                            @if ($activity['billable'] === 0) 
+                                <td>
+                                    <img src="./img/non-billable.png" alt="non-billable" class="billable">
+                                </td>
+                            @endif
+
                             <td>{{ $activity['date'] }}</td>
                             <td>{{ $activity['total_time'] }}</td>
                         </tr>
