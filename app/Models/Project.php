@@ -21,6 +21,9 @@ class Project extends Model
 
     protected $perPage = 50;
 
+    public const STATUS_TRUE = 1;
+    public const STATUS_FALSE = 0;
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_id');
@@ -31,7 +34,7 @@ class Project extends Model
         return $this->hasMany(TimeLog::class, 'project_id',);
     }
 
-    public function users(): BelongsToMany 
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_projects', 'project_id', 'user_id');
     }
