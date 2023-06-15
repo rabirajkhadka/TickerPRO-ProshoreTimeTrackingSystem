@@ -28,11 +28,11 @@ class ProjectController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function index(ViewProjectRequest $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
             $user = Auth::user();
-            $retrieveOption = $request->validated('all');
+            $retrieveOption = $request->query('all', Project::STATUS_FALSE);
             $projects = $this->projectService->listProjects($user, $retrieveOption);
             $data = [ProjectResource::collection($projects)];
             return $this->successResponse($data, 'Projects retrieved successfully', Response::HTTP_OK);

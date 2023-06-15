@@ -63,14 +63,14 @@ class ProjectService
 
     /**
      * @param object $user
-     * @param boolean $retrieveOption
+     * @param [type] $retrieveOption
      * @return object
      */
     public function listProjects(object $user, $retrieveOption): object
     {
         try {
             $isAdmin = $this->userService->hasRoleAdmin($user);
-            if (!$isAdmin && !$retrieveOption) {
+            if (!$isAdmin && $retrieveOption != Project::STATUS_TRUE) {
                 $timelogs = $this->timeLog->where('user_id', auth()->id())->with('project')->get();
 
                 $projects = $timelogs->map(function ($timelog) {
