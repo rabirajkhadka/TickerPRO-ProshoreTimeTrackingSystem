@@ -7,6 +7,7 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -14,7 +15,7 @@ class UserController extends Controller
     {
         $user = Auth::guard('sanctum')->user();
         return response()->json([
-            'user_details' => $user->with('roles')->first()
+            'user_details' => new UserResource($user->load('roles')),
         ]);
     }
 
