@@ -6,21 +6,45 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use \Exception;
 use App\Services\ProjectService;
-use App\Http\Requests\{ProjectRequest, EditProjectRequest};
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\{ProjectRequest, EditProjectRequest, ViewProjectRequest};
 use App\Http\Resources\ProjectResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
     protected ProjectService $projectService;
-    
+
     public function __construct(ProjectService $projectService)
     {
         $this->projectService = $projectService;
     }
-    
+
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            $retrieveOption = $request->query('all', Project::STATUS_FALSE);
+            $projects = $this->projectService->listProjects($user, $retrieveOption);
+            $data = [ProjectResource::collection($projects)];
+            return $this->successResponse($data, 'Projects retrieved successfully', Response::HTTP_OK);
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            Log::error($modelNotFoundException->getMessage());
+            return $this->errorResponse([], "Project not found", Response::HTTP_NOT_FOUND);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->errorResponse([], "Something went wrong.");
+        }
+    }
+
     public function addActivity(ProjectRequest $request): JsonResponse
     {
         $validatedAddProject = $request->validated();
@@ -44,7 +68,7 @@ class ProjectController extends Controller
                 "message" => "Project Updated Successfully",
                 "project" => $updateProjectData
             ], Response::HTTP_OK);
-        } catch (ModelNotFoundException $e) {   
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'message' => "Project with this Id doesnt Exists",
             ], Response::HTTP_BAD_REQUEST);
@@ -101,16 +125,6 @@ class ProjectController extends Controller
             ];
         }
         return response()->json($result, $result['status']);
-    }
-
-    public function viewAllProjects(Request $request)
-    {
-        $projects = Project::orderBy('updated_at', 'desc')->with('client')->paginate();
-        if ($request['search']) {
-            $projects = Project::where('project_name', 'LIKE', "%" . $request['search'] . "%")->paginate();
-        }
-        return ProjectResource::collection($projects);
-
     }
 
     public function deleteProject(int $id): JsonResponse
