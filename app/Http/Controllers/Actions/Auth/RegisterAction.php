@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
-use App\Traits\HttpResponses;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -17,8 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 class RegisterAction extends Controller
 {
-    use HttpResponses;
-
     protected UserService $userService;
 
 

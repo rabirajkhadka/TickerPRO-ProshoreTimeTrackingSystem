@@ -7,8 +7,7 @@ use Mockery\Exception;
 use App\Services\ClientService;
 use App\Http\Requests\{AddClientRequest, EditClientRequest};
 use Illuminate\Http\JsonResponse;
-use App\Traits\HttpResponses;
-use Doctrine\DBAL\Query\QueryException; 
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -17,8 +16,6 @@ use TypeError;
 
 class ClientController extends Controller
 {
-    use HttpResponses;
-
     protected ClientService $clientService;
 
     /**
@@ -38,7 +35,7 @@ class ClientController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $data =$this->clientService->viewClients();
+            $data = $this->clientService->viewClients();
             return $this->successResponse([$data]);
         } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
@@ -77,7 +74,7 @@ class ClientController extends Controller
      * @param integer $client
      * @return jsonResponse
      */
-    public function update(EditClientRequest $request,int $client): JsonResponse
+    public function update(EditClientRequest $request, int $client): JsonResponse
     {
         try {
             $validatedEditClient = $request->validated();
@@ -108,13 +105,13 @@ class ClientController extends Controller
         try {
             $this->clientService->removeClient($client);
             return $this->successResponse([], 'Client Deleted Successfully');
-        }catch (ModelNotFoundException $modelNotFoundException) {
+        } catch (ModelNotFoundException $modelNotFoundException) {
             Log::error($modelNotFoundException->getMessage());
-            return $this->errorResponse([],'Client Not Found');
+            return $this->errorResponse([], 'Client Not Found');
         } catch (TypeError $error) {
             Log::error($error->getMessage());
             return $this->errorResponse([], 'Bad Request', Response::HTTP_NOT_FOUND);
-        }catch (Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->errorResponse([], 'Something went wrong');
         }

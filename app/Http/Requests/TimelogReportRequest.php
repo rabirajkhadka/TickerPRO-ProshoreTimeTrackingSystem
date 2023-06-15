@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TimelogReportRequest extends FormRequest
@@ -23,13 +24,14 @@ class TimelogReportRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
-            'user_ids' => 'required|array',
+            'user_ids' => $this->user()->isAdmin() ? 'required|array' : 'nullable',
             'user_ids.*' => 'integer|exists:users,id',
-            'project_ids' => 'array',
+            'project_ids' => 'required|array',
             'project_ids.*' => 'integer|exists:projects,id',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'nullable|date_format:Y-m-d',
+            'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
         ];
     }
 }
