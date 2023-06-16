@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Actions\Report;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TimelogReportRequest;
-use App\Services\{ReportService,UserService};
+use App\Services\{ReportService, UserService};
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -26,7 +26,6 @@ class GenerateReportAction extends Controller
         $this->userService = $userService;
     }
 
-
     /**
      *
      * @param TimelogReportRequest $request
@@ -36,9 +35,9 @@ class GenerateReportAction extends Controller
     {
         try {
             $validated = $request->validated();
-            $user= auth()->user();
-            if (!$this->userService->hasRoleAdmin($user)){
-            $validated['user_ids'] = [auth()->id()];;
+            $user = auth()->user();
+            if (!$this->userService->hasRoleAdmin($user)) {
+                $validated['user_ids'] = [auth()->id()];
             }
             $report = $this->reportService->getUsersReport($validated);
             return $this->successResponse([$report], 'Report successfully retrieved');
