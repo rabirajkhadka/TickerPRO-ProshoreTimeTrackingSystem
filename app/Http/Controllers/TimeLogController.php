@@ -60,7 +60,7 @@ class TimeLogController extends Controller
             $totals = $this->timeLogService->viewTotalTimeLogs($id);
             $logs = $this->timeLogService->viewPaginateTimeLogs($id);
 
-            return empty($totals) ? $this->errorResponse([], 'No logs found', Response::HTTP_NOT_FOUND) :
+            return empty($totals) ? $this->successResponse([], 'No logs found') :
                 $this->successResponse([
                     'total' => $totals,
                     'logs' => TimeLogResource::collection($logs)
