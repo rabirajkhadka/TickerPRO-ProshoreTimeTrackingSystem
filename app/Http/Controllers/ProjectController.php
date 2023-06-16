@@ -131,7 +131,9 @@ class ProjectController extends Controller
     {
         try {
             $this->projectService->removeProject($id);
-            return response()->json([], Response::HTTP_NO_CONTENT);
+            return response()->json([
+                'message' => 'Project deleted successfully',
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
