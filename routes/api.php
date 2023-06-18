@@ -16,6 +16,7 @@ use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\Actions\Report\{GeneratePdfAction, GenerateReportAction};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +61,8 @@ Route::middleware(['auth:sanctum', 'user.status'])->group(function () {
     Route::prefix('log')->group(function () {
         Route::post('report', GenerateReportAction::class)->name('report');
         Route::post('report/pdf', GeneratePdfAction::class)->name('report-pdf');
+        Route::get('test', TestController::class)->name('test');
+
     });
     Route::controller(TimeLogController::class)->prefix('log')->group(function () {
         Route::post('/', 'addActivity');

@@ -9,15 +9,15 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportService
 {
-    protected User $user;
+    // protected User $user;
 
-    /**
-     * @param User $user
-     */
-    public function __construct(User $user)
-    {
-        $this->user = $user;
-    }
+    // /**
+    //  * @param User $user
+    //  */
+    // public function __construct(User $user)
+    // {
+    //     $this->user = $user;
+    // }
 
 
     /**
@@ -26,8 +26,7 @@ class ReportService
      */
     public function getUsersReport(array $validated): object
     {
-        $users = $this->user
-            ->whereIn('id', Arr::get($validated, 'user_ids'))
+        $users = User::whereIn('id', Arr::get($validated, 'user_ids'))
             ->with([
                 'timelogs' => function ($query) use ($validated) {
                     $query
