@@ -16,7 +16,7 @@ class SendEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'send:reminderEmails';
+    protected $signature = 'email:reminder';
 
     /**
      * The console command description.
@@ -36,18 +36,21 @@ class SendEmails extends Command
             'timelogs' => function ($query) {
                 $query
                     ->whereBetween('start_date', [
-                        Carbon::now()->subWeek(),Carbon::now()
+                        Carbon::now()->subWeek(), Carbon::now()
                     ])
                     ->whereBetween('end_date', [
-                        Carbon::now()->subWeek(),Carbon::now()
+                        Carbon::now()->subWeek(), Carbon::now()
                     ]);
             }
         ])->get();
-        $hours = (new ReportService())->getUsersReportDetails($users);
-        foreach ($hours as $user){
-            if (Arr::get($user, 'total_time') < 40)
-            {
-                User::find($user['user_id'])->notify(new WeeklyTargetReminder());
+        foreach ($users as $user) {
+            $userTotalTime = $user->timelogs->sum(function ($timelog) {
+                $startDateTime = Carbon::parse($timelog->start_date . ' ' . $timelog->started_time);
+                $endDateTime = Carbon::parse($timelog->end_date . ' ' . $timelog->ended_time);
+                return $endDateTime->diffInMinutes($startDateTime);
+            });
+            if ($userTotalTime < 40) {
+                $user->notify(new WeeklyTargetReminder($user->name));
             }
         }
         $this->info('Emails Sent!');
