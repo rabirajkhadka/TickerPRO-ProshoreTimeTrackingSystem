@@ -40,7 +40,6 @@ class WeeklyTargetReminder extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        // dd($notifiable);
         return (new MailMessage)
                 ->subject('Weekly Reminder')
                 ->greeting("Hello $this->username!")
