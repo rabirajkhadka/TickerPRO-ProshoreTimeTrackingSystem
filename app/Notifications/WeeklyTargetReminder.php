@@ -10,15 +10,15 @@ use Illuminate\Notifications\Notification;
 class WeeklyTargetReminder extends Notification implements ShouldQueue
 {
     use Queueable;
-
+    protected $username;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($name)
     {
-        //
+        $this->username =$name;
     }
 
     /**
@@ -40,9 +40,11 @@ class WeeklyTargetReminder extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        // dd($notifiable);
         return (new MailMessage)
-                ->subject('Test Notification')
-                ->line('Your Total Time logged is less than the Target 40 hours!');
+                ->subject('Weekly Reminder')
+                ->greeting("Hello $this->username!")
+                ->line('Your Total Time logged is less than the Target 40 hours this week. You may have to edit your time logs!');
     }
 
     /**
