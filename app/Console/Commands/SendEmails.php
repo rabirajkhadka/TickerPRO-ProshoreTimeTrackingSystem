@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Carbon;
 use App\Services\ReportService;
 use App\Notifications\WeeklyTargetReminder;
+use Illuminate\Support\Arr;
 
 class SendEmails extends Command
 {
@@ -44,7 +45,8 @@ class SendEmails extends Command
         ])->get();
         $hours = (new ReportService())->getUsersReportDetails($users);
         foreach ($hours as $user){
-            if ($user['total_time'] < 40){
+            if (Arr::get($user, 'total_time') < 40)
+            {
                 User::find($user['user_id'])->notify(new WeeklyTargetReminder());
             }
         }
