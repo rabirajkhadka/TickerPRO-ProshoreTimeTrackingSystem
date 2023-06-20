@@ -94,7 +94,7 @@
                             <th>Activity</th>
                             <th>Project</th>
                             <th>Client</th>
-                            <th>Billable</th>
+                            <th>Status</th>
                             <th>Date</th>
                             <th>Total Time</th>
                         </tr>
@@ -109,12 +109,12 @@
 
                             @if ($activity['billable'] === 1)
                                 <td>
-                                    <img src="./img/billable.png" alt="billable" class="billable">
+                                    <img src="./img/billable-icon.png" alt="billable" class="billable">
                                 </td>
                             @endif
                             @if ($activity['billable'] === 0) 
                                 <td>
-                                    <img src="./img/non-billable.png" alt="non-billable" class="billable">
+                                    <img src="./img/non-billable-icon.png" alt="non-billable" class="billable">
                                 </td>
                             @endif
 
